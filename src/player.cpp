@@ -1,0 +1,182 @@
+#include "player.hpp"
+#include <iostream>
+
+Player::Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileManager& projectiles)
+    : textures(textures),
+      corpseSprite(textures.playerCorpseDefaultTexture),
+      legsSprite(textures.playerLegsDefaultTexture),
+      handsSprite(textures.playerHandsDefaultTexture),
+      velocity(0.f, 0.0f), 
+      maxVelocity(200.f, 200.f), 
+      isRunning(false), 
+      health(100, textures),
+      throwHandAbsPosition(46, 36), 
+      legsRunning(&textures.legsRunning, 14), 
+      bottleThrow(&textures.bottleThrowing, 18), 
+      bottleHit(&textures.bottleHit, 20), 
+      projectiles(projectiles), 
+      currentState(IDLE)
+{
+    corpseSprite.setOrigin(corpseSprite.getLocalBounds().size / 2.f);
+    legsSprite.setOrigin(corpseSprite.getOrigin());
+    handsSprite.setOrigin(corpseSprite.getOrigin());
+
+    corpseSprite.setPosition({(windowSize.x - corpseSprite.getGlobalBounds().size.x) / 2.0f, (windowSize.y - corpseSprite.getGlobalBounds().size.y) / 2.0f});
+    legsSprite.setPosition(corpseSprite.getPosition());
+    handsSprite.setPosition(corpseSprite.getPosition());
+}
+
+void Player::update(sf::Time deltaTime)
+{
+    handleInput(deltaTime);
+
+    corpseSprite.move(velocity * deltaTime.asSeconds());
+    legsSprite.move(velocity * deltaTime.asSeconds());
+    handsSprite.move(velocity * deltaTime.asSeconds());
+
+    switch (currentState)
+    {
+        case THROWING:
+            if (bottleThrow.getCurrentCycle() >= 1) currentState = IDLE;
+            break;
+        
+        case HITTING:
+            if (bottleHit.getCurrentCycle() >= 1) currentState = IDLE;
+            break;
+    }
+}
+
+void Player::render(sf::RenderWindow& window)
+{
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+    if (corpseSprite.getGlobalBounds().getCenter().x < mousePos.x)
+    {
+        corpseSprite.setScale({1, 1});
+        legsSprite.setScale({1, 1});
+        handsSprite.setScale({1, 1});
+    }
+    else 
+    {
+        corpseSprite.setScale({-1, 1});
+        legsSprite.setScale({-1, 1});
+        handsSprite.setScale({-1, 1});
+    }
+
+    if (isRunning) legsSprite.setTexture(legsRunning.getCurrentFrame());
+    else legsSprite.setTexture(textures.playerLegsDefaultTexture);
+    window.draw(legsSprite);
+
+    switch (currentState)
+    {
+        case THROWING:
+            handsSprite.setTexture(bottleThrow.getCurrentFrame());
+            break;
+        
+        case HITTING:
+            handsSprite.setTexture(bottleHit.getCurrentFrame());
+            break;
+
+        case AIMING:
+            handsSprite.setTexture(textures.playerHandsDefaultTexture);
+            break;
+        
+        case IDLE:
+            handsSprite.setTexture(textures.playerHandsDefaultTexture);
+            break;
+    }
+    window.draw(handsSprite);
+
+    window.draw(corpseSprite);
+
+    health.attachToPosistion(corpseSprite.getGlobalBounds());
+    health.render(window);
+}
+
+void Player::handleInput(sf::Time deltaTime)
+{
+    bool slowDown = true;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+    {
+        velocity += sf::Vector2f{-acceleration, 0} * deltaTime.asSeconds();
+        slowDown = false;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+    {
+        velocity += sf::Vector2f{acceleration, 0} * deltaTime.asSeconds();
+        slowDown = false;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+    {
+        velocity += sf::Vector2f{0, -acceleration} * deltaTime.asSeconds();
+        slowDown = false;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+    {
+        velocity += sf::Vector2f{0, acceleration} * deltaTime.asSeconds();
+        slowDown = false;
+    }
+    
+    if (slowDown)
+    {
+        isRunning = false;
+
+        if (velocity.length() > 0.f)
+        {
+            velocity -= velocity.normalized() * speedFriction * deltaTime.asSeconds();
+        }
+    }
+    else
+    {
+        if (!isRunning) legsRunning.restart();
+        isRunning = true;
+    }
+    
+    velocity.x = std::clamp(velocity.x, -maxVelocity.x, maxVelocity.x);
+    velocity.y = std::clamp(velocity.y, -maxVelocity.y, maxVelocity.y);
+}
+
+sf::FloatRect Player::getBounds()
+{
+    return {corpseSprite.getGlobalBounds()};
+}
+
+bool Player::mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vector2f mouseWorldPos, sf::Time bottleTime)
+{
+    if (event->button == sf::Mouse::Button::Left && currentState == AIMING)
+    {
+        sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
+        projectiles.addBottle(bottlePosition, sf::Vector2f(mouseWorldPos), bottleTime);
+        currentState = THROWING;
+        bottleThrow.restart();
+        return true;
+    }
+    return false;
+}
+
+bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
+{
+    if (event->button == sf::Mouse::Button::Right && currentState == IDLE)
+    {
+        currentState = HITTING;
+        bottleHit.restart();
+    }
+    if (event->button == sf::Mouse::Button::Left && currentState == IDLE)
+    {
+        currentState = AIMING;
+        return true;
+    }
+    return false;
+}
+
+void Player::inflictDamage(int damage)
+{
+    health.changeHealth(-damage);
+}
+
+int Player::getMeleeDamage() { return 40; }
+
+bool Player::isHitting() { return currentState == HITTING; }
+
+void Player::succesfullParry() { health.changeHealth(20); }

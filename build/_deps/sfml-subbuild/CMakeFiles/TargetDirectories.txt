@@ -1,0 +1,3 @@
+/home/fsliwa/Code/project1/build/_deps/sfml-subbuild/CMakeFiles/sfml-populate.dir
+/home/fsliwa/Code/project1/build/_deps/sfml-subbuild/CMakeFiles/edit_cache.dir
+/home/fsliwa/Code/project1/build/_deps/sfml-subbuild/CMakeFiles/rebuild_cache.dir

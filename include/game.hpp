@@ -1,0 +1,38 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include "player.hpp"
+#include "ground.hpp"
+#include "texturemanager.hpp"
+#include "projectilemanager.hpp"
+#include "enemymanager.hpp"
+#include "collisionmanager.hpp"
+#include "playerui.hpp"
+#include "damagetextmanager.hpp"
+#include <cstdlib>
+#include <ctime>
+
+class GameManager
+{
+    private:
+        static constexpr int winWidth = 1500, winHeight = 1000;
+        sf::Clock clock;
+        TextureManager textures;
+        sf::RenderWindow gameWindow;
+        sf::View view;
+        PlayerUI ui;
+        Player player;
+        ProjectileManager projectiles;
+        EnemyManager enemies;
+        DamageTextManager texts;
+        CollisionManager collisions;
+        Ground ground;
+
+        void handleLevel(sf::Time deltaTime);
+        void handleUI(sf::Time deltaTime);
+
+    public:
+        GameManager();
+        void GameLoop();
+};
