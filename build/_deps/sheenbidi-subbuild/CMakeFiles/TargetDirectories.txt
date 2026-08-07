@@ -1,3 +1,0 @@
-/home/fsliwa/Code/project1/build/_deps/sheenbidi-subbuild/CMakeFiles/sheenbidi-populate.dir
-/home/fsliwa/Code/project1/build/_deps/sheenbidi-subbuild/CMakeFiles/edit_cache.dir
-/home/fsliwa/Code/project1/build/_deps/sheenbidi-subbuild/CMakeFiles/rebuild_cache.dir
