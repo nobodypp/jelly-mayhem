@@ -5,11 +5,23 @@ project(Project1
     LANGUAGES CXX
 )
 
+# ============================================================
+# C++ configuration
+# ============================================================
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# Executables created by the build go to build/bin/
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${CMAKE_BINARY_DIR}/bin
+)
+
+
+# ============================================================
+# SFML
+# ============================================================
 
 include(FetchContent)
 
@@ -24,6 +36,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SFML)
 
+
+# ============================================================
+# Source files
+# ============================================================
+
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
@@ -32,6 +49,11 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
 )
+
+
+# ============================================================
+# Executable
+# ============================================================
 
 add_executable(main
     ${SOURCES}
@@ -48,4 +70,54 @@ target_link_libraries(main
         SFML::Graphics
 )
 
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT main)
+
+# ============================================================
+# Installation
+# ============================================================
+
+include(GNUInstallDirs)
+
+# Copy executable to install/bin/
+install(
+    TARGETS main
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# Copy assets to install/bin/assets/
+install(
+    DIRECTORY assets/
+    DESTINATION ${CMAKE_INSTALL_BINDIR}/assets
+)
+
+
+# ============================================================
+# Development helper
+# ============================================================
+
+# Build + install the project with one command:
+#
+# cmake --build build --target install_project
+#
+add_custom_target(install_project
+    COMMAND ${CMAKE_COMMAND}
+        --install ${CMAKE_BINARY_DIR}
+        --prefix ${CMAKE_SOURCE_DIR}/install
+    DEPENDS main
+)
+
+
+# ============================================================
+# Visual Studio
+# ============================================================
+
+set_property(
+    DIRECTORY
+    PROPERTY VS_STARTUP_PROJECT main
+)
+
+# ============================================================
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:main>/assets
+)
