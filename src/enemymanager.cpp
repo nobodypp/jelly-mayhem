@@ -10,10 +10,7 @@ EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileM
       timeToNextSpawn(spawningCooldown), 
       randomizer(randomizer)
 {
-    // for (int i = 0; i < jelliesPopulationSize; i++)
-    // {
-    //     addRandomJelly();
-    // }
+
 }
 
 void EnemyManager::update(sf::Time deltaTime)
@@ -22,8 +19,8 @@ void EnemyManager::update(sf::Time deltaTime)
     if (timeToNextSpawn <= sf::Time::Zero && jellies.size() < jelliesPopulationSize)
     {
         timeToNextSpawn = spawningCooldown;
-        if (jellies.size() >= 2)  addChildJelly();
-        else addRandomJelly();
+        if (jellies.size() >= 5)  addChildJelly();
+        else addDefaultJelly();
     }
     for (auto& jelly : jellies)
     {
@@ -48,7 +45,7 @@ void EnemyManager::addJelly(Chromosome chromosome)
     jellies.push_back(std::make_unique<Jelly>(player.getBounds().position + distance, textures, projectiles, chromosome));
 }
 
-void EnemyManager::addRandomJelly() { addJelly(Chromosome(randomizer)); }
+void EnemyManager::addDefaultJelly() { addJelly(Chromosome(randomizer)); }
 
 void EnemyManager::addChildJelly()
 {
@@ -57,25 +54,43 @@ void EnemyManager::addChildJelly()
     
     Chromosome child = parent1.crossover(parent2);
 
-    if (randomizer.randomFloat() > mutationRatio) child.applyMutation();
+    if (randomizer.randomFloat() < mutationRatio) child.applyMutation();
 
     addJelly(child);
 }
 
 Chromosome EnemyManager::rouletteWheelParent()
 {
-    int sumDamage = 0;
-    for (auto& jelly: jellies) sumDamage += jelly->chromosome.getDamageInflicted();
-    int randomDamagePosition = randomizer.randomInt(0, sumDamage);
+    int totalDamage = 0;
 
-    sumDamage = 0;
-    for (auto& jelly : jellies)
+    for (const auto& jelly : jellies)
     {
-        if (sumDamage > randomDamagePosition)
+        totalDamage += jelly->chromosome.getDamageInflicted();
+    }
+
+    // Jeśli wszyscy mają 0 damage, każdy ma taką samą szansę
+    if (totalDamage == 0)
+    {
+        std::size_t index =
+            randomizer.randomIndex(0, jellies.size() - 1);
+
+        return jellies.at(index)->chromosome;
+    }
+
+    int randomDamage = randomizer.randomInt(1, totalDamage);
+
+    int accumulatedDamage = 0;
+
+    for (const auto& jelly : jellies)
+    {
+        accumulatedDamage += jelly->chromosome.getDamageInflicted();
+
+        if (randomDamage <= accumulatedDamage)
         {
             return jelly->chromosome;
         }
-        sumDamage += jelly->chromosome.getDamageInflicted();
     }
-    return jellies.at(jellies.size() - 1)->chromosome;
+
+    // Nie powinno się wykonać
+    return jellies.back()->chromosome;
 }

@@ -24,7 +24,7 @@ class EnemyManager : Manager
         Player& player;
         RandomGenerator& randomizer;
 
-        void addRandomJelly();
+        void addDefaultJelly();
         void addChildJelly();
         void addJelly(Chromosome chromosome);
         Chromosome rouletteWheelParent();

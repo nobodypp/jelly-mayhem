@@ -19,7 +19,7 @@ HealthBar::HealthBar(int maxHealth, TextureManager& textures)
     primaryBar.setOrigin(primaryBar.getSize() / 2.f);
     secodnaryBar.setOrigin(primaryBar.getSize() / 2.f);
 
-    text.setCharacterSize(10);
+    text.setCharacterSize(12);
     text.setFillColor(sf::Color{230, 230, 230});
     text.setString(std::to_string(health) + " / " + std::to_string(maxHealth));
     text.setOrigin(text.getLocalBounds().size / 2.f);

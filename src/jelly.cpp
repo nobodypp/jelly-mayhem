@@ -11,6 +11,8 @@ Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager&
       defaultTexture(&textures.jellyDefault),
       sprite(walking.getCurrentFrame()), 
       health(chromosome.getHealth(), textures), 
+      walkingSpeed(chromosome.getWalkingSpeed()),
+      bitingSpeed(walkingSpeed + chromosome.getBitingSpeed()),
       projectiles(&projectiles), 
       currentState(WALKING), 
       hasShot(false), 

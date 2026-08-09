@@ -14,6 +14,7 @@ class Chromosome
         static constexpr std::size_t starDamageArraySize = 5;
         static constexpr std::size_t biteDamageArraySize = 5;
         static constexpr std::size_t colorArraySize = 7;
+        static constexpr std::size_t speedArraySize = 8;
         RandomGenerator* randomizer;
         int damageInflicted;
         std::array<bool, healthArraySize> health;
@@ -22,6 +23,8 @@ class Chromosome
         std::array<bool, colorArraySize> redColor;
         std::array<bool, colorArraySize> greenColor;
         std::array<bool, colorArraySize> blueColor;
+        std::array<bool, speedArraySize> walkingSpeed;
+        std::array<bool, speedArraySize> bitingSpeed;
         
 
         template <std::size_t N>
@@ -85,13 +88,21 @@ class Chromosome
         }
     
     public:
-        Chromosome(RandomGenerator& randomizer, int health = 50, int starDamage = 10, int biteDamage = 20, sf::Color color = sf::Color::Black);
+        Chromosome(RandomGenerator& randomizer, 
+            int health = 50, 
+            int starDamage = 10, 
+            int biteDamage = 20, 
+            sf::Color color = sf::Color::Green, 
+            int walkingSpeed = 100, 
+            int bitingSpeed = 250);
         int getDamageInflicted();
         void changeDamageInflicted(int damage);
+        Chromosome crossover(Chromosome secondParent);
+        void applyMutation();
         int getHealth();
         int getStarDamage();
         int getBiteDamage();
+        float getWalkingSpeed();
+        float getBitingSpeed();
         sf::Color getColor();
-        Chromosome crossover(Chromosome secondParent);
-        void applyMutation();
 };
