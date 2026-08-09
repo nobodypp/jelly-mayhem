@@ -9,6 +9,14 @@ CollisionManager::CollisionManager(EnemyManager& enemies, ProjectileManager& pro
 
 void CollisionManager::handleCollisions(Player& player)
 {
+    BottleCollisions();
+    StarCollisions(player);
+    meleeCollisions(player);
+    enemiesAntiCrowd();
+}
+
+void CollisionManager::BottleCollisions()
+{
     for (std::size_t i = 0; i < projectiles.bottleCount(); i++)
     {
         if (projectiles.bottleAt(i).isColliding())
@@ -24,7 +32,10 @@ void CollisionManager::handleCollisions(Player& player)
             }
         }
     }
+}
 
+void CollisionManager::StarCollisions(Player& player)
+{
     for (std::size_t i = 0; i < projectiles.starsCount(); i++)
     {
         if (projectiles.starAt(i).isColliding())
@@ -37,7 +48,10 @@ void CollisionManager::handleCollisions(Player& player)
             }
         }
     }
+}
 
+void CollisionManager::meleeCollisions(Player& player)
+{
     for (std::size_t i = 0; i < enemies.jelliesCount(); i++)
     {
         if (enemies.jellyAt(i).isColliding())
@@ -61,6 +75,39 @@ void CollisionManager::handleCollisions(Player& player)
                     player.inflictDamage(enemies.jellyAt(i).getDamage());
                     texts.addText(enemies.jellyAt(i).getDamage(), false, player.getBounds());
                 }
+            }
+        }
+    }
+}
+
+void CollisionManager::enemiesAntiCrowd()
+{
+    const std::size_t count = enemies.jelliesCount();
+
+    for (std::size_t i = 0; i < count; ++i)
+    {
+        for (std::size_t j = i + 1; j < count; ++j)
+        {
+            auto& jelly1 = enemies.jellyAt(i);
+            auto& jelly2 = enemies.jellyAt(j);
+
+            sf::Vector2f distance =
+                jelly1.getBounds().getCenter() -
+                jelly2.getBounds().getCenter();
+
+            float length = distance.length();
+
+            if (length < minEnemiesDistance)
+            {
+                if (length == 0.f)
+                    distance = {1.f, 0.f};
+                else
+                    distance /= length;
+
+                float push = (minEnemiesDistance - length) / 2.f;
+
+                jelly1.move(distance * push);
+                jelly2.move(-distance * push);
             }
         }
     }

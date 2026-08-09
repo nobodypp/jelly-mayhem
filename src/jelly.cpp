@@ -159,3 +159,5 @@ void Jelly::registerKnockback(sf::Vector2f playerPosition)
         knockback.restart();
     }
 }
+
+void Jelly::move(sf::Vector2f translation) { sprite.move(translation); }

@@ -10,29 +10,24 @@ EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileM
       timeToNextSpawn(spawningCooldown), 
       randomizer(randomizer)
 {
-    for (int i = 0; i < jelliesPopulationSize; i++)
-    {
-        addRandomJelly();
-    }
+    // for (int i = 0; i < jelliesPopulationSize; i++)
+    // {
+    //     addRandomJelly();
+    // }
 }
 
 void EnemyManager::update(sf::Time deltaTime)
 {
-    // timeToNextSpawn -= deltaTime;
-    // if (timeToNextSpawn <= sf::Time::Zero)
-    // {
-    //     timeToNextSpawn = spawningCooldown;
-    //     if (jellies.size() >= 2)  addChildJelly();
-    //     else addRandomJelly();
-    // }
+    timeToNextSpawn -= deltaTime;
+    if (timeToNextSpawn <= sf::Time::Zero && jellies.size() < jelliesPopulationSize)
+    {
+        timeToNextSpawn = spawningCooldown;
+        if (jellies.size() >= 2)  addChildJelly();
+        else addRandomJelly();
+    }
     for (auto& jelly : jellies)
     {
         jelly->setTargetPosition(player.getBounds().getCenter());
-        if (!jelly->isAlive())
-        {
-            if (jellies.size() >= 2)  addChildJelly();
-            else addRandomJelly();
-        }
     }
     updateVector(jellies, deltaTime);
     
@@ -82,5 +77,5 @@ Chromosome EnemyManager::rouletteWheelParent()
         }
         sumDamage += jelly->chromosome.getDamageInflicted();
     }
-    return jellies.at(0)->chromosome;
+    return jellies.at(jellies.size() - 1)->chromosome;
 }

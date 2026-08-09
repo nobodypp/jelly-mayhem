@@ -61,4 +61,5 @@ class Jelly : public Entity
         void registerHit();
         void registerKnockback(sf::Vector2f playerPosition);
         int getDamage();
+        void move(sf::Vector2f translation);
 };
