@@ -6,16 +6,17 @@
 #include "player.hpp"
 #include "texturemanager.hpp"
 #include "projectilemanager.hpp"
+#include "manager.hpp"
 #include <cstdlib>
 
-class EnemyManager : Drawable
+class EnemyManager : Manager
 {
     private:
         static constexpr float spawnDistance = 850.f;
         static constexpr int jelliesPopulationSize = 5;
         sf::Time spawningCooldown;
         sf::Time timeToNextSpawn;
-        std::vector<Jelly> jellies;
+        std::vector<std::unique_ptr<Jelly>> jellies;
         ProjectileManager& projectiles;
         TextureManager& textures;
         Player& player;

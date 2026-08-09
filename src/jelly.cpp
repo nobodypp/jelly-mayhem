@@ -141,7 +141,7 @@ bool Jelly::inflictDamage(int damage)
     return false;
 }
 
-bool Jelly::isDead() { return currentState == DEAD; }
+bool Jelly::isAlive() { return currentState != DEAD; }
 
 bool Jelly::isColliding() { return currentState == BITING && !hasBiten; }
 

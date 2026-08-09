@@ -23,34 +23,25 @@ void EnemyManager::update(sf::Time deltaTime)
         timeToNextSpawn = spawningCooldown;
         addJelly();
     }
-    for (std::size_t i = 0; i < jellies.size();)
+
+    updateVector(jellies, deltaTime);
+    for (auto& jelly : jellies)
     {
-        if (jellies[i].isDead())
-        {
-            killCount++;
-            jellies.erase(jellies.begin() + i);
-            // addJelly();
-        }
-        else
-        {
-            jellies[i].setTargetPosition(player.getBounds().getCenter());
-            jellies[i].update(deltaTime);
-            i++;
-        }
-    } 
+        jelly->setTargetPosition(player.getBounds().getCenter());
+    }
 }
 
 void EnemyManager::render(sf::RenderWindow& window)
 {
-    for (auto& jelly: jellies) jelly.render(window);
+    renderVector(jellies, window);
 }
 
 std::size_t EnemyManager::jelliesCount() { return jellies.size(); }
 
-Jelly& EnemyManager::jellyAt(std::size_t i) { return jellies.at(i); }
+Jelly& EnemyManager::jellyAt(std::size_t i) { return *jellies.at(i); }
 
 void EnemyManager::addJelly()
 {
     sf::Vector2f distance = sf::Vector2f({spawnDistance, 0}).rotatedBy(sf::degrees(rand() % 360));
-    jellies.emplace_back(player.getBounds().position + distance, textures, projectiles);
+    jellies.push_back(std::make_unique<Jelly>(player.getBounds().position + distance, textures, projectiles));
 }

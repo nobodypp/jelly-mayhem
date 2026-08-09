@@ -5,6 +5,7 @@
 
 class Entity : public Drawable
 {
-    protected:
+    public:
         virtual sf::FloatRect getBounds() = 0;
+        virtual bool isAlive() { return true; }
 };

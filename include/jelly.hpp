@@ -51,9 +51,9 @@ class Jelly : public Entity
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
+        bool isAlive() override;
         void setTargetPosition(sf::Vector2f targetPos);
         bool inflictDamage(int damage);
-        bool isDead();
         bool isColliding();
         void registerHit();
         void registerKnockback(sf::Vector2f playerPosition);
