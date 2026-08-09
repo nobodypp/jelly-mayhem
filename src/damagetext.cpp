@@ -6,7 +6,7 @@ DamageText::DamageText(TextureManager& textures, int damage, bool positive, sf::
       absoluteTime(sf::seconds(1.f)),
       timeLeft(absoluteTime)
 {
-    text.setCharacterSize(15);
+    text.setCharacterSize(20);
     text.setString(description + (damage < 0 ? "+" : "") +  std::to_string(-damage));
     text.setFillColor(positive ? sf::Color::Green : sf::Color::Red);
     sf::Vector2f deviation = sf::Vector2f(spawnRadius, 0.f).rotatedBy(sf::degrees(rand() % 360));

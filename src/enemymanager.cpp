@@ -5,7 +5,9 @@ EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileM
     : textures(textures), 
       projectiles(projectiles),
       player(player), 
-      killCount(0)
+      killCount(0), 
+      spawningCooldown(sf::seconds(3.f)),
+      timeToNextSpawn(spawningCooldown)
 {
     for (int i = 0; i < jelliesPopulationSize; i++)
     {
@@ -15,13 +17,19 @@ EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileM
 
 void EnemyManager::update(sf::Time deltaTime)
 {
+    timeToNextSpawn -= deltaTime;
+    if (timeToNextSpawn <= sf::Time::Zero)
+    {
+        timeToNextSpawn = spawningCooldown;
+        addJelly();
+    }
     for (std::size_t i = 0; i < jellies.size();)
     {
         if (jellies[i].isDead())
         {
             killCount++;
             jellies.erase(jellies.begin() + i);
-            addJelly();
+            // addJelly();
         }
         else
         {

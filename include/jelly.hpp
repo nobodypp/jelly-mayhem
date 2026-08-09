@@ -52,7 +52,7 @@ class Jelly : public Entity
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
         void setTargetPosition(sf::Vector2f targetPos);
-        void inflictDamage(int damage);
+        bool inflictDamage(int damage);
         bool isDead();
         bool isColliding();
         void registerHit();

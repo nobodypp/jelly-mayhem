@@ -47,9 +47,9 @@ void CollisionManager::handleCollisions(Player& player)
                 if (player.isHitting())
                 {
                     enemies.jellyAt(i).registerKnockback(player.getBounds().position + player.getBounds().getCenter());
-                    enemies.jellyAt(i).inflictDamage(player.getMeleeDamage());
+                    bool killed = enemies.jellyAt(i).inflictDamage(player.getMeleeDamage());
                     texts.addText(player.getMeleeDamage(), true, enemies.jellyAt(i).getBounds(), "Blok! ");
-                    if (enemies.jellyAt(i).isDead())
+                    if (killed)
                     {
                         player.succesfullParry();
                         texts.addText(20, true, player.getBounds(), "Kill blokiem! ");

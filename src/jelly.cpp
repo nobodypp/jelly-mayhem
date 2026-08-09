@@ -129,14 +129,16 @@ void Jelly::render(sf::RenderWindow& window)
 
 sf::FloatRect Jelly::getBounds() { return sprite.getGlobalBounds(); }
 
-void Jelly::inflictDamage(int damage)
+bool Jelly::inflictDamage(int damage)
 {
     health.changeHealth(-damage);
     if (health.GetHealth() <= 0 && currentState != DYING && currentState != DEAD)
     {
         currentState = DYING;
         death.restart();
+        return true;
     }
+    return false;
 }
 
 bool Jelly::isDead() { return currentState == DEAD; }
@@ -149,7 +151,10 @@ int Jelly::getDamage() { return 10; }
 
 void Jelly::registerKnockback(sf::Vector2f playerPosition)
 {
-    knockbackVelocity = (sprite.getPosition() - playerPosition).normalized() * knockbackSpeed;
-    currentState = KNOCKBACK;
-    knockback.restart();
+    if (currentState != DEAD && currentState != DYING)
+    {
+        knockbackVelocity = (sprite.getPosition() - playerPosition).normalized() * knockbackSpeed;
+        currentState = KNOCKBACK;
+        knockback.restart();
+    }
 }

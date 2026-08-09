@@ -11,8 +11,10 @@
 class EnemyManager : Drawable
 {
     private:
-        static constexpr float spawnDistance = 800.f;
-        static constexpr int jelliesPopulationSize = 10;
+        static constexpr float spawnDistance = 850.f;
+        static constexpr int jelliesPopulationSize = 5;
+        sf::Time spawningCooldown;
+        sf::Time timeToNextSpawn;
         std::vector<Jelly> jellies;
         ProjectileManager& projectiles;
         TextureManager& textures;
