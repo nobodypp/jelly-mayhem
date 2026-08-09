@@ -10,8 +10,7 @@
 #include "collisionmanager.hpp"
 #include "playerui.hpp"
 #include "damagetextmanager.hpp"
-#include <cstdlib>
-#include <ctime>
+#include "random.hpp"
 
 class GameManager
 {
@@ -28,6 +27,7 @@ class GameManager
         DamageTextManager texts;
         CollisionManager collisions;
         Ground ground;
+        RandomGenerator randomizer;
 
         void handleLevel(sf::Time deltaTime);
         void handleUI(sf::Time deltaTime);

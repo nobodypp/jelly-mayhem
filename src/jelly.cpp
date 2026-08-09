@@ -1,15 +1,16 @@
 #include "jelly.hpp"
 
 
-Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles)
-    : walking(&textures.jellyWalking, 10), 
+Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome)
+    : chromosome(chromosome),
+      walking(&textures.jellyWalking, 10), 
       death(&textures.jellyDying, 20),
       shooting(&textures.jellyShooting, 10),
       biting(&textures.jellyBiting, 10),
       knockback(&textures.jellyKnockback, 8),
       defaultTexture(&textures.jellyDefault),
       sprite(walking.getCurrentFrame()), 
-      health(50, textures), 
+      health(chromosome.getHealth(), textures), 
       projectiles(&projectiles), 
       currentState(WALKING), 
       hasShot(false), 
@@ -17,7 +18,7 @@ Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager&
 {
     sprite.setOrigin(sprite.getLocalBounds().size / 2.f);
     sprite.setPosition(position);
-    sprite.setColor(sf::Color(rand() % 256, rand() % 256, rand() % 256));
+    sprite.setColor(chromosome.getColor());
 }
 
 void Jelly::setTargetPosition(sf::Vector2f targetPos) { targetPosition = targetPos; }
@@ -48,7 +49,7 @@ void Jelly::update(sf::Time deltaTime)
             if (shooting.getCurrentFrameNumber() == shootFrame && !hasShot)
             {
                 sf::Vector2f starPositon = sprite.getPosition() + shootingTexturePosition * sprite.getScale().x;
-                projectiles->addStar(starPositon, targetPosition, sprite.getColor());
+                projectiles->addStar(starPositon, targetPosition, sprite.getColor(), chromosome);
                 hasShot = true;
             }
             if (shooting.getCurrentCycle() >= 1)
@@ -147,7 +148,7 @@ bool Jelly::isColliding() { return currentState == BITING && !hasBiten; }
 
 void Jelly::registerHit() { hasBiten = true; }
 
-int Jelly::getDamage() { return 10; }
+int Jelly::getDamage() { return chromosome.getBiteDamage(); }
 
 void Jelly::registerKnockback(sf::Vector2f playerPosition)
 {

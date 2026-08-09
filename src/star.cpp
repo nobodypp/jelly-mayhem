@@ -1,12 +1,13 @@
 #include "star.hpp"
 
 
-Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, TextureManager& textures)
+Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, TextureManager& textures)
     : fly(&textures.starFly, 10), 
       explode(&textures.starExplode, 10), 
       sprite(fly.getCurrentFrame()), 
       shotTarget(false), 
-      inView(true)
+      inView(true), 
+      ownerChromosome(&ownerChromosome)
 {
     sprite.setColor(sf::Color::Green);
     sprite.setOrigin({27.f, 17.f});
@@ -36,12 +37,13 @@ void Star::render(sf::RenderWindow& window)
 
 sf::FloatRect Star::getBounds() { return sprite.getGlobalBounds(); }
 
-int Star::getDamage() { return 10; }
+int Star::getDamage() { return ownerChromosome->getStarDamage(); }
 
 void Star::registerHit()
 {
     shotTarget = true;
     explode.restart();
+    if (ownerChromosome != nullptr) ownerChromosome->changeDamageInflicted(getDamage());
 }
 
 bool Star::isAlive() { return ((!shotTarget || explode.getCurrentCycle() < 1) && inView); }

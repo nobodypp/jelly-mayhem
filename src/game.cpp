@@ -6,12 +6,10 @@ GameManager::GameManager()
     player(gameWindow.getSize(), textures, projectiles),
 	ground(gameWindow.getSize(), textures), 
 	view(gameWindow.getDefaultView()), 
-	enemies(textures, player, projectiles), 
+	enemies(textures, player, projectiles, randomizer), 
 	texts(textures),
 	collisions(enemies, projectiles, texts)
-{
-    srand(time(0));
-}
+{}
 
 void GameManager::GameLoop()
 {

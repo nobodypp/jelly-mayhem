@@ -3,6 +3,7 @@
 #include "projectile.hpp"
 #include "animation.hpp"
 #include "texturemanager.hpp"
+#include "chromosome.hpp"
 
 
 class Star : public Projectile
@@ -15,9 +16,10 @@ class Star : public Projectile
         sf::Vector2f velocity;
         bool shotTarget;
         bool inView;
+        Chromosome* ownerChromosome;
 
     public:
-        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, TextureManager& textures);
+        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, TextureManager& textures);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
