@@ -1,7 +1,7 @@
 #include "jelly.hpp"
 
 
-Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome)
+Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome, float level)
     : chromosome(chromosome),
       walking(&textures.jellyWalking, 10), 
       death(&textures.jellyDying, 20),
@@ -10,13 +10,16 @@ Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager&
       knockback(&textures.jellyKnockback, 8),
       defaultTexture(&textures.jellyDefault),
       sprite(walking.getCurrentFrame()), 
-      health(chromosome.getHealth(), textures), 
-      walkingSpeed(chromosome.getWalkingSpeed()),
-      bitingSpeed(walkingSpeed + chromosome.getBitingSpeed()),
+      health(chromosome.getHealth() * level, textures), 
+      walkingSpeed(chromosome.getWalkingSpeed() * level),
+      bitingSpeed(chromosome.getBitingSpeed() * level), 
+      bitingDistance(chromosome.getBitingDistance()), 
+      shootingDistance(chromosome.getShootingDistance()),
       projectiles(&projectiles), 
       currentState(WALKING), 
       hasShot(false), 
-      defaultCooldownTime(sf::seconds(1.f))
+      defaultCooldownTime(sf::seconds(1.f)), 
+      level(level)
 {
     sprite.setOrigin(sprite.getLocalBounds().size / 2.f);
     sprite.setPosition(position);
@@ -26,7 +29,9 @@ Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager&
 void Jelly::setTargetPosition(sf::Vector2f targetPos) { targetPosition = targetPos; }
 
 void Jelly::update(sf::Time deltaTime)
-{
+{   
+    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) currentState = DEAD;
+
     health.attachToPosistion(sprite.getGlobalBounds());
 
     switch (currentState)
@@ -51,7 +56,7 @@ void Jelly::update(sf::Time deltaTime)
             if (shooting.getCurrentFrameNumber() == shootFrame && !hasShot)
             {
                 sf::Vector2f starPositon = sprite.getPosition() + shootingTexturePosition * sprite.getScale().x;
-                projectiles->addStar(starPositon, targetPosition, sprite.getColor(), chromosome);
+                projectiles->addStar(starPositon, targetPosition, sprite.getColor(), chromosome, level);
                 hasShot = true;
             }
             if (shooting.getCurrentCycle() >= 1)
@@ -148,9 +153,13 @@ bool Jelly::isAlive() { return currentState != DEAD; }
 
 bool Jelly::isColliding() { return currentState == BITING && !hasBiten; }
 
-void Jelly::registerHit() { hasBiten = true; }
+void Jelly::registerHit()
+{
+    hasBiten = true;
+    chromosome.changeDamageInflicted(getDamage());
+}
 
-int Jelly::getDamage() { return chromosome.getBiteDamage(); }
+int Jelly::getDamage() { return chromosome.getBiteDamage() * level; }
 
 void Jelly::registerKnockback(sf::Vector2f playerPosition)
 {
@@ -163,3 +172,5 @@ void Jelly::registerKnockback(sf::Vector2f playerPosition)
 }
 
 void Jelly::move(sf::Vector2f translation) { sprite.move(translation); }
+
+Chromosome Jelly::getChromosome() { return chromosome; }

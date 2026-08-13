@@ -5,26 +5,36 @@
 #include "random.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <cassert>
+#include <map>
 
 
 class Chromosome
 {
     private:
-        static constexpr std::size_t healthArraySize = 8;
-        static constexpr std::size_t starDamageArraySize = 5;
-        static constexpr std::size_t biteDamageArraySize = 5;
-        static constexpr std::size_t colorArraySize = 7;
-        static constexpr std::size_t speedArraySize = 8;
+        // static constexpr std::size_t healthArraySize = 8;
+        // static constexpr std::size_t starDamageArraySize = 5;
+        // static constexpr std::size_t biteDamageArraySize = 5;
+        // static constexpr std::size_t speedArraySize = 9;
+
+        static constexpr std::size_t colorArraySize = 8;
+        static constexpr std::size_t bitingDistanceArraySize = 9;
+        static constexpr std::size_t shootingDistanceArraySize = 7;
+        static constexpr std::size_t statArraySize = 4;
+
         RandomGenerator* randomizer;
         int damageInflicted;
-        std::array<bool, healthArraySize> health;
-        std::array<bool, starDamageArraySize> starDamage;
-        std::array<bool, biteDamageArraySize> biteDamage;
+        // std::array<bool, healthArraySize> health;
+        // std::array<bool, starDamageArraySize> starDamage;
+        // std::array<bool, biteDamageArraySize> biteDamage;
+        // std::array<bool, speedArraySize> walkingSpeed;
+        // std::array<bool, speedArraySize> bitingSpeed;
+        // std::array<bool, speedArraySize> starSpeed;
+        std::array<bool, bitingDistanceArraySize> bitingDistance;
+        std::array<bool, shootingDistanceArraySize> shootingDistance;
         std::array<bool, colorArraySize> redColor;
         std::array<bool, colorArraySize> greenColor;
         std::array<bool, colorArraySize> blueColor;
-        std::array<bool, speedArraySize> walkingSpeed;
-        std::array<bool, speedArraySize> bitingSpeed;
+        std::map<std::string, std::array<bool, statArraySize>> stats;
         
 
         template <std::size_t N>
@@ -86,15 +96,11 @@ class Chromosome
             array.at(index) = !array.at(index);
             return array;
         }
+
+        float getProportionalStat(std::string statName);
     
     public:
-        Chromosome(RandomGenerator& randomizer, 
-            int health = 50, 
-            int starDamage = 10, 
-            int biteDamage = 20, 
-            sf::Color color = sf::Color::Green, 
-            int walkingSpeed = 100, 
-            int bitingSpeed = 250);
+        Chromosome(RandomGenerator& randomizer);
         int getDamageInflicted();
         void changeDamageInflicted(int damage);
         Chromosome crossover(Chromosome secondParent);
@@ -104,5 +110,8 @@ class Chromosome
         int getBiteDamage();
         float getWalkingSpeed();
         float getBitingSpeed();
+        float getStarSpeed();
         sf::Color getColor();
+        float getBitingDistance();
+        float getShootingDistance();
 };

@@ -1,11 +1,12 @@
 #include "game.hpp"
 
 GameManager::GameManager()
-  : gameWindow(sf::VideoMode({winWidth, winHeight}), "", sf::Style::Close), 
+  : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
 	projectiles(textures),
     player(gameWindow.getSize(), textures, projectiles),
 	ground(gameWindow.getSize(), textures), 
-	view(gameWindow.getDefaultView()), 
+	playerView(gameWindow.getDefaultView()), 
+	uiView(playerView),
 	enemies(textures, player, projectiles, randomizer), 
 	texts(textures),
 	collisions(enemies, projectiles, texts)
@@ -48,8 +49,9 @@ void GameManager::handleLevel(sf::Time deltaTime)
 	texts.update(deltaTime);
 	collisions.handleCollisions(player);
 
-	view.setCenter(player.getBounds().position + player.getBounds().size / 2.0f);
-	gameWindow.setView(view);
+	playerView.setCenter(player.getBounds().position + player.getBounds().size / 2.0f);
+	playerView.setSize(sf::Vector2f(gameWindow.getSize()));
+	gameWindow.setView(playerView);
 
 	ground.render(gameWindow);
 	player.render(gameWindow);
@@ -62,7 +64,9 @@ void GameManager::handleUI(sf::Time deltaTime)
 {
 	ui.update(deltaTime);
 
-	gameWindow.setView(gameWindow.getDefaultView());
+	uiView.setSize(sf::Vector2f(gameWindow.getSize()));
+	uiView.setCenter(sf::Vector2f(gameWindow.getSize() / 2u));
+	gameWindow.setView(uiView);
 
 	ui.render(gameWindow);
 }

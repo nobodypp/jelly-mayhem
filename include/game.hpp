@@ -19,7 +19,8 @@ class GameManager
         sf::Clock clock;
         TextureManager textures;
         sf::RenderWindow gameWindow;
-        sf::View view;
+        sf::View playerView;
+        sf::View uiView;
         PlayerUI ui;
         Player player;
         ProjectileManager projectiles;

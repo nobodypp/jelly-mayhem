@@ -7,26 +7,39 @@
 #include "texturemanager.hpp"
 #include "projectilemanager.hpp"
 #include "manager.hpp"
-#include "random.hpp"
 #include "chromosome.hpp"
+#include <cmath>
 
 class EnemyManager : Manager
 {
     private:
-        static constexpr float spawnDistance = 850.f;
+        float spawnDistance = 850.f;
         static constexpr int jelliesPopulationSize = 20;
-        static constexpr float mutationRatio = 0.1f;
+        static constexpr float difficulty = 0.002;
+        static constexpr float baseMutationRate = 0.05f;
+        static constexpr float maxMutationRate = 0.3f;
+        static constexpr int stagnationThreshold = 5;
+
+        // std::size_t stagnationRespawns;
+        float mutationRate;
+        int bestFitness;
+
         sf::Time spawningCooldown;
         sf::Time timeToNextSpawn;
         std::vector<std::unique_ptr<Jelly>> jellies;
+
         ProjectileManager& projectiles;
         TextureManager& textures;
         Player& player;
         RandomGenerator& randomizer;
 
+        float currentLevel;
+
         void addDefaultJelly();
         void addChildJelly();
         void addJelly(Chromosome chromosome);
+        int getBestFitness();
+        int getTotalFitness();
         Chromosome rouletteWheelParent();
     
     public:

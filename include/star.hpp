@@ -9,7 +9,7 @@
 class Star : public Projectile
 {
     private:
-        static constexpr float linearVelocity = 200.f;
+        float linearVelocity;
         Animation fly;
         Animation explode;
         sf::Sprite sprite;
@@ -17,9 +17,10 @@ class Star : public Projectile
         bool shotTarget;
         bool inView;
         Chromosome* ownerChromosome;
+        float level;
 
     public:
-        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, TextureManager& textures);
+        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, TextureManager& textures);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

@@ -11,17 +11,16 @@
 
 class Jelly : public Entity
 {
-    public:
-        Chromosome chromosome;
-
     private:
-        float walkingSpeed = 100.f;
-        float bitingSpeed = 350.f;
-        float knockbackSpeed = 300.f;
-        static constexpr float shootingDistance = 370.f;
-        static constexpr float bitingDistance = 320.f;
+        Chromosome chromosome;
+        float walkingSpeed;
+        float bitingSpeed;
+        float bitingDistance;
+        float shootingDistance;
         static constexpr sf::Vector2f shootingTexturePosition = {20.f, 7.f};
         static constexpr int shootFrame = 5;
+        static constexpr float knockbackSpeed = 300.f;
+        static constexpr float autoRemoveDistance = 2000.f;
         Animation walking;
         Animation death;
         Animation biting;
@@ -48,9 +47,10 @@ class Jelly : public Entity
         enum state currentState;
         bool hasShot;
         bool hasBiten;
+        float level;
         
     public:
-        Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome);
+        Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome, float level);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
@@ -62,4 +62,5 @@ class Jelly : public Entity
         void registerKnockback(sf::Vector2f playerPosition);
         int getDamage();
         void move(sf::Vector2f translation);
+        Chromosome getChromosome();
 };

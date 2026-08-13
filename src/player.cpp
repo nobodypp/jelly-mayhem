@@ -9,7 +9,7 @@ Player::Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileMana
       velocity(0.f, 0.0f), 
       maxVelocity(200.f, 200.f), 
       isRunning(false), 
-      health(100, textures),
+      health(500, textures),
       throwHandAbsPosition(46, 36), 
       legsRunning(&textures.legsRunning, 14), 
       bottleThrow(&textures.bottleThrowing, 18), 

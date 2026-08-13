@@ -27,7 +27,7 @@ void CollisionManager::BottleCollisions()
                 {
                     projectiles.bottleAt(i).registerHit();
                     enemies.jellyAt(j).inflictDamage(projectiles.bottleAt(i).getDamage());
-                    texts.addText(projectiles.bottleAt(i).getDamage(), true, enemies.jellyAt(i).getBounds());
+                    texts.addText(projectiles.bottleAt(i).getDamage(), true, enemies.jellyAt(j).getBounds());
                 }
             }
         }
