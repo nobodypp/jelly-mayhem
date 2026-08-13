@@ -41,6 +41,8 @@ class EnemyManager : Manager
         int getBestFitness();
         int getTotalFitness();
         Chromosome rouletteWheelParent();
+
+        int killCount;
     
     public:
         EnemyManager(TextureManager& textures, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer);
@@ -48,5 +50,5 @@ class EnemyManager : Manager
         void render(sf::RenderWindow& window) override;
         std::size_t jelliesCount();
         Jelly& jellyAt(std::size_t i);
-        int killCount;
+        int getKillCount();
 };

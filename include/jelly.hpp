@@ -20,7 +20,7 @@ class Jelly : public Entity
         static constexpr sf::Vector2f shootingTexturePosition = {20.f, 7.f};
         static constexpr int shootFrame = 5;
         static constexpr float knockbackSpeed = 300.f;
-        static constexpr float autoRemoveDistance = 2000.f;
+        float autoRemoveDistance = 2500.f;
         Animation walking;
         Animation death;
         Animation biting;

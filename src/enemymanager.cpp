@@ -1,5 +1,4 @@
 #include "enemymanager.hpp"
-#include <iostream>
 
 
 EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer)
@@ -23,6 +22,7 @@ void EnemyManager::update(sf::Time deltaTime)
     for (auto& jelly : jellies)
     {
         jelly->setTargetPosition(player.getBounds().getCenter());
+        if (!jelly->isAlive()) killCount++;
     }
 
     timeToNextSpawn -= deltaTime;
@@ -42,7 +42,7 @@ void EnemyManager::update(sf::Time deltaTime)
             mutationRate = std::min(maxMutationRate, mutationRate + 0.01f);
         }
         bestFitness = getBestFitness();
-        std::cout << "Best: " << bestFitness << ",  total: " << getTotalFitness() << ", mutation: " << mutationRate << "\n";
+        // std::cout << "Best: " << bestFitness << ",  total: " << getTotalFitness() << ", mutation: " << mutationRate << "\n";
     }
 
     updateVector(jellies, deltaTime);
@@ -129,3 +129,5 @@ int EnemyManager::getTotalFitness()
     for (auto& jelly : jellies) totalFitness += jelly->getChromosome().getDamageInflicted();
     return totalFitness;
 }
+
+int EnemyManager::getKillCount() { return killCount; }

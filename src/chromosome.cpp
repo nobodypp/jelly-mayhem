@@ -88,17 +88,17 @@ float Chromosome::getProportionalStat(std::string statName)
     return static_cast<float>(arrayToInt(stats.at(statName))) / static_cast<float>(statSum);
 }
 
-int Chromosome::getHealth() { return std::max(1, static_cast<int>(getProportionalStat("health") * 500.f)); }
+int Chromosome::getHealth() { return std::max(1, static_cast<int>(getProportionalStat("health") * 300.f)); }
 
-int Chromosome::getStarDamage() { return std::max(1, static_cast<int>(getProportionalStat("starDamage") * 200.f)); }
+int Chromosome::getStarDamage() { return std::max(1, static_cast<int>(getProportionalStat("starDamage") * 60.f)); }
 
-int Chromosome::getBiteDamage() { return std::max(1, static_cast<int>(getProportionalStat("biteDamage") * 200.f)); }
+int Chromosome::getBiteDamage() { return std::max(1, static_cast<int>(getProportionalStat("biteDamage") * 120.f)); }
 
-float Chromosome::getWalkingSpeed() { return std::max(1.f, getProportionalStat("walkingSpeed") * 400.f); }
+float Chromosome::getWalkingSpeed() { return std::max(1.f, getProportionalStat("walkingSpeed") * 600.f); }
 
-float Chromosome::getBitingSpeed() { return std::max(1.f, getProportionalStat("bitingSpeed") * 400.f) + getWalkingSpeed(); }
+float Chromosome::getBitingSpeed() { return std::max(1.f, getProportionalStat("bitingSpeed") * 1500.f) + getWalkingSpeed(); }
 
-float Chromosome::getStarSpeed() { return std::max(1.f, getProportionalStat("starSpeed") * 400.f); }
+float Chromosome::getStarSpeed() { return std::max(1.f, getProportionalStat("starSpeed") * 1200.f); }
 
 sf::Color Chromosome::getColor() { return sf::Color(arrayToInt(redColor), arrayToInt(greenColor), arrayToInt(blueColor)); }
 

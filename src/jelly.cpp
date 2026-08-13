@@ -30,7 +30,7 @@ void Jelly::setTargetPosition(sf::Vector2f targetPos) { targetPosition = targetP
 
 void Jelly::update(sf::Time deltaTime)
 {   
-    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) currentState = DEAD;
+    // if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = DEAD;}
 
     health.attachToPosistion(sprite.getGlobalBounds());
 
@@ -133,6 +133,8 @@ void Jelly::render(sf::RenderWindow& window)
     if (currentState != DEAD) window.draw(sprite);
 
     if (currentState != DYING && currentState != DEAD) health.render(window);
+
+    autoRemoveDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 1.2;
 }
 
 sf::FloatRect Jelly::getBounds() { return sprite.getGlobalBounds(); }

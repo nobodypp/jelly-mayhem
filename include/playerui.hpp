@@ -1,12 +1,13 @@
 #pragma once
 
 #include "drawable.hpp"
+#include "texturemanager.hpp"
 
 class PlayerUI : public Drawable
 {
     private:
         sf::Vector2f bottleBarSize;
-        sf::Vector2f bottleBarMargin;
+        sf::Vector2f windowMargin;
         sf::Color bottleBarPrimaryColor;
         sf::Color bottleBarSecondaryColor;
         sf::Time maxBottleTime;
@@ -15,11 +16,16 @@ class PlayerUI : public Drawable
         sf::RectangleShape bottleSecondaryBar;
         bool bottleBarActive;
 
+        int killCount;
+        sf::Font font;
+        sf::Text killText;
+
     public:
-        PlayerUI();
+        PlayerUI(TextureManager& textures);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();
         void resetBottleTime();
         void activateBottleBar();
+        void updateKillCount(int kills);
 };

@@ -9,7 +9,8 @@ GameManager::GameManager()
 	uiView(playerView),
 	enemies(textures, player, projectiles, randomizer), 
 	texts(textures),
-	collisions(enemies, projectiles, texts)
+	collisions(enemies, projectiles, texts), 
+	ui(textures)
 {}
 
 void GameManager::GameLoop()
@@ -38,7 +39,6 @@ void GameManager::GameLoop()
 
 		gameWindow.display();
 	}
-	std::cout <<  "Zabójstwa: " << enemies.killCount << "\n";
 }
 
 void GameManager::handleLevel(sf::Time deltaTime)
@@ -63,6 +63,7 @@ void GameManager::handleLevel(sf::Time deltaTime)
 void GameManager::handleUI(sf::Time deltaTime)
 {
 	ui.update(deltaTime);
+	ui.updateKillCount(enemies.getKillCount());
 
 	uiView.setSize(sf::Vector2f(gameWindow.getSize()));
 	uiView.setCenter(sf::Vector2f(gameWindow.getSize() / 2u));
