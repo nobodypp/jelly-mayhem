@@ -1,8 +1,8 @@
 #include "enemymanager.hpp"
 
 
-EnemyManager::EnemyManager(TextureManager& textures, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer)
-    : textures(textures), 
+EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer)
+    : assets(assets), 
       projectiles(projectiles),
       player(player), 
       killCount(0), 
@@ -63,7 +63,7 @@ Jelly& EnemyManager::jellyAt(std::size_t i) { return *jellies.at(i); }
 void EnemyManager::addJelly(Chromosome chromosome)
 {
     sf::Vector2f distance = sf::Vector2f({spawnDistance, 0}).rotatedBy(sf::degrees(randomizer.randomInt(0, 359)));
-    jellies.push_back(std::make_unique<Jelly>(player.getBounds().position + distance, textures, projectiles, chromosome, currentLevel));
+    jellies.push_back(std::make_unique<Jelly>(player.getBounds().position + distance, assets, projectiles, chromosome, currentLevel));
 }
 
 void EnemyManager::addDefaultJelly() { addJelly(Chromosome(randomizer)); }

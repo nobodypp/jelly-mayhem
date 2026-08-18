@@ -1,8 +1,8 @@
 #include "damagetextmanager.hpp"
 
 
-DamageTextManager::DamageTextManager(TextureManager& textures)
-    : textures(textures)
+DamageTextManager::DamageTextManager(AssetManager& assets)
+    : assets(assets)
 {}
 
 void DamageTextManager::update(sf::Time deltaTime)

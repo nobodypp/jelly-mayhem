@@ -4,7 +4,7 @@
 #include <SFML/System.hpp>
 #include "player.hpp"
 #include "ground.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "projectilemanager.hpp"
 #include "enemymanager.hpp"
 #include "collisionmanager.hpp"
@@ -18,7 +18,7 @@ class GameManager
     private:
         static constexpr int winWidth = 1500, winHeight = 1000;
         sf::Clock clock;
-        TextureManager textures;
+        AssetManager assets;
         sf::RenderWindow gameWindow;
         sf::View playerView;
         sf::View uiView;

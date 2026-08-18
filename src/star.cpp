@@ -1,9 +1,9 @@
 #include "star.hpp"
 
 
-Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, TextureManager& textures)
-    : fly(&textures.starFly, 10), 
-      explode(&textures.starExplode, 10), 
+Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets)
+    : fly(&assets.starFly, 10), 
+      explode(&assets.starExplode, 10), 
       sprite(fly.getCurrentFrame()), 
       shotTarget(false), 
       inView(true), 

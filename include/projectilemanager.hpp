@@ -1,6 +1,6 @@
 #pragma once
 
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "bottle.hpp"
 #include "star.hpp"
 #include "manager.hpp"
@@ -9,12 +9,12 @@
 class ProjectileManager : public Manager
 {
     private:
-        TextureManager& textureManager;
+        AssetManager& textureManager;
         std::vector<std::unique_ptr<Bottle>> bottles;
         std::vector< std::unique_ptr<Star>> stars;
 
     public:
-        ProjectileManager(TextureManager& textureManager);
+        ProjectileManager(AssetManager& textureManager);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
 

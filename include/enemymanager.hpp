@@ -4,7 +4,7 @@
 #include "drawable.hpp"
 #include "jelly.hpp"
 #include "player.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "projectilemanager.hpp"
 #include "manager.hpp"
 #include "chromosome.hpp"
@@ -29,7 +29,7 @@ class EnemyManager : Manager
         std::vector<std::unique_ptr<Jelly>> jellies;
 
         ProjectileManager& projectiles;
-        TextureManager& textures;
+        AssetManager& assets;
         Player& player;
         RandomGenerator& randomizer;
 
@@ -45,7 +45,7 @@ class EnemyManager : Manager
         int killCount;
     
     public:
-        EnemyManager(TextureManager& textures, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer);
+        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         std::size_t jelliesCount();

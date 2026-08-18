@@ -1,7 +1,7 @@
 #pragma once
 
 #include "drawable.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include <cstdlib>
 
 
@@ -14,7 +14,7 @@ class DamageText: public Drawable
         sf::Text text;
 
     public:
-        DamageText(TextureManager& textures, int damage, bool positive, sf::FloatRect targetBounds, std::string description = "");
+        DamageText(AssetManager& assets, int damage, bool positive, sf::FloatRect targetBounds, std::string description = "");
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         bool isAlive();

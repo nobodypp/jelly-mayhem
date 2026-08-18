@@ -1,7 +1,7 @@
 #pragma once
 
 #include "drawable.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "gamestate.hpp"
 
 class PlayerUI : public Drawable
@@ -27,7 +27,7 @@ class PlayerUI : public Drawable
         sf::Text deathScreenText;
 
     public:
-        PlayerUI(TextureManager& textures);
+        PlayerUI(AssetManager& assets);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();

@@ -2,7 +2,7 @@
 
 #include "projectile.hpp"
 #include "animation.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "chromosome.hpp"
 
 
@@ -20,7 +20,7 @@ class Star : public Projectile
         float level;
 
     public:
-        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, TextureManager& textures);
+        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

@@ -2,15 +2,15 @@
 
 GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
-	projectiles(textures),
-    player(gameWindow.getSize(), textures, projectiles),
-	ground(gameWindow.getSize(), textures), 
+	projectiles(assets),
+    player(gameWindow.getSize(), assets, projectiles),
+	ground(gameWindow.getSize(), assets), 
 	playerView(gameWindow.getDefaultView()), 
 	uiView(playerView),
-	enemies(textures, player, projectiles, randomizer), 
-	texts(textures),
+	enemies(assets, player, projectiles, randomizer), 
+	texts(assets),
 	collisions(enemies, projectiles, texts), 
-	ui(textures), 
+	ui(assets), 
 	currentState(GameState::PLAY)
 {}
 
@@ -50,7 +50,7 @@ void GameManager::GameLoop()
 void GameManager::handleLevel(sf::Time deltaTime)
 {
 	player.update(deltaTime);
-	if (currentState == GameState::PLAY)
+	if (!player.isDying())
 	{
 		projectiles.update(deltaTime);
 		enemies.update(deltaTime);

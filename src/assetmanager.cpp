@@ -1,7 +1,7 @@
-#include "texturemanager.hpp"
+#include "../include/assetmanager.hpp"
 
 
-TextureManager::TextureManager()
+AssetManager::AssetManager()
     : font("assets/fonts/CascadiaCode-VariableFont_wght.ttf")
 {
     if (!playerCorpseDefaultTexture.loadFromFile("assets/textures/player/corpse.png")) std::cout << "Tekstura nie istnieje!";
@@ -26,7 +26,7 @@ TextureManager::TextureManager()
     loadFromLocation(bottleHit, "assets/textures/player/bottle-hit/hit-");
 }
 
-void TextureManager::loadFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
+void AssetManager::loadFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
 {
     int frameIndex = 0;
     do 

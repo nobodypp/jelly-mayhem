@@ -1,7 +1,7 @@
 #include "projectilemanager.hpp"
 
 
-ProjectileManager::ProjectileManager(TextureManager& textureManager)
+ProjectileManager::ProjectileManager(AssetManager& textureManager)
     : textureManager(textureManager)
 {}
 

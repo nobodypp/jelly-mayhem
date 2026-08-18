@@ -1,7 +1,7 @@
 #include "bottle.hpp"
 
 
-Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, TextureManager& textureManager)
+Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& textureManager)
     : sprite(textureManager.bottleTexture), 
       rotationVelocity(sf::degrees(360)), 
       breakingAnimation(&textureManager.bottleBreaking, 30),

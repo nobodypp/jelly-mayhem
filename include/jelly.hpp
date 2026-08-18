@@ -4,7 +4,7 @@
 #include "drawable.hpp"
 #include "healthbar.hpp"
 #include "animation.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "projectilemanager.hpp"
 #include "entity.hpp"
 #include "chromosome.hpp"
@@ -50,7 +50,7 @@ class Jelly : public Entity
         float level;
         
     public:
-        Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome, float level);
+        Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

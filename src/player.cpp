@@ -1,19 +1,19 @@
 #include "player.hpp"
 #include <iostream>
 
-Player::Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileManager& projectiles)
-    : textures(textures),
-      corpseSprite(textures.playerCorpseDefaultTexture),
-      legsSprite(textures.playerLegsDefaultTexture),
-      handsSprite(textures.playerHandsDefaultTexture),
+Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles)
+    : assets(assets),
+      corpseSprite(assets.playerCorpseDefaultTexture),
+      legsSprite(assets.playerLegsDefaultTexture),
+      handsSprite(assets.playerHandsDefaultTexture),
       velocity(0.f, 0.0f), 
       maxVelocity(200.f, 200.f), 
       isRunning(false), 
-      health(500, textures),
+      health(500, assets),
       throwHandAbsPosition(46, 36), 
-      legsRunning(&textures.legsRunning, 14), 
-      bottleThrow(&textures.bottleThrowing, 18), 
-      bottleHit(&textures.bottleHit, 20), 
+      legsRunning(&assets.legsRunning, 14), 
+      bottleThrow(&assets.bottleThrowing, 18), 
+      bottleHit(&assets.bottleHit, 20), 
       projectiles(projectiles), 
       currentState(IDLE), 
       dyingRotation(sf::degrees(400))
@@ -92,7 +92,7 @@ void Player::render(sf::RenderWindow& window)
 
     // Legs texture
     if (isRunning) legsSprite.setTexture(legsRunning.getCurrentFrame());
-    else legsSprite.setTexture(textures.playerLegsDefaultTexture);
+    else legsSprite.setTexture(assets.playerLegsDefaultTexture);
 
     // Hands texture
     switch (currentState)
@@ -106,15 +106,15 @@ void Player::render(sf::RenderWindow& window)
             break;
 
         case AIMING:
-            handsSprite.setTexture(textures.playerHandsDefaultTexture);
+            handsSprite.setTexture(assets.playerHandsDefaultTexture);
             break;
         
         case IDLE:
-            handsSprite.setTexture(textures.playerHandsDefaultTexture);
+            handsSprite.setTexture(assets.playerHandsDefaultTexture);
             break;
         
         case DYING:
-            handsSprite.setTexture(textures.playerHandsDefaultTexture);
+            handsSprite.setTexture(assets.playerHandsDefaultTexture);
     }
 
     window.draw(legsSprite);

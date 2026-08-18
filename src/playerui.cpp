@@ -1,7 +1,7 @@
 #include "playerui.hpp"
 
 
-PlayerUI::PlayerUI(TextureManager& textures)
+PlayerUI::PlayerUI(AssetManager& assets)
     : bottleBarSize({100.f, 20.f}), 
       windowMargin({20.f, 20.f}), 
       bottleBarPrimaryColor(100, 100, 100), 
@@ -11,7 +11,7 @@ PlayerUI::PlayerUI(TextureManager& textures)
       bottlePrimaryBar(bottleBarSize), 
       bottleSecondaryBar(bottleBarSize), 
       bottleBarActive(false), 
-      font(textures.font), 
+      font(assets.font), 
       killText(font), 
       deathScreenBackground(sf::PrimitiveType::TriangleStrip, 4), 
       deathScreenText(font)      

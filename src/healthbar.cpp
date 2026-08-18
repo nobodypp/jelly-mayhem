@@ -1,7 +1,7 @@
 #include "healthbar.hpp"
 
 
-HealthBar::HealthBar(int maxHealth, TextureManager& textures)
+HealthBar::HealthBar(int maxHealth, AssetManager& assets)
     : maxHealth(maxHealth), 
       health(maxHealth),
       primaryColor({230, 10, 10}), 
@@ -11,7 +11,7 @@ HealthBar::HealthBar(int maxHealth, TextureManager& textures)
       gap(0), 
       primaryBar({width, height}), 
       secodnaryBar({width, height}), 
-      font(&textures.font), 
+      font(&assets.font), 
       text(*font)
 {
     primaryBar.setFillColor(primaryColor);

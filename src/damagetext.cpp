@@ -1,8 +1,8 @@
 #include "damagetext.hpp"
 
 
-DamageText::DamageText(TextureManager& textures, int damage, bool positive, sf::FloatRect targetBounds, std::string description)
-    : text(textures.font), 
+DamageText::DamageText(AssetManager& assets, int damage, bool positive, sf::FloatRect targetBounds, std::string description)
+    : text(assets.font), 
       absoluteTime(sf::seconds(1.f)),
       timeLeft(absoluteTime)
 {

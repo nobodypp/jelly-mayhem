@@ -1,16 +1,16 @@
 #include "jelly.hpp"
 
 
-Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager& projectiles, Chromosome chromosome, float level)
+Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level)
     : chromosome(chromosome),
-      walking(&textures.jellyWalking, 10), 
-      death(&textures.jellyDying, 20),
-      shooting(&textures.jellyShooting, 10),
-      biting(&textures.jellyBiting, 10),
-      knockback(&textures.jellyKnockback, 8),
-      defaultTexture(&textures.jellyDefault),
+      walking(&assets.jellyWalking, 10), 
+      death(&assets.jellyDying, 20),
+      shooting(&assets.jellyShooting, 10),
+      biting(&assets.jellyBiting, 10),
+      knockback(&assets.jellyKnockback, 8),
+      defaultTexture(&assets.jellyDefault),
       sprite(walking.getCurrentFrame()), 
-      health(chromosome.getHealth() * level, textures), 
+      health(chromosome.getHealth() * level, assets), 
       walkingSpeed(chromosome.getWalkingSpeed() * level),
       bitingSpeed(chromosome.getBitingSpeed() * level), 
       bitingDistance(chromosome.getBitingDistance()), 

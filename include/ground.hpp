@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "drawable.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 
 
 class Ground : public Drawable
@@ -11,6 +11,6 @@ class Ground : public Drawable
         sf::Sprite sprite;
 
     public:
-        Ground(sf::Vector2u windowSize, TextureManager& textureManager);
+        Ground(sf::Vector2u windowSize, AssetManager& textureManager);
         void render(sf::RenderWindow& window) override;
 };

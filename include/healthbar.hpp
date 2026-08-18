@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "drawable.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 
 
 class HealthBar : public Drawable
@@ -21,7 +21,7 @@ class HealthBar : public Drawable
         sf::Text text;
 
     public:
-        HealthBar(int maxHealth, TextureManager& textures);
+        HealthBar(int maxHealth, AssetManager& assets);
         int GetHealth();
         void ResetHealth();
         void render(sf::RenderWindow& window) override;

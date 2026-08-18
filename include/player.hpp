@@ -6,7 +6,7 @@
 #include "animation.hpp"
 #include "healthbar.hpp"
 #include "bottle.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "projectilemanager.hpp"
 #include "entity.hpp"
 #include <set>
@@ -15,7 +15,7 @@
 class Player : public Entity
 {
     private:
-        TextureManager textures;
+        AssetManager assets;
 
         Animation legsRunning;
         Animation bottleThrow;
@@ -56,7 +56,7 @@ class Player : public Entity
         enum state currentState;
 
     public:
-        Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileManager& projectiles);
+        Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

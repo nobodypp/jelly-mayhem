@@ -7,13 +7,13 @@
 #include <iostream>
 
 
-class TextureManager
+class AssetManager
 {
     private:
         void loadFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix);
 
     public:
-        TextureManager();
+        AssetManager();
 
         sf::Texture playerCorpseDefaultTexture;
         sf::Texture playerLegsDefaultTexture;

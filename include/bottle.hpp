@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "animation.hpp"
-#include "texturemanager.hpp"
+#include "assetmanager.hpp"
 #include "projectile.hpp"
 
 
@@ -20,7 +20,7 @@ class Bottle : public Projectile
         bool damageDealt;
 
     public:
-        Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, TextureManager& textureManager);
+        Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& textureManager);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
