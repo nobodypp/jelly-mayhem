@@ -61,6 +61,11 @@ void Player::update(sf::Time deltaTime)
             if (bottleHit.getCurrentCycle() >= 1) currentState = IDLE;
             break;
     }
+
+    // Animation update
+    legsRunning.update(deltaTime);
+    bottleThrow.update(deltaTime);
+    bottleHit.update(deltaTime);
 }
 
 void Player::render(sf::RenderWindow& window)

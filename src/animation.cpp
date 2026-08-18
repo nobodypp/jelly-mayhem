@@ -3,16 +3,19 @@
 
 Animation::Animation(std::vector<sf::Texture>* frames, float fps)
     : fps(fps), 
-      frames(frames)
+      frames(frames), 
+      timeFromRestart(sf::Time::Zero)
 {}
 
 void Animation::restart()
 {
-    clock.restart();
+    timeFromRestart = sf::Time::Zero;
 }
 
-sf::Texture& Animation::getCurrentFrame() { return (*frames)[int(fps * clock.getElapsedTime().asSeconds()) % frames->size()]; }
+sf::Texture& Animation::getCurrentFrame() { return (*frames)[int(fps * timeFromRestart.asSeconds()) % frames->size()]; }
 
-unsigned int Animation::getCurrentCycle() { return int(fps * clock.getElapsedTime().asSeconds()) / frames->size(); }
+unsigned int Animation::getCurrentCycle() { return int(fps * timeFromRestart.asSeconds()) / frames->size(); }
 
-unsigned int Animation::getCurrentFrameNumber() { return int (fps * clock.getElapsedTime().asSeconds()) % frames->size();}
+unsigned int Animation::getCurrentFrameNumber() { return int (fps * timeFromRestart.asSeconds()) % frames->size();}
+
+void Animation::update(sf::Time deltaTime) { timeFromRestart += deltaTime; }

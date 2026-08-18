@@ -22,6 +22,9 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
 void Star::update(sf::Time deltaTime)
 {
     if (!shotTarget) sprite.move(velocity * deltaTime.asSeconds());
+
+    fly.update(deltaTime);
+    explode.update(deltaTime);
 }
 
 void Star::render(sf::RenderWindow& window)

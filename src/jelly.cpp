@@ -34,6 +34,12 @@ void Jelly::update(sf::Time deltaTime)
 
     health.attachToPosistion(sprite.getGlobalBounds());
 
+    walking.update(deltaTime);
+    death.update(deltaTime);
+    shooting.update(deltaTime);
+    biting.update(deltaTime);
+    knockback.update(deltaTime);
+
     switch (currentState)
     {
         case WALKING:

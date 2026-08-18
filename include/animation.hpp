@@ -7,9 +7,9 @@
 class Animation
 {
     private:
+        sf::Time timeFromRestart;
         std::vector<sf::Texture>* frames;
         float fps;
-        sf::Clock clock;
 
     public:
         Animation(std::vector<sf::Texture>* frames, float fps);
@@ -17,4 +17,5 @@ class Animation
         sf::Texture& getCurrentFrame();
         unsigned int getCurrentCycle();
         unsigned int getCurrentFrameNumber();
+        void update(sf::Time deltaTime);
 };

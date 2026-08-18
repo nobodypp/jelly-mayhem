@@ -26,6 +26,7 @@ void Bottle::update(sf::Time deltaTime)
     }
     else if (currentState == BREAKING)
     {
+        breakingAnimation.update(deltaTime);
         if (breakingAnimation.getCurrentCycle() >= 1) currentState = DESTROY;
     }
 
