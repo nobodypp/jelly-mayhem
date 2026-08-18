@@ -17,7 +17,7 @@ class EnemyManager : Manager
         static constexpr int jelliesPopulationSize = 20;
         static constexpr float difficulty = 0.002;
         static constexpr float baseMutationRate = 0.05f;
-        static constexpr float maxMutationRate = 0.3f;
+        static constexpr float maxMutationRate = 0.4f;
         static constexpr int stagnationThreshold = 5;
 
         // std::size_t stagnationRespawns;

@@ -19,7 +19,11 @@ Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& pro
       currentState(WALKING), 
       hasShot(false), 
       defaultCooldownTime(sf::seconds(1.f)), 
-      level(level)
+      level(level), 
+      biteSound(assets.jellyBiteSound), 
+      dieSound(assets.jellyDieSound), 
+      knockbackSound(assets.jellyKnockbackSound), 
+      shootSound(assets.jellyShootSound)
 {
     sprite.setOrigin(sprite.getLocalBounds().getCenter());
     sprite.setPosition(position);
@@ -49,12 +53,16 @@ void Jelly::update(sf::Time deltaTime)
                 currentState = SHOOTING;
                 shooting.restart();
                 hasShot = false;
+                
+                shootSound.play();
             }
             if ((targetPosition - sprite.getPosition()).length() <= bitingDistance)
             {
                 currentState = BITING;
                 biting.restart();
                 hasBiten = false;
+
+                biteSound.play();
             }
             break;
 
@@ -150,14 +158,20 @@ bool Jelly::inflictDamage(int damage)
     health.changeHealth(-damage);
     if (health.GetHealth() <= 0 && currentState != DYING && currentState != DEAD)
     {
+        shootSound.stop();
+        biteSound.stop();
+        knockbackSound.stop();
+        dieSound.play();
+
         currentState = DYING;
         death.restart();
         return true;
+
     }
     return false;
 }
 
-bool Jelly::isAlive() { return currentState != DEAD; }
+bool Jelly::isAlive() { return currentState != DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
 
 bool Jelly::isColliding() { return currentState == BITING && !hasBiten; }
 
@@ -176,6 +190,9 @@ void Jelly::registerKnockback(sf::Vector2f playerPosition)
         knockbackVelocity = (sprite.getPosition() - playerPosition).normalized() * knockbackSpeed;
         currentState = KNOCKBACK;
         knockback.restart();
+
+        biteSound.stop();
+        knockbackSound.play();
     }
 }
 

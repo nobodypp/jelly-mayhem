@@ -18,6 +18,7 @@ class Bottle : public Projectile
         sf::Time timeLeft;
         sf::Clock clock;
         bool damageDealt;
+        sf::Sound breakingSound;
 
     public:
         Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& textureManager);

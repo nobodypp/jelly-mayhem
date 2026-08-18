@@ -9,7 +9,8 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
       inView(true), 
       ownerChromosome(&ownerChromosome), 
       linearVelocity(ownerChromosome.getStarSpeed() * level), 
-      level(level)
+      level(level), 
+      hitSound(assets.starHitSound)
 {
     sprite.setColor(sf::Color::Green);
     sprite.setOrigin({27.f, 17.f});
@@ -49,8 +50,9 @@ void Star::registerHit()
     shotTarget = true;
     explode.restart();
     if (ownerChromosome != nullptr) ownerChromosome->changeDamageInflicted(getDamage());
+    hitSound.play();
 }
 
-bool Star::isAlive() { return ((!shotTarget || explode.getCurrentCycle() < 1) && inView); }
+bool Star::isAlive() { return ((!shotTarget || explode.getCurrentCycle() < 1 || hitSound.getStatus() == sf::SoundSource::Status::Playing) && inView); }
 
 bool Star::isColliding() { return !shotTarget; }

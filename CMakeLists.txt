@@ -69,6 +69,8 @@ target_include_directories(main
 target_link_libraries(main
     PRIVATE
         SFML::Graphics
+        SFML::Audio
+
 )
 
 

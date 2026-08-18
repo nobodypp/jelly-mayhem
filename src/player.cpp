@@ -16,7 +16,9 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
       bottleHit(&assets.bottleHit, 20), 
       projectiles(projectiles), 
       currentState(IDLE), 
-      dyingRotation(sf::degrees(400))
+      dyingRotation(sf::degrees(400)), 
+      dieSound(assets.playerDieSound), 
+      blockSound(assets.playerHitSound)
 {
     // Sprites positions and origins (anchors)
     corpseSprite.setOrigin(corpseSprite.getLocalBounds().getCenter());
@@ -207,6 +209,8 @@ bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
     {
         currentState = HITTING;
         bottleHit.restart();
+
+        blockSound.play();
     }
     if (event->button == sf::Mouse::Button::Left && currentState == IDLE)
     {
@@ -219,15 +223,22 @@ bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
 void Player::inflictDamage(int damage)
 {
     health.changeHealth(-damage);
-    if (health.GetHealth() <= 0) currentState = DYING;
+    if (health.GetHealth() <= 0)
+    {
+        currentState = DYING;
+        dieSound.play();
+    }
 }
 
 int Player::getMeleeDamage() { return 40; }
 
 bool Player::isHitting() { return currentState == HITTING; }
 
-void Player::succesfullParry() { health.changeHealth(20); }
+void Player::succesfullParry()
+{
+    health.changeHealth(20);
+}
 
-bool Player::isAlive() { return currentState != DEAD; }
+bool Player::isAlive() { return currentState != DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
 
 bool Player::isDying() { return currentState == DYING; }

@@ -1,13 +1,14 @@
 #include "bottle.hpp"
 
 
-Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& textureManager)
-    : sprite(textureManager.bottleTexture), 
+Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& assets)
+    : sprite(assets.bottleTexture), 
       rotationVelocity(sf::degrees(360)), 
-      breakingAnimation(&textureManager.bottleBreaking, 30),
+      breakingAnimation(&assets.bottleBreaking, 30),
       timeLeft(flyingTime),
       currentState(FLYING), 
-      damageDealt(false)
+      damageDealt(false), 
+      breakingSound(assets.bottleBreakSound)
 {
     velocity = (mouseRelativePos - position).normalized() * linearVelocity;
 
@@ -23,6 +24,8 @@ void Bottle::update(sf::Time deltaTime)
         currentState = BREAKING;
         breakingAnimation.restart();
         sprite.setOrigin(sf::Vector2f(breakingAnimation.getCurrentFrame().getSize()) / 2.f);
+
+        breakingSound.play();
     }
     else if (currentState == BREAKING)
     {
@@ -51,4 +54,4 @@ sf::FloatRect Bottle::getBounds() { return sprite.getGlobalBounds(); }
 
 int Bottle::getDamage() { return 10; }
 
-bool Bottle::isAlive() { return currentState != DESTROY; }
+bool Bottle::isAlive() { return currentState != DESTROY || breakingSound.getStatus() == sf::SoundSource::Status::Playing; }

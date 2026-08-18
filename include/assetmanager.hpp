@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "animation.hpp"
 #include <vector>
 #include <filesystem>
@@ -38,4 +39,13 @@ class AssetManager
         std::vector<sf::Texture> bottleHit;
 
         sf::Font font;
+
+        sf::SoundBuffer bottleBreakSound;
+        sf::SoundBuffer jellyBiteSound;
+        sf::SoundBuffer jellyKnockbackSound;
+        sf::SoundBuffer jellyDieSound;
+        sf::SoundBuffer jellyShootSound;
+        sf::SoundBuffer playerDieSound;
+        sf::SoundBuffer playerHitSound;
+        sf::SoundBuffer starHitSound;
 };

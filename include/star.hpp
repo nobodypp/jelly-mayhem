@@ -19,6 +19,8 @@ class Star : public Projectile
         Chromosome* ownerChromosome;
         float level;
 
+        sf::Sound hitSound;
+
     public:
         Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets);
         void update(sf::Time deltaTime) override;

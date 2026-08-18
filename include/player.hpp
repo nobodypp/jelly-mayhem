@@ -55,6 +55,9 @@ class Player : public Entity
         };
         enum state currentState;
 
+        sf::Sound dieSound;
+        sf::Sound blockSound;
+
     public:
         Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles);
         void update(sf::Time deltaTime) override;

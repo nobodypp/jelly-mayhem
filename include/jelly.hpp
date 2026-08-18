@@ -48,6 +48,11 @@ class Jelly : public Entity
         bool hasShot;
         bool hasBiten;
         float level;
+
+        sf::Sound biteSound;
+        sf::Sound dieSound;
+        sf::Sound knockbackSound;
+        sf::Sound shootSound;
         
     public:
         Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level);
