@@ -2,6 +2,7 @@
 
 #include "drawable.hpp"
 #include "texturemanager.hpp"
+#include "gamestate.hpp"
 
 class PlayerUI : public Drawable
 {
@@ -17,8 +18,13 @@ class PlayerUI : public Drawable
         bool bottleBarActive;
 
         int killCount;
-        sf::Font font;
+        sf::Font& font;
         sf::Text killText;
+
+        GameState currentState;
+
+        sf::VertexArray deathScreenBackground;
+        sf::Text deathScreenText;
 
     public:
         PlayerUI(TextureManager& textures);
@@ -28,4 +34,5 @@ class PlayerUI : public Drawable
         void resetBottleTime();
         void activateBottleBar();
         void updateKillCount(int kills);
+        void setGameState(GameState state);
 };

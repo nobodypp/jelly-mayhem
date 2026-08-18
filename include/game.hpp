@@ -11,6 +11,7 @@
 #include "playerui.hpp"
 #include "damagetextmanager.hpp"
 #include "random.hpp"
+#include "gamestate.hpp"
 
 class GameManager
 {
@@ -29,6 +30,8 @@ class GameManager
         CollisionManager collisions;
         Ground ground;
         RandomGenerator randomizer;
+
+        GameState currentState;
 
         void handleLevel(sf::Time deltaTime);
         void handleUI(sf::Time deltaTime);

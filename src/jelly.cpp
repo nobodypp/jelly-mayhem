@@ -21,7 +21,7 @@ Jelly::Jelly(sf::Vector2f position, TextureManager& textures, ProjectileManager&
       defaultCooldownTime(sf::seconds(1.f)), 
       level(level)
 {
-    sprite.setOrigin(sprite.getLocalBounds().size / 2.f);
+    sprite.setOrigin(sprite.getLocalBounds().getCenter());
     sprite.setPosition(position);
     sprite.setColor(chromosome.getColor());
 }

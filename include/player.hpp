@@ -9,6 +9,7 @@
 #include "texturemanager.hpp"
 #include "projectilemanager.hpp"
 #include "entity.hpp"
+#include <set>
 
 
 class Player : public Entity
@@ -38,6 +39,9 @@ class Player : public Entity
 
         sf::Vector2f throwHandAbsPosition;
 
+        static constexpr float dyingSpeed = 500.f;
+        sf::Angle dyingRotation;
+
         void handleInput(sf::Time deltaTime);
 
         enum state
@@ -45,7 +49,9 @@ class Player : public Entity
             IDLE,
             AIMING, 
             THROWING, 
-            HITTING
+            HITTING, 
+            DYING, 
+            DEAD
         };
         enum state currentState;
 
@@ -60,4 +66,6 @@ class Player : public Entity
         int getMeleeDamage();
         bool isHitting();
         void succesfullParry();
+        bool isAlive();
+        bool isDying();
 };

@@ -15,9 +15,11 @@ Player::Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileMana
       bottleThrow(&textures.bottleThrowing, 18), 
       bottleHit(&textures.bottleHit, 20), 
       projectiles(projectiles), 
-      currentState(IDLE)
+      currentState(IDLE), 
+      dyingRotation(sf::degrees(400))
 {
-    corpseSprite.setOrigin(corpseSprite.getLocalBounds().size / 2.f);
+    // Sprites positions and origins (anchors)
+    corpseSprite.setOrigin(corpseSprite.getLocalBounds().getCenter());
     legsSprite.setOrigin(corpseSprite.getOrigin());
     handsSprite.setOrigin(corpseSprite.getOrigin());
 
@@ -28,12 +30,27 @@ Player::Player(sf::Vector2u windowSize, TextureManager& textures, ProjectileMana
 
 void Player::update(sf::Time deltaTime)
 {
-    handleInput(deltaTime);
+    // Position and movement update
+    if (!std::set{DYING, DEAD}.contains(currentState))
+    {
+        handleInput(deltaTime);
 
-    corpseSprite.move(velocity * deltaTime.asSeconds());
-    legsSprite.move(velocity * deltaTime.asSeconds());
-    handsSprite.move(velocity * deltaTime.asSeconds());
+        corpseSprite.move(velocity * deltaTime.asSeconds());
+        legsSprite.move(velocity * deltaTime.asSeconds());
+        handsSprite.move(velocity * deltaTime.asSeconds());
+    }
+    else if (currentState == DYING)
+    {
+        corpseSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
+        legsSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
+        handsSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
 
+        corpseSprite.rotate(dyingRotation * deltaTime.asSeconds());
+        legsSprite.rotate(dyingRotation * deltaTime.asSeconds());
+        handsSprite.rotate(dyingRotation * deltaTime.asSeconds());
+    }
+
+    // State transitions
     switch (currentState)
     {
         case THROWING:
@@ -48,25 +65,36 @@ void Player::update(sf::Time deltaTime)
 
 void Player::render(sf::RenderWindow& window)
 {
-    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    // Right / left facing
+    if (!std::set{DYING, DEAD}.contains(currentState))
+    {
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    if (corpseSprite.getGlobalBounds().getCenter().x < mousePos.x)
+        if (corpseSprite.getGlobalBounds().getCenter().x < mousePos.x)
+        {
+            corpseSprite.setScale({1, 1});
+            legsSprite.setScale({1, 1});
+            handsSprite.setScale({1, 1});
+        }
+        else 
+        {
+            corpseSprite.setScale({-1, 1});
+            legsSprite.setScale({-1, 1});
+            handsSprite.setScale({-1, 1});
+        }
+    }
+    else
     {
         corpseSprite.setScale({1, 1});
         legsSprite.setScale({1, 1});
         handsSprite.setScale({1, 1});
     }
-    else 
-    {
-        corpseSprite.setScale({-1, 1});
-        legsSprite.setScale({-1, 1});
-        handsSprite.setScale({-1, 1});
-    }
 
+    // Legs texture
     if (isRunning) legsSprite.setTexture(legsRunning.getCurrentFrame());
     else legsSprite.setTexture(textures.playerLegsDefaultTexture);
-    window.draw(legsSprite);
 
+    // Hands texture
     switch (currentState)
     {
         case THROWING:
@@ -84,13 +112,26 @@ void Player::render(sf::RenderWindow& window)
         case IDLE:
             handsSprite.setTexture(textures.playerHandsDefaultTexture);
             break;
+        
+        case DYING:
+            handsSprite.setTexture(textures.playerHandsDefaultTexture);
     }
-    window.draw(handsSprite);
 
+    window.draw(legsSprite);
+    window.draw(handsSprite);
     window.draw(corpseSprite);
 
-    health.attachToPosistion(corpseSprite.getGlobalBounds());
-    health.render(window);
+    // DYING -> DEAD transition
+    if (currentState == DYING && !corpseSprite.getGlobalBounds().findIntersection({
+    window.getView().getCenter() - window.getView().getSize() / 2.f,
+    window.getView().getSize()})) currentState = DEAD;
+
+    // Health bar
+    if (!std::set{DYING, DEAD}.contains(currentState))
+    {
+        health.attachToPosistion(corpseSprite.getGlobalBounds());
+        health.render(window);
+    }
 }
 
 void Player::handleInput(sf::Time deltaTime)
@@ -173,6 +214,7 @@ bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
 void Player::inflictDamage(int damage)
 {
     health.changeHealth(-damage);
+    if (health.GetHealth() <= 0) currentState = DYING;
 }
 
 int Player::getMeleeDamage() { return 40; }
@@ -180,3 +222,7 @@ int Player::getMeleeDamage() { return 40; }
 bool Player::isHitting() { return currentState == HITTING; }
 
 void Player::succesfullParry() { health.changeHealth(20); }
+
+bool Player::isAlive() { return currentState != DEAD; }
+
+bool Player::isDying() { return currentState == DYING; }

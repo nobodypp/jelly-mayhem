@@ -10,7 +10,8 @@ GameManager::GameManager()
 	enemies(textures, player, projectiles, randomizer), 
 	texts(textures),
 	collisions(enemies, projectiles, texts), 
-	ui(textures)
+	ui(textures), 
+	currentState(GameState::PLAY)
 {}
 
 void GameManager::GameLoop()
@@ -19,9 +20,11 @@ void GameManager::GameLoop()
 	{
 		sf::Time deltaTime = clock.restart();
 
+		ui.setGameState(currentState);
+
 		gameWindow.clear();
 		
-		handleLevel(deltaTime);
+		if (currentState == GameState::PLAY) handleLevel(deltaTime);
 
 		while ( const std::optional event = gameWindow.pollEvent() )
 		{
@@ -38,18 +41,24 @@ void GameManager::GameLoop()
 		handleUI(deltaTime);
 
 		gameWindow.display();
+
+		if (!player.isAlive()) currentState = GameState::LOSE_SCREEN;
+
 	}
 }
 
 void GameManager::handleLevel(sf::Time deltaTime)
 {
 	player.update(deltaTime);
-	projectiles.update(deltaTime);
-	enemies.update(deltaTime);
-	texts.update(deltaTime);
-	collisions.handleCollisions(player);
+	if (currentState == GameState::PLAY)
+	{
+		projectiles.update(deltaTime);
+		enemies.update(deltaTime);
+		texts.update(deltaTime);
+		collisions.handleCollisions(player);
+	}
 
-	playerView.setCenter(player.getBounds().position + player.getBounds().size / 2.0f);
+	if (!player.isDying()) playerView.setCenter(player.getBounds().position + player.getBounds().size / 2.0f);
 	playerView.setSize(sf::Vector2f(gameWindow.getSize()));
 	gameWindow.setView(playerView);
 
