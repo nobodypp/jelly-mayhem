@@ -7,6 +7,7 @@ Ground::Ground(sf::Vector2u windowSize, AssetManager& textureManager)
 
 void Ground::render(sf::RenderWindow& window)
 {
+    // Fill the window with ground tiles
     sf::View view = window.getView();
     sf::Vector2f topLeft = view.getCenter() - view.getSize() / 2.f;
 
@@ -27,5 +28,6 @@ void Ground::render(sf::RenderWindow& window)
             static_cast<int>(view.getSize().y)
         }
     });
+    
     window.draw(sprite);
 }

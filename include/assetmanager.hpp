@@ -11,7 +11,7 @@
 class AssetManager
 {
     private:
-        void loadFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix);
+        void loadFramesFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix);
 
     public:
         AssetManager();
@@ -26,17 +26,17 @@ class AssetManager
 
         sf::Texture jellyDefault;
 
-        std::vector<sf::Texture> legsRunning;
-        std::vector<sf::Texture> bottleThrowing;
-        std::vector<sf::Texture> bottleBreaking;
-        std::vector<sf::Texture> jellyWalking;
-        std::vector<sf::Texture> jellyDying;
-        std::vector<sf::Texture> jellyShooting;
-        std::vector<sf::Texture> jellyKnockback;
-        std::vector<sf::Texture> starFly;
-        std::vector<sf::Texture> starExplode;
-        std::vector<sf::Texture> jellyBiting;
-        std::vector<sf::Texture> bottleHit;
+        std::vector<sf::Texture> legsRunningFrames;
+        std::vector<sf::Texture> bottleThrowingFrames;
+        std::vector<sf::Texture> bottleBreakingFrames;
+        std::vector<sf::Texture> jellyWalkingFrames;
+        std::vector<sf::Texture> jellyDyingFrames;
+        std::vector<sf::Texture> jellyShootingFrames;
+        std::vector<sf::Texture> jellyKnockbackFrames;
+        std::vector<sf::Texture> starFlyFrames;
+        std::vector<sf::Texture> starExplodeFrames;
+        std::vector<sf::Texture> jellyBitingFrames;
+        std::vector<sf::Texture> bottleHitFrames;
 
         sf::Font font;
 

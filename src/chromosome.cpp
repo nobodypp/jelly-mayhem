@@ -4,12 +4,6 @@
 Chromosome::Chromosome(RandomGenerator& randomizer)
     : damageInflicted(0), 
       randomizer(&randomizer), 
-    //   health(intToArray<healthArraySize>(randomizer.randomInt(45, 55))), 
-    //   starDamage(intToArray<starDamageArraySize>(randomizer.randomInt(5, 15))), 
-    //   biteDamage(intToArray<biteDamageArraySize>(randomizer.randomInt(15, 25))), 
-    //   walkingSpeed(intToArray<speedArraySize>(randomizer.randomInt(50, 150))), 
-    //   bitingSpeed(intToArray<speedArraySize>(randomizer.randomInt(200, 300))), 
-    //   starSpeed(intToArray<speedArraySize>(randomizer.randomInt(150, 250))), 
       redColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 
       greenColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 
       blueColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 
@@ -36,21 +30,18 @@ Chromosome::Chromosome(RandomGenerator& randomizer)
 Chromosome Chromosome::crossover(Chromosome secondParent)
 {
     Chromosome child(*randomizer);
-    // child.health = crossoverArrays(health, secondParent.health);
-    // child.starDamage = crossoverArrays(starDamage, secondParent.starDamage);
-    // child.biteDamage = crossoverArrays(biteDamage, secondParent.biteDamage);
-    // child.walkingSpeed = crossoverArrays(walkingSpeed, secondParent.walkingSpeed);
-    // child.bitingSpeed = crossoverArrays(bitingSpeed, secondParent.bitingSpeed);
-    // child.starSpeed = crossoverArrays(starSpeed, secondParent.starSpeed);
+
     for(auto& stat : stats)
     {
         child.stats.at(stat.first) = crossoverArrays(stat.second, secondParent.stats.at(stat.first));
     }
+
     child.redColor = crossoverArrays(redColor, secondParent.redColor);
     child.greenColor = crossoverArrays(greenColor, secondParent.greenColor);
     child.blueColor = crossoverArrays(blueColor, secondParent.blueColor);
     child.bitingDistance = crossoverArrays(bitingDistance, secondParent.bitingDistance);
     child.shootingDistance = crossoverArrays(shootingDistance, secondParent.shootingDistance);
+
     return child;
 }
 
@@ -60,12 +51,7 @@ void Chromosome::applyMutation()
     {
         mutateArray(stat.second);
     }
-    // health = mutateArray(health);
-    // starDamage = mutateArray(starDamage);
-    // biteDamage = mutateArray(biteDamage);
-    // walkingSpeed = mutateArray(walkingSpeed);
-    // bitingSpeed = mutateArray(bitingSpeed);
-    // starSpeed = mutateArray(starSpeed);
+
     redColor = mutateArray(redColor);
     blueColor = mutateArray(blueColor);
     greenColor = mutateArray(greenColor);
@@ -80,10 +66,12 @@ void Chromosome::changeDamageInflicted(int damage) { damageInflicted += damage; 
 float Chromosome::getProportionalStat(std::string statName)
 {
     int statSum = 0;
+
     for (auto& stat: stats)
     {
         statSum += arrayToInt(stat.second);
     }
+    
     if (statSum == 0) return 1.f / stats.size();
     return static_cast<float>(arrayToInt(stats.at(statName))) / static_cast<float>(statSum);
 }

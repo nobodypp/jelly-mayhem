@@ -2,19 +2,20 @@
 
 
 Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets)
-    : fly(&assets.starFly, 10), 
-      explode(&assets.starExplode, 10), 
-      sprite(fly.getCurrentFrame()), 
-      shotTarget(false), 
-      inView(true), 
+    : flyAnimation(&assets.starFlyFrames, 10), 
+      explodeAnimation(&assets.starExplodeFrames, 10), 
+      sprite(flyAnimation.getCurrentFrame()), 
       ownerChromosome(&ownerChromosome), 
       linearVelocity(ownerChromosome.getStarSpeed() * level), 
       level(level), 
-      hitSound(assets.starHitSound)
+      hitSound(assets.starHitSound), 
+      currentState(FLYING)
 {
-    sprite.setColor(sf::Color::Green);
-    sprite.setOrigin({27.f, 17.f});
+    // Velocity vector
     velocity = (targetPos - position).normalized() * linearVelocity;
+
+    // Sprite initial traits
+    sprite.setOrigin(spriteOrigin);
     sprite.setPosition(position);
     sprite.setRotation(velocity.angle());
     sprite.setColor(color);
@@ -22,23 +23,41 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
 
 void Star::update(sf::Time deltaTime)
 {
-    if (!shotTarget) sprite.move(velocity * deltaTime.asSeconds());
+    switch(currentState)
+    {
+        case FLYING:
+            sprite.move(velocity * deltaTime.asSeconds());
+            flyAnimation.update(deltaTime);
+            break;
+        
+        case EXPLODING:
+            explodeAnimation.update(deltaTime);
 
-    fly.update(deltaTime);
-    explode.update(deltaTime);
+            // State transition
+            if (explodeAnimation.getCurrentCycle() >= 1) currentState = DESTROY;
+            break;
+    }
 }
 
 void Star::render(sf::RenderWindow& window)
 {
+    // Destroy object if out of view
     if (!sprite.getGlobalBounds().findIntersection({
     window.getView().getCenter() - window.getView().getSize() / 2.f,
-    window.getView().getSize()})) inView = false;
+    window.getView().getSize()})) currentState = DESTROY;
 
+    switch(currentState)
+    {
+        case FLYING:
+            sprite.setTexture(flyAnimation.getCurrentFrame());
+            break;
 
-    if (!shotTarget) sprite.setTexture(fly.getCurrentFrame());
-    else if (explode.getCurrentCycle() < 1) sprite.setTexture(explode.getCurrentFrame());
+        case EXPLODING:
+            sprite.setTexture(explodeAnimation.getCurrentFrame());
+            break;
+    }
 
-    window.draw(sprite);
+    if (currentState != DESTROY) window.draw(sprite);
 }
 
 sf::FloatRect Star::getBounds() { return sprite.getGlobalBounds(); }
@@ -47,12 +66,12 @@ int Star::getDamage() { return ownerChromosome->getStarDamage() * level; }
 
 void Star::registerHit()
 {
-    shotTarget = true;
-    explode.restart();
+    currentState = EXPLODING;
+    explodeAnimation.restart();
     if (ownerChromosome != nullptr) ownerChromosome->changeDamageInflicted(getDamage());
     hitSound.play();
 }
 
-bool Star::isAlive() { return ((!shotTarget || explode.getCurrentCycle() < 1 || hitSound.getStatus() == sf::SoundSource::Status::Playing) && inView); }
+bool Star::isAlive() { return currentState != DESTROY || hitSound.getStatus() == sf::SoundSource::Status::Playing; }
 
-bool Star::isColliding() { return !shotTarget; }
+bool Star::isColliding() { return currentState == FLYING; }

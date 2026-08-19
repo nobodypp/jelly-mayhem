@@ -8,6 +8,7 @@
 #include "projectilemanager.hpp"
 #include "entity.hpp"
 #include "chromosome.hpp"
+#include <set>
 
 class Jelly : public Entity
 {
@@ -21,11 +22,11 @@ class Jelly : public Entity
         static constexpr int shootFrame = 5;
         static constexpr float knockbackSpeed = 300.f;
         float autoRemoveDistance = 2500.f;
-        Animation walking;
-        Animation death;
-        Animation biting;
-        Animation shooting;
-        Animation knockback;
+        Animation walkingAnimation;
+        Animation deathAnimation;
+        Animation bitingAnimation;
+        Animation shootingAnimatin;
+        Animation knockbackAnimation;
         sf::Sprite sprite;
         HealthBar health;
         ProjectileManager* projectiles;

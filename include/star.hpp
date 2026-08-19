@@ -9,15 +9,23 @@
 class Star : public Projectile
 {
     private:
+        static constexpr sf::Vector2f spriteOrigin = {27.f, 17.f};
+
         float linearVelocity;
-        Animation fly;
-        Animation explode;
+        Animation flyAnimation;
+        Animation explodeAnimation;
         sf::Sprite sprite;
         sf::Vector2f velocity;
-        bool shotTarget;
-        bool inView;
         Chromosome* ownerChromosome;
         float level;
+
+        enum state
+        {
+            FLYING,
+            EXPLODING, 
+            DESTROY
+        };
+        enum state currentState;
 
         sf::Sound hitSound;
 

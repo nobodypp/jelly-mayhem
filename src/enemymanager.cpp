@@ -10,49 +10,56 @@ EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManag
       timeToNextSpawn(spawningCooldown), 
       randomizer(randomizer), 
       currentLevel(1.0), 
-    //   stagnationRespawns(0), 
       mutationRate(baseMutationRate), 
-      bestFitness(0)
+      bestFitness(0), 
+      spawnDistance(910.f)
 {}
 
 void EnemyManager::update(sf::Time deltaTime)
 {
+    // Increase difficulty over time
     currentLevel += difficulty * deltaTime.asSeconds();
 
+    // Set each jelly's target, increase killCount if dead
     for (auto& jelly : jellies)
     {
         jelly->setTargetPosition(player.getBounds().getCenter());
         if (!jelly->isAlive()) killCount++;
     }
 
+    // Spawn a new jelly if missing and cooldown time has passed
     timeToNextSpawn -= deltaTime;
     if (timeToNextSpawn <= sf::Time::Zero && jellies.size() < jelliesPopulationSize)
     {
         timeToNextSpawn = spawningCooldown;
-        if (jellies.size() >= 5)  addChildJelly();
+
+        // The first jellies should be random, the next ones should be generated using GA
+        if (jellies.size() >= 10)  addChildJelly();
         else addDefaultJelly();
+
+        // Increase mutation rate if the jellies sucks
         if (getBestFitness() > bestFitness + stagnationThreshold)
         {
-            // stagnationRespawns = 0;
             mutationRate = std::max(baseMutationRate, mutationRate - 0.01f);
         }
         else 
         {
-            // stagnationRespawns++;
             mutationRate = std::min(maxMutationRate, mutationRate + 0.01f);
         }
         bestFitness = getBestFitness();
-        // std::cout << "Best: " << bestFitness << ",  total: " << getTotalFitness() << ", mutation: " << mutationRate << "\n";
     }
 
+    // Update all jellies
     updateVector(jellies, deltaTime);
     
 }
 
 void EnemyManager::render(sf::RenderWindow& window)
 {
+    // Render all jellies
     renderVector(jellies, window);
 
+    // Jellies spawning radius should be proportional to the window size
     spawnDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 2.f;
 }
 
@@ -82,6 +89,7 @@ void EnemyManager::addChildJelly()
 
 Chromosome EnemyManager::rouletteWheelParent()
 {
+    // Calculate total damage (which is the fitness function)
     int totalDamage = 0;
 
     for (const auto& jelly : jellies)
@@ -89,7 +97,7 @@ Chromosome EnemyManager::rouletteWheelParent()
         totalDamage += jelly->getChromosome().getDamageInflicted();
     }
 
-    // Jeśli wszyscy mają 0 damage, każdy ma taką samą szansę
+    // If all the jellies suck everyone has the same chance 
     if (totalDamage == 0)
     {
         std::size_t index =
@@ -98,6 +106,7 @@ Chromosome EnemyManager::rouletteWheelParent()
         return jellies.at(index)->getChromosome();
     }
 
+    // Chance is proportional to damage
     int randomDamage = randomizer.randomInt(1, totalDamage);
 
     int accumulatedDamage = 0;
@@ -112,7 +121,7 @@ Chromosome EnemyManager::rouletteWheelParent()
         }
     }
 
-    // Nie powinno się wykonać
+    // Shouldn't be executed
     return jellies.back()->getChromosome();
 }
 

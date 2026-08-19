@@ -11,9 +11,9 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
       isRunning(false), 
       health(500, assets),
       throwHandAbsPosition(46, 36), 
-      legsRunning(&assets.legsRunning, 14), 
-      bottleThrow(&assets.bottleThrowing, 18), 
-      bottleHit(&assets.bottleHit, 20), 
+      legsRunning(&assets.legsRunningFrames, 14), 
+      bottleThrow(&assets.bottleThrowingFrames, 18), 
+      bottleHit(&assets.bottleHitFrames, 20), 
       projectiles(projectiles), 
       currentState(IDLE), 
       dyingRotation(sf::degrees(400)), 
@@ -128,12 +128,12 @@ void Player::render(sf::RenderWindow& window)
     window.draw(handsSprite);
     window.draw(corpseSprite);
 
-    // DYING -> DEAD transition
+    // If death animation has ended, change state
     if (currentState == DYING && !corpseSprite.getGlobalBounds().findIntersection({
     window.getView().getCenter() - window.getView().getSize() / 2.f,
     window.getView().getSize()})) currentState = DEAD;
 
-    // Health bar
+    // Render health bar
     if (!std::set{DYING, DEAD}.contains(currentState))
     {
         health.attachToPosistion(corpseSprite.getGlobalBounds());
@@ -166,6 +166,7 @@ void Player::handleInput(sf::Time deltaTime)
         slowDown = false;
     }
     
+    // If not moving, apply friction
     if (slowDown)
     {
         isRunning = false;
@@ -177,21 +178,21 @@ void Player::handleInput(sf::Time deltaTime)
     }
     else
     {
+        // If started running, restart animation
         if (!isRunning) legsRunning.restart();
         isRunning = true;
     }
     
+    // Velocity limit
     velocity.x = std::clamp(velocity.x, -maxVelocity.x, maxVelocity.x);
     velocity.y = std::clamp(velocity.y, -maxVelocity.y, maxVelocity.y);
 }
 
-sf::FloatRect Player::getBounds()
-{
-    return {corpseSprite.getGlobalBounds()};
-}
+sf::FloatRect Player::getBounds() { return corpseSprite.getGlobalBounds(); }
 
 bool Player::mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vector2f mouseWorldPos, sf::Time bottleTime)
 {
+    // If released left mouse button and was aiming, change state and throw bottle
     if (event->button == sf::Mouse::Button::Left && currentState == AIMING)
     {
         sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
@@ -200,11 +201,13 @@ bool Player::mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vect
         bottleThrow.restart();
         return true;
     }
+
     return false;
 }
 
 bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
 {
+    // If right mouse button pressed, change state and hit
     if (event->button == sf::Mouse::Button::Right && currentState == IDLE)
     {
         currentState = HITTING;
@@ -212,17 +215,22 @@ bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
 
         blockSound.play();
     }
+    
+    // If left mouse button pressed, change state and start aiming
     if (event->button == sf::Mouse::Button::Left && currentState == IDLE)
     {
         currentState = AIMING;
         return true;
     }
+
     return false;
 }
 
 void Player::inflictDamage(int damage)
 {
     health.changeHealth(-damage);
+
+    // If health below 0, change state
     if (health.GetHealth() <= 0)
     {
         currentState = DYING;
@@ -234,10 +242,7 @@ int Player::getMeleeDamage() { return 40; }
 
 bool Player::isHitting() { return currentState == HITTING; }
 
-void Player::succesfullParry()
-{
-    health.changeHealth(20);
-}
+void Player::succesfullParry() { health.changeHealth(20); }
 
 bool Player::isAlive() { return currentState != DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
 

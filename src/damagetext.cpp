@@ -6,6 +6,7 @@ DamageText::DamageText(AssetManager& assets, int damage, bool positive, sf::Floa
       absoluteTime(sf::seconds(1.f)),
       timeLeft(absoluteTime)
 {
+    // Set text position, size, string and color
     text.setCharacterSize(20);
     text.setString(description + (damage < 0 ? "+" : "") +  std::to_string(-damage));
     text.setFillColor(positive ? sf::Color::Green : sf::Color::Red);

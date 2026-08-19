@@ -22,20 +22,20 @@ AssetManager::AssetManager()
 
     groundTexture.setRepeated(true);
 
-    loadFromLocation(legsRunning, "assets/textures/player/leg-run/leg-run-");
-    loadFromLocation(bottleThrowing, "assets/textures/player/bottle-throw/throw-");
-    loadFromLocation(bottleBreaking, "assets/textures/bottle/break/break-");
-    loadFromLocation(jellyWalking, "assets/textures/jelly/walk/walk-");
-    loadFromLocation(jellyDying, "assets/textures/jelly/die/die-");
-    loadFromLocation(jellyShooting, "assets/textures/jelly/shoot/shoot-");
-    loadFromLocation(starFly, "assets/textures/star/fly/projectile-");
-    loadFromLocation(starExplode, "assets/textures/star/explode/projectile-");
-    loadFromLocation(jellyBiting, "assets/textures/jelly/bite/bite-");
-    loadFromLocation(jellyKnockback, "assets/textures/jelly/knockback/knockback-");
-    loadFromLocation(bottleHit, "assets/textures/player/bottle-hit/hit-");
+    loadFramesFromLocation(legsRunningFrames, "assets/textures/player/leg-run/leg-run-");
+    loadFramesFromLocation(bottleThrowingFrames, "assets/textures/player/bottle-throw/throw-");
+    loadFramesFromLocation(bottleBreakingFrames, "assets/textures/bottle/break/break-");
+    loadFramesFromLocation(jellyWalkingFrames, "assets/textures/jelly/walk/walk-");
+    loadFramesFromLocation(jellyDyingFrames, "assets/textures/jelly/die/die-");
+    loadFramesFromLocation(jellyShootingFrames, "assets/textures/jelly/shoot/shoot-");
+    loadFramesFromLocation(starFlyFrames, "assets/textures/star/fly/projectile-");
+    loadFramesFromLocation(starExplodeFrames, "assets/textures/star/explode/projectile-");
+    loadFramesFromLocation(jellyBitingFrames, "assets/textures/jelly/bite/bite-");
+    loadFramesFromLocation(jellyKnockbackFrames, "assets/textures/jelly/knockback/knockback-");
+    loadFramesFromLocation(bottleHitFrames, "assets/textures/player/bottle-hit/hit-");
 }
 
-void AssetManager::loadFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
+void AssetManager::loadFramesFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
 {
     int frameIndex = 0;
     do 

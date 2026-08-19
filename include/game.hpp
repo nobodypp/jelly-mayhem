@@ -33,8 +33,10 @@ class GameManager
 
         GameState currentState;
 
-        void handleLevel(sf::Time deltaTime);
-        void handleUI(sf::Time deltaTime);
+        void handleEvents();
+        void update(sf::Time deltaTime);
+        void render();
+        void updateViews();
 
     public:
         GameManager();

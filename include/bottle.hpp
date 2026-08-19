@@ -11,6 +11,7 @@ class Bottle : public Projectile
 {
     private:
         static constexpr float linearVelocity = 400.f;
+        static constexpr sf::Vector2f spriteOrigin = {4.f, 6.f};
         sf::Sprite sprite;
         sf::Vector2f velocity;
         sf::Angle rotationVelocity;
