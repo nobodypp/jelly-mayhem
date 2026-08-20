@@ -164,7 +164,7 @@ void Jelly::render(sf::RenderWindow& window)
 
     if (currentState != DEAD) window.draw(sprite);
 
-    if (std::set{DYING, DEAD}.contains(currentState)) health.render(window);
+    if (!std::set{DYING, DEAD}.contains(currentState)) health.render(window);
 
     autoRemoveDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 1.2;
 }
@@ -207,7 +207,7 @@ int Jelly::getDamage() { return chromosome.getBiteDamage() * level; }
 void Jelly::registerKnockback(sf::Vector2f playerPosition)
 {
     // If not dead, change state
-    if (std::set{DYING, DEAD}.contains(currentState))
+    if (!std::set{DYING, DEAD}.contains(currentState))
     {
         knockbackVelocity = (sprite.getPosition() - playerPosition).normalized() * knockbackSpeed;
         currentState = KNOCKBACK;

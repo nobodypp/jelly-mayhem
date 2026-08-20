@@ -66,7 +66,7 @@ void CollisionManager::meleeCollisions(Player& player)
                     if (killed)
                     {
                         player.succesfullParry();
-                        texts.addText(20, true, player.getBounds(), "Kill blokiem! ");
+                        texts.addText(-20, true, player.getBounds(), "Kill blokiem! ");
                     }
                 }
                 else
