@@ -35,7 +35,7 @@ void Jelly::setTargetPosition(sf::Vector2f targetPos)
     targetPosition = targetPos;
 
     // If too far from the target, destroy
-    // if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = DEAD;}
+    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = DEAD;}
 
 }
 
