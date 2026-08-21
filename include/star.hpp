@@ -4,6 +4,7 @@
 #include "animation.hpp"
 #include "assetmanager.hpp"
 #include "chromosome.hpp"
+#include "perkmanager.hpp"
 
 
 class Star : public Projectile
@@ -17,20 +18,23 @@ class Star : public Projectile
         sf::Sprite sprite;
         sf::Vector2f velocity;
         Chromosome* ownerChromosome;
+        PerkManager* perks;
         float level;
 
-        enum state
+        enum class state
         {
             FLYING,
             EXPLODING, 
             DESTROY
         };
-        enum state currentState;
+        state currentState;
 
         sf::Sound hitSound;
 
+        bool wasCloseToPlayer;
+
     public:
-        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets);
+        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
@@ -38,5 +42,6 @@ class Star : public Projectile
         bool isColliding() override;
         bool isAlive() override;
         void registerHit() override;
+        void registerProximityToPlayer();
 
 };

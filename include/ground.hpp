@@ -11,6 +11,6 @@ class Ground : public Drawable
         sf::Sprite sprite;
 
     public:
-        Ground(sf::Vector2u windowSize, AssetManager& textureManager);
+        Ground(sf::Vector2u windowSize, AssetManager& assets);
         void render(sf::RenderWindow& window) override;
 };

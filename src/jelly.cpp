@@ -1,7 +1,7 @@
 #include "jelly.hpp"
 
 
-Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level)
+Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks)
     : chromosome(chromosome),
       walkingAnimation(&assets.jellyWalkingFrames, 10), 
       deathAnimation(&assets.jellyDyingFrames, 20),
@@ -16,14 +16,15 @@ Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& pro
       bitingDistance(chromosome.getBitingDistance()), 
       shootingDistance(chromosome.getShootingDistance()),
       projectiles(&projectiles), 
-      currentState(WALKING), 
+      currentState(state::WALKING), 
       hasShot(false), 
       defaultCooldownTime(sf::seconds(1.f)), 
       level(level), 
       biteSound(assets.jellyBiteSound), 
       dieSound(assets.jellyDieSound), 
       knockbackSound(assets.jellyKnockbackSound), 
-      shootSound(assets.jellyShootSound)
+      shootSound(assets.jellyShootSound), 
+      perks(&perks)
 {
     sprite.setOrigin(sprite.getLocalBounds().getCenter());
     sprite.setPosition(position);
@@ -37,7 +38,7 @@ void Jelly::setTargetPosition(sf::Vector2f targetPos)
     targetPosition = targetPos;
 
     // If too far from the target, destroy
-    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = DEAD;}
+    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = state::DEAD;}
 
 }
 
@@ -55,13 +56,13 @@ void Jelly::update(sf::Time deltaTime)
 
     switch (currentState)
     {
-        case WALKING:
+        case state::WALKING:
             sprite.move((targetPosition - sprite.getPosition()).normalized() * walkingSpeed * deltaTime.asSeconds());
 
             // State transtitions
             if ((targetPosition - sprite.getPosition()).length() <= shootingDistance)
             {
-                currentState = SHOOTING;
+                currentState = state::SHOOTING;
                 shootingAnimatin.restart();
                 hasShot = false;
                 
@@ -69,7 +70,7 @@ void Jelly::update(sf::Time deltaTime)
             }
             if ((targetPosition - sprite.getPosition()).length() <= bitingDistance)
             {
-                currentState = BITING;
+                currentState = state::BITING;
                 bitingAnimation.restart();
                 hasBiten = false;
 
@@ -77,7 +78,7 @@ void Jelly::update(sf::Time deltaTime)
             }
             break;
 
-        case SHOOTING:
+        case state::SHOOTING:
             // If correct animation frame, create projectile
             if (shootingAnimatin.getCurrentFrameNumber() >= shootFrame && !hasShot)
             {
@@ -89,47 +90,47 @@ void Jelly::update(sf::Time deltaTime)
             // State transition
             if (shootingAnimatin.getCurrentCycle() >= 1)
             {
-                currentState = COOLDOWN;
+                currentState = state::COOLDOWN;
                 currentCooldown = defaultCooldownTime;
             }
             break;
         
-        case BITING:
+        case state::BITING:
             sprite.move((targetPosition - sprite.getPosition()).normalized() * bitingSpeed * deltaTime.asSeconds());
 
             // State transition
             if (bitingAnimation.getCurrentCycle() >= 1)
             {
-                currentState = COOLDOWN;
+                currentState = state::COOLDOWN;
                 currentCooldown = defaultCooldownTime;
             }
             break;
         
-        case COOLDOWN:
+        case state::COOLDOWN:
             currentCooldown -= deltaTime;
 
             // State transition
             if (currentCooldown < sf::Time::Zero)
             {
-                currentState = WALKING;
+                currentState = state::WALKING;
                 walkingAnimation.restart();
             }
             break;
 
-        case KNOCKBACK:
+        case state::KNOCKBACK:
             sprite.move(knockbackVelocity * deltaTime.asSeconds());
 
             // State transition
             if (knockbackAnimation.getCurrentCycle() >= 1)
             {
-                currentState = COOLDOWN;
+                currentState = state::COOLDOWN;
                 currentCooldown = defaultCooldownTime;
             }
             break;
         
-        case DYING:
+        case state::DYING:
             // State transition
-            if (deathAnimation.getCurrentCycle() >= 1) currentState = DEAD;
+            if (deathAnimation.getCurrentCycle() >= 1) currentState = state::DEAD;
             break;
     }
 }
@@ -144,29 +145,29 @@ void Jelly::render(sf::RenderWindow& window)
     // Set texture
     switch (currentState)
     {
-        case WALKING:
+        case state::WALKING:
             sprite.setTexture(walkingAnimation.getCurrentFrame());
             break;
-        case DYING:
+        case state::DYING:
             sprite.setTexture(deathAnimation.getCurrentFrame());
             break;
-        case SHOOTING:
+        case state::SHOOTING:
             sprite.setTexture(shootingAnimatin.getCurrentFrame());
             break;
-        case BITING:
+        case state::BITING:
             sprite.setTexture(bitingAnimation.getCurrentFrame());
             break;
-        case COOLDOWN:
+        case state::COOLDOWN:
             sprite.setTexture(*defaultTexture);
             break;
-        case KNOCKBACK:
+        case state::KNOCKBACK:
             sprite.setTexture(knockbackAnimation.getCurrentFrame());
             break;
     }
 
-    if (currentState != DEAD) window.draw(sprite);
+    if (currentState != state::DEAD) window.draw(sprite);
 
-    if (!std::set{DYING, DEAD}.contains(currentState)) health.render(window);
+    if (!std::set{state::DYING, state::DEAD}.contains(currentState)) health.render(window);
 
     autoRemoveDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 1.2;
 }
@@ -178,25 +179,25 @@ bool Jelly::inflictDamage(int damage)
     health.changeHealth(-damage);
 
     // If health below 0, die
-    if (health.GetHealth() <= 0 && currentState != DYING && currentState != DEAD)
+    if (health.GetHealth() <= 0 && currentState != state::DYING && currentState != state::DEAD)
     {
         shootSound.stop();
         biteSound.stop();
         knockbackSound.stop();
         dieSound.play();
 
-        currentState = DYING;
+        currentState = state::DYING;
         deathAnimation.restart();
-        return true;
 
+        return true;
     }
 
     return false;
 }
 
-bool Jelly::isAlive() { return currentState != DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
+bool Jelly::isAlive() { return currentState != state::DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
 
-bool Jelly::isColliding() { return currentState == BITING && !hasBiten; }
+bool Jelly::isColliding() { return currentState == state::BITING && !hasBiten; }
 
 void Jelly::registerHit()
 {
@@ -209,10 +210,10 @@ int Jelly::getDamage() { return chromosome.getBiteDamage() * level; }
 void Jelly::registerKnockback(sf::Vector2f playerPosition)
 {
     // If not dead, change state
-    if (!std::set{DYING, DEAD}.contains(currentState))
+    if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
         knockbackVelocity = (sprite.getPosition() - playerPosition).normalized() * knockbackSpeed;
-        currentState = KNOCKBACK;
+        currentState = state::KNOCKBACK;
         knockbackAnimation.restart();
 
         biteSound.stop();
@@ -223,3 +224,5 @@ void Jelly::registerKnockback(sf::Vector2f playerPosition)
 void Jelly::move(sf::Vector2f translation) { sprite.move(translation); }
 
 Chromosome Jelly::getChromosome() { return chromosome; }
+
+bool Jelly::isDuringKnockback() { return currentState == state::KNOCKBACK; }

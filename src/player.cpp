@@ -1,7 +1,7 @@
 #include "player.hpp"
 #include <iostream>
 
-Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles)
+Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks)
     : assets(assets),
       corpseSprite(assets.playerCorpseDefaultTexture),
       legsSprite(assets.playerLegsDefaultTexture),
@@ -15,10 +15,11 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
       bottleThrow(&assets.bottleThrowingFrames, 18), 
       bottleHit(&assets.bottleHitFrames, 20), 
       projectiles(projectiles), 
-      currentState(IDLE), 
+      currentState(state::IDLE), 
       dyingRotation(sf::degrees(400)), 
       dieSound(assets.playerDieSound), 
-      blockSound(assets.playerHitSound)
+      blockSound(assets.playerHitSound), 
+      perks(perks)
 {
     // Sprites positions and origins (anchors)
     corpseSprite.setOrigin(corpseSprite.getLocalBounds().getCenter());
@@ -33,15 +34,15 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
 void Player::update(sf::Time deltaTime)
 {
     // Position and movement update
-    if (!std::set{DYING, DEAD}.contains(currentState))
+    if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
-        handleInput(deltaTime);
+        movement(deltaTime);
 
-        corpseSprite.move(velocity * deltaTime.asSeconds());
-        legsSprite.move(velocity * deltaTime.asSeconds());
-        handsSprite.move(velocity * deltaTime.asSeconds());
+        corpseSprite.move(velocity * perks.getPlayerSpeedMultiplier() * deltaTime.asSeconds());
+        legsSprite.setPosition(corpseSprite.getPosition());
+        handsSprite.setPosition(corpseSprite.getPosition());
     }
-    else if (currentState == DYING)
+    else if (currentState == state::DYING)
     {
         corpseSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
         legsSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
@@ -55,12 +56,12 @@ void Player::update(sf::Time deltaTime)
     // State transitions
     switch (currentState)
     {
-        case THROWING:
-            if (bottleThrow.getCurrentCycle() >= 1) currentState = IDLE;
+        case state::THROWING:
+            if (bottleThrow.getCurrentCycle() >= 1) currentState = state::IDLE;
             break;
         
-        case HITTING:
-            if (bottleHit.getCurrentCycle() >= 1) currentState = IDLE;
+        case state::HITTING:
+            if (bottleHit.getCurrentCycle() >= 1) currentState = state::IDLE;
             break;
     }
 
@@ -73,7 +74,7 @@ void Player::update(sf::Time deltaTime)
 void Player::render(sf::RenderWindow& window)
 {
     // Right / left facing
-    if (!std::set{DYING, DEAD}.contains(currentState))
+    if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
@@ -104,27 +105,27 @@ void Player::render(sf::RenderWindow& window)
     // Hands texture
     switch (currentState)
     {
-        case THROWING:
+        case state::THROWING:
             handsSprite.setTexture(bottleThrow.getCurrentFrame());
             break;
         
-        case HITTING:
+        case state::HITTING:
             handsSprite.setTexture(bottleHit.getCurrentFrame());
             break;
 
-        case AIMING:
+        case state::AIMING:
             handsSprite.setTexture(assets.playerHandsDefaultTexture);
             break;
         
-        case IDLE:
+        case state::IDLE:
             handsSprite.setTexture(assets.playerHandsDefaultTexture);
             break;
         
-        case DYING:
+        case state::DYING:
             handsSprite.setTexture(assets.playerHandsDefaultTexture);
     }
 
-    if (currentState != DEAD)
+    if (currentState != state::DEAD)
     {
         window.draw(legsSprite);
         window.draw(handsSprite);
@@ -132,19 +133,19 @@ void Player::render(sf::RenderWindow& window)
     }
 
     // If death animation has ended, change state
-    if (currentState == DYING && !corpseSprite.getGlobalBounds().findIntersection({
+    if (currentState == state::DYING && !corpseSprite.getGlobalBounds().findIntersection({
     window.getView().getCenter() - window.getView().getSize() / 2.f,
-    window.getView().getSize()})) currentState = DEAD;
+    window.getView().getSize()})) currentState = state::DEAD;
 
     // Render health bar
-    if (!std::set{DYING, DEAD}.contains(currentState))
+    if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
         health.attachToPosistion(corpseSprite.getGlobalBounds());
         health.render(window);
     }
 }
 
-void Player::handleInput(sf::Time deltaTime)
+void Player::movement(sf::Time deltaTime)
 {
     bool slowDown = true;
 
@@ -195,11 +196,11 @@ sf::FloatRect Player::getBounds() { return corpseSprite.getGlobalBounds(); }
 
 bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
 {
-    if (currentState == AIMING)
+    if (currentState == state::AIMING)
     {
         sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
         projectiles.addBottle(bottlePosition, sf::Vector2f(mouseWorldPos), bottleTime);
-        currentState = THROWING;
+        currentState = state::THROWING;
         bottleThrow.restart();
         return true;
     }
@@ -208,9 +209,9 @@ bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
 
 bool Player::startAiming()
 {
-    if (currentState == IDLE)
+    if (currentState == state::IDLE || currentState == state::HITTING)
     {
-        currentState = AIMING;
+        currentState = state::AIMING;
         return true;
     }
     return false;
@@ -218,10 +219,13 @@ bool Player::startAiming()
 
 void Player::startBlocking()
 {
-    currentState = HITTING;
-    bottleHit.restart();
+    if (currentState == state::IDLE)
+    {
+        currentState = state::HITTING;
+        bottleHit.restart();
 
-    blockSound.play();
+        blockSound.play();
+    }
 }
 
 void Player::inflictDamage(int damage)
@@ -229,19 +233,24 @@ void Player::inflictDamage(int damage)
     health.changeHealth(-damage);
 
     // If health below 0, change state
-    if (health.GetHealth() <= 0)
+    if (health.GetHealth() <= 0 && !std::set{state::DYING, state::DEAD}.contains(currentState))
     {
-        currentState = DYING;
+        currentState = state::DYING;
         dieSound.play();
     }
 }
 
 int Player::getMeleeDamage() { return 40; }
 
-bool Player::isHitting() { return currentState == HITTING; }
+bool Player::isHitting() { return currentState == state::HITTING; }
 
-void Player::succesfullParry() { health.changeHealth(20); }
+int Player::succesfullParry()
+{
+    int healing = static_cast<int>(baseHealing * perks.getHealingMultiplier());
+    health.changeHealth(healing);
+    return healing;
+}
 
-bool Player::isAlive() { return currentState != DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
+bool Player::isAlive() { return currentState != state::DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
 
-bool Player::isDying() { return currentState == DYING; }
+bool Player::isDying() { return currentState == state::DYING; }

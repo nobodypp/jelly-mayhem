@@ -2,14 +2,14 @@
 
 GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
-	projectiles(assets),
-    player(gameWindow.getSize(), assets, projectiles),
+	projectiles(assets, perks),
+    player(gameWindow.getSize(), assets, projectiles, perks),
 	ground(gameWindow.getSize(), assets), 
 	playerView(gameWindow.getDefaultView()), 
 	uiView(playerView),
-	enemies(assets, player, projectiles, randomizer), 
+	enemies(assets, player, projectiles, randomizer, perks), 
 	texts(assets),
-	collisions(enemies, projectiles, texts), 
+	collisions(enemies, projectiles, texts, perks), 
 	ui(assets), 
 	currentState(GameState::PLAY)
 {}
@@ -54,7 +54,7 @@ void GameManager::update(sf::Time deltaTime)
 
 			// Update UI
 			ui.update(deltaTime);
-			ui.updateKillCount(enemies.getKillCount());
+			ui.updateKillCount(collisions.getKillCount());
 
 			// State transition
 			if (!player.isAlive()) currentState = GameState::LOSE_SCREEN;

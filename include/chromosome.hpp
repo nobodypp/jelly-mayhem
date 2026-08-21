@@ -11,11 +11,6 @@
 class Chromosome
 {
     private:
-        // static constexpr std::size_t healthArraySize = 8;
-        // static constexpr std::size_t starDamageArraySize = 5;
-        // static constexpr std::size_t biteDamageArraySize = 5;
-        // static constexpr std::size_t speedArraySize = 9;
-
         static constexpr std::size_t colorArraySize = 8;
         static constexpr std::size_t bitingDistanceArraySize = 9;
         static constexpr std::size_t shootingDistanceArraySize = 7;
@@ -23,12 +18,6 @@ class Chromosome
 
         RandomGenerator* randomizer;
         int damageInflicted;
-        // std::array<bool, healthArraySize> health;
-        // std::array<bool, starDamageArraySize> starDamage;
-        // std::array<bool, biteDamageArraySize> biteDamage;
-        // std::array<bool, speedArraySize> walkingSpeed;
-        // std::array<bool, speedArraySize> bitingSpeed;
-        // std::array<bool, speedArraySize> starSpeed;
         std::array<bool, bitingDistanceArraySize> bitingDistance;
         std::array<bool, shootingDistanceArraySize> shootingDistance;
         std::array<bool, colorArraySize> redColor;

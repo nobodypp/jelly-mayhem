@@ -12,6 +12,7 @@
 #include "damagetextmanager.hpp"
 #include "random.hpp"
 #include "gamestate.hpp"
+#include "perkmanager.hpp"
 
 class GameManager
 {
@@ -23,6 +24,7 @@ class GameManager
         sf::View playerView;
         sf::View uiView;
         PlayerUI ui;
+        PerkManager perks;
         Player player;
         ProjectileManager projectiles;
         EnemyManager enemies;

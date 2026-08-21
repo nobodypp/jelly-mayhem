@@ -1,14 +1,16 @@
 #include "bottle.hpp"
 
 
-Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& assets)
+Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& assets, PerkManager& perks)
     : sprite(assets.bottleTexture), 
       rotationVelocity(sf::degrees(360)), 
       breakingAnimation(&assets.bottleBreakingFrames, 30),
       timeLeft(flyingTime),
-      currentState(FLYING), 
+      currentState(state::FLYING), 
       damageDealt(false), 
-      breakingSound(assets.bottleBreakSound)
+      breakingSound(assets.bottleBreakSound), 
+      perks(&perks), 
+      damageMultiplier(perks.getRewardFromSingleKill())
 {
     // Set sprite position and velocity
     velocity = (mouseRelativePos - position).normalized() * linearVelocity;
@@ -23,7 +25,7 @@ void Bottle::update(sf::Time deltaTime)
 
     switch (currentState)
     {
-        case FLYING:
+        case state::FLYING:
             // Move and rotate the sprite
             sprite.move(velocity * deltaTime.asSeconds());
             sprite.rotate(rotationVelocity * deltaTime.asSeconds());
@@ -31,7 +33,7 @@ void Bottle::update(sf::Time deltaTime)
             // State transition
             if (timeLeft <= sf::Time::Zero)
             {
-                currentState = BREAKING;
+                currentState = state::BREAKING;
                 breakingAnimation.restart();
                 sprite.setOrigin(sf::Vector2f(breakingAnimation.getCurrentFrame().getSize()) / 2.f);
 
@@ -39,27 +41,35 @@ void Bottle::update(sf::Time deltaTime)
             }
             break;
         
-        case BREAKING:
+        case state::BREAKING:
             breakingAnimation.update(deltaTime);
 
             // State transition
-            if (breakingAnimation.getCurrentCycle() >= 1) currentState = DESTROY;
+            if (breakingAnimation.getCurrentCycle() >= 1) currentState = state::DESTROY;
             break;
     }
 }
 
 void Bottle::render(sf::RenderWindow& window)
 {
-    if (currentState == BREAKING) sprite.setTexture(breakingAnimation.getCurrentFrame(), true);
-    if (currentState != DESTROY) window.draw(sprite);
+    if (currentState == state::BREAKING) sprite.setTexture(breakingAnimation.getCurrentFrame(), true);
+    if (currentState != state::DESTROY) window.draw(sprite);
 }
 
 void Bottle::registerHit() { damageDealt = true; }
 
-bool Bottle::isColliding() { return (currentState == BREAKING && breakingAnimation.getCurrentFrameNumber() == 0 && damageDealt == false); }
+bool Bottle::isColliding() { return (currentState == state::BREAKING && breakingAnimation.getCurrentFrameNumber() == 0 && damageDealt == false); }
 
-sf::FloatRect Bottle::getBounds() { return sprite.getGlobalBounds(); }
+sf::FloatRect Bottle::getBounds()
+{
+    sf::FloatRect bounds = sprite.getGlobalBounds();
 
-int Bottle::getDamage() { return 10; }
+    sf::Vector2f center = bounds.getCenter();
+    sf::Vector2f size = bounds.size * perks->getBottleBoundsScale();
 
-bool Bottle::isAlive() { return currentState != DESTROY || breakingSound.getStatus() == sf::SoundSource::Status::Playing; }
+    return sf::FloatRect(center - size / 2.f, size);
+}
+
+int Bottle::getDamage() { return baseDamage * damageMultiplier; }
+
+bool Bottle::isAlive() { return currentState != state::DESTROY || breakingSound.getStatus() == sf::SoundSource::Status::Playing; }

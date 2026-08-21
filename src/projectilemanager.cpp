@@ -1,8 +1,9 @@
 #include "projectilemanager.hpp"
 
 
-ProjectileManager::ProjectileManager(AssetManager& textureManager)
-    : textureManager(textureManager)
+ProjectileManager::ProjectileManager(AssetManager& assets, PerkManager& perks)
+    : assets(assets), 
+      perks(perks)
 {}
 
 void ProjectileManager::update(sf::Time deltaTime)

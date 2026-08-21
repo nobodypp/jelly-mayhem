@@ -8,6 +8,7 @@
 #include "projectilemanager.hpp"
 #include "manager.hpp"
 #include "chromosome.hpp"
+#include "perkmanager.hpp"
 #include <cmath>
 
 class EnemyManager : Manager
@@ -20,7 +21,6 @@ class EnemyManager : Manager
         static constexpr float maxMutationRate = 0.4f;
         static constexpr int stagnationThreshold = 5;
 
-        // std::size_t stagnationRespawns;
         float mutationRate;
         int bestFitness;
 
@@ -43,9 +43,11 @@ class EnemyManager : Manager
         Chromosome rouletteWheelParent();
 
         int killCount;
+
+        PerkManager& perks;
     
     public:
-        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer);
+        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         std::size_t jelliesCount();

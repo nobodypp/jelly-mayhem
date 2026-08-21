@@ -8,6 +8,7 @@
 #include "projectilemanager.hpp"
 #include "entity.hpp"
 #include "chromosome.hpp"
+#include "perkmanager.hpp"
 #include <set>
 
 class Jelly : public Entity
@@ -20,7 +21,7 @@ class Jelly : public Entity
         float shootingDistance;
         static constexpr sf::Vector2f shootingTexturePosition = {20.f, 7.f};
         static constexpr int shootFrame = 5;
-        static constexpr float knockbackSpeed = 300.f;
+        static constexpr float knockbackSpeed = 150.f;
         float autoRemoveDistance = 2500.f;
         Animation walkingAnimation;
         Animation deathAnimation;
@@ -35,7 +36,7 @@ class Jelly : public Entity
         sf::Time defaultCooldownTime;
         sf::Texture* defaultTexture;
         sf::Vector2f knockbackVelocity;
-        enum state
+        enum class state
         {
             WALKING, 
             SHOOTING,
@@ -45,7 +46,7 @@ class Jelly : public Entity
             DYING, 
             DEAD
         };
-        enum state currentState;
+        state currentState;
         bool hasShot;
         bool hasBiten;
         float level;
@@ -54,9 +55,11 @@ class Jelly : public Entity
         sf::Sound dieSound;
         sf::Sound knockbackSound;
         sf::Sound shootSound;
+
+        PerkManager* perks;
         
     public:
-        Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level);
+        Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
@@ -69,4 +72,5 @@ class Jelly : public Entity
         int getDamage();
         void move(sf::Vector2f translation);
         Chromosome getChromosome();
+        bool isDuringKnockback();
 };

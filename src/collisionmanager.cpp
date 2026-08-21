@@ -1,13 +1,14 @@
 #include "collisionmanager.hpp"
 
 
-CollisionManager::CollisionManager(EnemyManager& enemies, ProjectileManager& projectiles, DamageTextManager& texts)
+CollisionManager::CollisionManager(EnemyManager &enemies, ProjectileManager &projectiles, DamageTextManager &texts, PerkManager &perks)
     : enemies(enemies), 
       projectiles(projectiles), 
-      texts(texts)
+      texts(texts), 
+      perks(perks)
 {}
 
-void CollisionManager::handleCollisions(Player& player)
+void CollisionManager::handleCollisions(Player &player)
 {
     BottleCollisions();
     StarCollisions(player);
@@ -21,15 +22,37 @@ void CollisionManager::BottleCollisions()
     {
         if (projectiles.bottleAt(i).isColliding())
         {
+            int enemiesHit = 0;
+            int enemiesKilled = 0;
             for (std::size_t j = 0; j < enemies.jelliesCount(); j++)
             {
                 if (projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
                 {
                     projectiles.bottleAt(i).registerHit();
-                    enemies.jellyAt(j).inflictDamage(projectiles.bottleAt(i).getDamage());
+
+                    float distance = (projectiles.bottleAt(i).getBounds().getCenter() - enemies.jellyAt(j).getBounds().getCenter()).length();
+                    
+                    // Calculate damage from base, perks etc.
+                    int damage = projectiles.bottleAt(i).getDamage() * (enemies.jellyAt(j).isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f) * perks.getDamageRampup(distance);
+
+                    if (enemies.jellyAt(j).inflictDamage(damage))
+                    {
+                        // If jelly was killed
+                        killCount++;
+                        enemiesKilled++;
+
+                        if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyGotKilled();
+                        perks.snipeKill(distance);
+                    }
+
                     texts.addText(projectiles.bottleAt(i).getDamage(), true, enemies.jellyAt(j).getBounds());
+
+                    enemiesHit++;
                 }
             }
+
+            perks.bottleHitEnemyGroup(enemiesHit);
+            if (enemiesHit == 1 && enemiesKilled == 1) perks.singleKill();
         }
     }
 }
@@ -46,6 +69,8 @@ void CollisionManager::StarCollisions(Player& player)
                 player.inflictDamage(projectiles.starAt(i).getDamage());
                 texts.addText(projectiles.starAt(i).getDamage(), false, player.getBounds());
             }
+            // Check if star was dodged by player
+            else if (distanceBetweenTwoRects(player.getBounds(), projectiles.starAt(i).getBounds()) <= dodgeDistance) projectiles.starAt(i).registerProximityToPlayer();
         }
     }
 }
@@ -61,12 +86,16 @@ void CollisionManager::meleeCollisions(Player& player)
                 if (player.isHitting())
                 {
                     enemies.jellyAt(i).registerKnockback(player.getBounds().position + player.getBounds().getCenter());
-                    bool killed = enemies.jellyAt(i).inflictDamage(player.getMeleeDamage());
                     texts.addText(player.getMeleeDamage(), true, enemies.jellyAt(i).getBounds(), "Blok! ");
-                    if (killed)
+                    if (enemies.jellyAt(i).inflictDamage(player.getMeleeDamage()))
                     {
-                        player.succesfullParry();
-                        texts.addText(-20, true, player.getBounds(), "Kill blokiem! ");
+                        // If killed
+                        killCount++;
+
+                        int healed = player.succesfullParry();
+                        texts.addText(-healed, true, player.getBounds(), "Kill blokiem! ");
+
+                        perks.parryKill();
                     }
                 }
                 else
@@ -112,3 +141,22 @@ void CollisionManager::enemiesAntiCrowd()
         }
     }
 }
+
+float CollisionManager::distanceBetweenTwoRects(const sf::FloatRect a, const sf::FloatRect b)
+{
+    float dx = std::max({
+        a.position.x - (b.position.x + b.size.x),
+        b.position.x - (a.position.x + a.size.x),
+        0.f
+    });
+
+    float dy = std::max({
+        a.position.y - (b.position.y + b.size.y),
+        b.position.y - (a.position.y + a.size.y),
+        0.f
+    });
+
+    return std::sqrt(dx * dx + dy * dy);
+}
+
+int CollisionManager::getKillCount() { return killCount; }

@@ -9,6 +9,7 @@
 #include "assetmanager.hpp"
 #include "projectilemanager.hpp"
 #include "entity.hpp"
+#include "perkmanager.hpp"
 #include <set>
 
 
@@ -42,9 +43,9 @@ class Player : public Entity
         static constexpr float dyingSpeed = 500.f;
         sf::Angle dyingRotation;
 
-        void handleInput(sf::Time deltaTime);
+        void movement(sf::Time deltaTime);
 
-        enum state
+        enum class state
         {
             IDLE,
             AIMING, 
@@ -53,13 +54,17 @@ class Player : public Entity
             DYING, 
             DEAD
         };
-        enum state currentState;
+        state currentState;
 
         sf::Sound dieSound;
         sf::Sound blockSound;
 
+        PerkManager& perks;
+
+        static constexpr int baseHealing = 20;
+
     public:
-        Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles);
+        Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
@@ -69,7 +74,7 @@ class Player : public Entity
         void inflictDamage(int damage);
         int getMeleeDamage();
         bool isHitting();
-        void succesfullParry();
+        int succesfullParry();
         bool isAlive();
         bool isDying();
 };
