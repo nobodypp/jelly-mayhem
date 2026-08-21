@@ -1,0 +1,5 @@
+trafianie grup wrogów -> zwiększony hitbox butelki
+zabijanie butelką ogłuszonych przeciwników -> zwiększone obrażenia ogłuszonym przeciwnikom
+omijanie pocisków -> zwiększona szybkość
+zabijanie blokiem -> większe leczenie
+

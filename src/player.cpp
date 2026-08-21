@@ -124,9 +124,12 @@ void Player::render(sf::RenderWindow& window)
             handsSprite.setTexture(assets.playerHandsDefaultTexture);
     }
 
-    window.draw(legsSprite);
-    window.draw(handsSprite);
-    window.draw(corpseSprite);
+    if (currentState != DEAD)
+    {
+        window.draw(legsSprite);
+        window.draw(handsSprite);
+        window.draw(corpseSprite);
+    }
 
     // If death animation has ended, change state
     if (currentState == DYING && !corpseSprite.getGlobalBounds().findIntersection({
@@ -190,10 +193,9 @@ void Player::handleInput(sf::Time deltaTime)
 
 sf::FloatRect Player::getBounds() { return corpseSprite.getGlobalBounds(); }
 
-bool Player::mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vector2f mouseWorldPos, sf::Time bottleTime)
+bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
 {
-    // If released left mouse button and was aiming, change state and throw bottle
-    if (event->button == sf::Mouse::Button::Left && currentState == AIMING)
+    if (currentState == AIMING)
     {
         sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
         projectiles.addBottle(bottlePosition, sf::Vector2f(mouseWorldPos), bottleTime);
@@ -201,29 +203,25 @@ bool Player::mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vect
         bottleThrow.restart();
         return true;
     }
-
     return false;
 }
 
-bool Player::mousePressed(const sf::Event::MouseButtonPressed* event)
+bool Player::startAiming()
 {
-    // If right mouse button pressed, change state and hit
-    if (event->button == sf::Mouse::Button::Right && currentState == IDLE)
-    {
-        currentState = HITTING;
-        bottleHit.restart();
-
-        blockSound.play();
-    }
-    
-    // If left mouse button pressed, change state and start aiming
-    if (event->button == sf::Mouse::Button::Left && currentState == IDLE)
+    if (currentState == IDLE)
     {
         currentState = AIMING;
         return true;
     }
-
     return false;
+}
+
+void Player::startBlocking()
+{
+    currentState = HITTING;
+    bottleHit.restart();
+
+    blockSound.play();
 }
 
 void Player::inflictDamage(int damage)

@@ -103,11 +103,18 @@ void GameManager::handleEvents()
 
 				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
 				{
-					if (player.mousePressed(mouseButtonPressed)) ui.activateBottleBar();
+					if (mouseButtonPressed->button == sf::Mouse::Button::Left)
+					{
+						if (player.startAiming()) ui.activateBottleBar();
+					}
+					else if (mouseButtonPressed->button == sf::Mouse::Button::Right) player.startBlocking();
 				}
 				else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>())
 				{
-					if (player.mouseReleased(mouseButtonReleased, gameWindow.mapPixelToCoords(mouseButtonReleased->position), ui.getBottleTime())) ui.resetBottleTime();
+					if (mouseButtonReleased->button == sf::Mouse::Button::Left)
+					{
+						if (player.shootBottle(gameWindow.mapPixelToCoords(mouseButtonReleased->position), ui.getBottleTime())) ui.resetBottleTime();
+					}
 				}
 				break;
 		}

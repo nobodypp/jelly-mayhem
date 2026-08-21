@@ -63,8 +63,9 @@ class Player : public Entity
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
-        bool mouseReleased(const sf::Event::MouseButtonReleased* event, sf::Vector2f mouseWorldPos, sf::Time bottleTime);
-        bool mousePressed(const sf::Event::MouseButtonPressed* event);
+        bool shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime);
+        bool startAiming();
+        void startBlocking();
         void inflictDamage(int damage);
         int getMeleeDamage();
         bool isHitting();
