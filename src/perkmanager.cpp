@@ -9,7 +9,7 @@ PerkManager::PerkManager()
     perks.insert({"dodger", Perk{[](unsigned int level){return (level + 1) * 20;}}});
     perks.insert({"parry", Perk{}});
     perks.insert({"single", Perk{}});
-    perks.insert({"sniper", Perk{}});
+    perks.insert({"sniper", Perk{[](unsigned int level){return (level + 1) * 5;}}});
 }
 
 void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
@@ -71,22 +71,22 @@ void PerkManager::snipeKill(float distance)
     }
 }
 
-float PerkManager::getBottleBoundsScale() { return 1.f + perks.at("group").getLevel() * 0.2f; }
+float PerkManager::getBottleBoundsScale() { return 1.f + perks.at("group").getLevel() * 0.3f; }
 
-float PerkManager::getKnockbackEnemyDamage() { return 1.f + perks.at("knockback").getLevel() * 0.5f; }
+float PerkManager::getKnockbackEnemyDamage() { return 1.f + perks.at("knockback").getLevel() * 2.0f; }
 
-float PerkManager::getPlayerSpeedMultiplier() { return 1.f + perks.at("dodger").getLevel() * 0.2f; }
+float PerkManager::getPlayerSpeedMultiplier() { return 1.f + perks.at("dodger").getLevel() * 0.3f; }
 
 float PerkManager::getHealingMultiplier() { return 1.f + perks.at("parry").getLevel() * 0.25f; }
 
 float PerkManager::getRewardFromSingleKill()
 {
-    float reward = singleKillReward ? (1.f + perks.at("single").getLevel() * 0.5f) : 1.f;
+    float reward = singleKillReward ? (1.f + perks.at("single").getLevel() * 1.f) : 1.f;
     singleKillReward = false;
     return reward;
 }
 
 float PerkManager::getDamageRampup(float distance)
 {
-    return (distance >= longDistance ? perks.at("sniper").getLevel() * 0.3f : 0.f) + 1.f;
+    return (distance >= longDistance ? perks.at("sniper").getLevel() * 1.f : 0.f) + 1.f;
 }

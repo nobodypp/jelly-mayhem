@@ -17,7 +17,7 @@ class CollisionManager
         DamageTextManager& texts;
         PerkManager& perks;
 
-        void BottleCollisions();
+        void BottleCollisions(Player& player);
         void StarCollisions(Player& player);
         void meleeCollisions(Player& player);
         void enemiesAntiCrowd();

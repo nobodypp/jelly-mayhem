@@ -41,7 +41,7 @@ class PerkManager
 
         std::map<std::string, PerkManager::Perk> perks;
         bool singleKillReward;
-        static constexpr float longDistance = 700.f;
+        static constexpr float longDistance = 500.f;
 
     public:
         PerkManager();

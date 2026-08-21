@@ -10,13 +10,13 @@ CollisionManager::CollisionManager(EnemyManager &enemies, ProjectileManager &pro
 
 void CollisionManager::handleCollisions(Player &player)
 {
-    BottleCollisions();
+    BottleCollisions(player);
     StarCollisions(player);
     meleeCollisions(player);
     enemiesAntiCrowd();
 }
 
-void CollisionManager::BottleCollisions()
+void CollisionManager::BottleCollisions(Player& player)
 {
     for (std::size_t i = 0; i < projectiles.bottleCount(); i++)
     {
@@ -30,7 +30,7 @@ void CollisionManager::BottleCollisions()
                 {
                     projectiles.bottleAt(i).registerHit();
 
-                    float distance = (projectiles.bottleAt(i).getBounds().getCenter() - enemies.jellyAt(j).getBounds().getCenter()).length();
+                    float distance = (projectiles.bottleAt(i).getBounds().getCenter() - player.getBounds().getCenter()).length();
                     
                     // Calculate damage from base, perks etc.
                     int damage = projectiles.bottleAt(i).getDamage() * (enemies.jellyAt(j).isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f) * perks.getDamageRampup(distance);
@@ -43,6 +43,7 @@ void CollisionManager::BottleCollisions()
 
                         if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyGotKilled();
                         perks.snipeKill(distance);
+                        std::cout << distance << "\n";
                     }
 
                     texts.addText(projectiles.bottleAt(i).getDamage(), true, enemies.jellyAt(j).getBounds());
