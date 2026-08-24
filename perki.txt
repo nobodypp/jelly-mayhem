@@ -1,6 +1,0 @@
-trafianie grup wrogów -> zwiększony hitbox butelki 
-zabijanie butelką ogłuszonych przeciwników -> zwiększone obrażenia ogłuszonym przeciwnikom
-omijanie pocisków -> zwiększona szybkość
-zabijanie blokiem -> większe leczenie
-zabójstwa butelką, która trafia jednego przeciwnika -> za takie zabójstwa następny atak jest krytyczny
-zabójstwa maksymalnie naładowane -> damage ramp up

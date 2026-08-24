@@ -23,8 +23,8 @@ class GameManager
         sf::RenderWindow gameWindow;
         sf::View playerView;
         sf::View uiView;
-        PlayerUI ui;
         PerkManager perks;
+        PlayerUI ui;
         Player player;
         ProjectileManager projectiles;
         EnemyManager enemies;

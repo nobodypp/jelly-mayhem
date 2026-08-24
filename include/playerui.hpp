@@ -3,6 +3,7 @@
 #include "drawable.hpp"
 #include "assetmanager.hpp"
 #include "gamestate.hpp"
+#include "perkmanager.hpp"
 
 class PlayerUI : public Drawable
 {
@@ -26,8 +27,12 @@ class PlayerUI : public Drawable
         sf::VertexArray deathScreenBackground;
         sf::Text deathScreenText;
 
+        PerkManager& perks;
+        
+        sf::Sound chargedShotSound;
+
     public:
-        PlayerUI(AssetManager& assets);
+        PlayerUI(AssetManager& assets, PerkManager& perks);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();

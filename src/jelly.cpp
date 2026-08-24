@@ -30,7 +30,9 @@ Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& pro
     sprite.setPosition(position);
     sprite.setColor(chromosome.getColor());
 
-    shootSound.setVolume(60.f);
+    shootSound.setVolume(50.f);
+    biteSound.setVolume(50.f);
+    dieSound.setVolume(70.f);
 }
 
 void Jelly::setTargetPosition(sf::Vector2f targetPos)

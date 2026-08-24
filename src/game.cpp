@@ -2,6 +2,7 @@
 
 GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
+    perks(assets),
 	projectiles(assets, perks),
     player(gameWindow.getSize(), assets, projectiles, perks),
 	ground(gameWindow.getSize(), assets), 
@@ -10,7 +11,7 @@ GameManager::GameManager()
 	enemies(assets, player, projectiles, randomizer, perks), 
 	texts(assets),
 	collisions(enemies, projectiles, texts, perks), 
-	ui(assets), 
+	ui(assets, perks), 
 	currentState(GameState::PLAY)
 {}
 

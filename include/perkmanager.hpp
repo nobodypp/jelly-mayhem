@@ -3,6 +3,8 @@
 #include <map>
 #include <iostream>
 #include <functional>
+#include "assetmanager.hpp"
+#include <SFML/Audio.hpp>
 
 
 class PerkManager
@@ -17,7 +19,7 @@ class PerkManager
                 std::function<unsigned int(unsigned int)> levelUpObjective;
             
             public:
-                Perk(std::function<unsigned int(unsigned int)> levelUpObjective = [](unsigned int level){return (level + 1) * 10;})
+                Perk(std::function<unsigned int(unsigned int)> levelUpObjective = [](unsigned int level){return (level + 1) * 5;})
                 : objectiveRequired(levelUpObjective(0)), 
                   levelUpObjective(levelUpObjective)
                 {}
@@ -42,9 +44,11 @@ class PerkManager
         std::map<std::string, PerkManager::Perk> perks;
         bool singleKillReward;
         static constexpr float longDistance = 500.f;
+        AssetManager& assets;
+        sf::Sound perkSound;
 
     public:
-        PerkManager();
+        PerkManager(AssetManager& assets);
         void bottleHitEnemyGroup(unsigned int enemiesNumber);
         float getBottleBoundsScale();
         void knockbackEnemyGotKilled();
@@ -54,7 +58,8 @@ class PerkManager
         void parryKill();
         float getHealingMultiplier();
         void singleKill();
-        float getRewardFromSingleKill();
+        bool isNextBottleBoosted();
+        float claimBoostedBottle();
         void snipeKill(float distance);
         float getDamageRampup(float distance);
 };

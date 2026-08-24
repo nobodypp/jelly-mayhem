@@ -10,13 +10,15 @@ Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time fl
       damageDealt(false), 
       breakingSound(assets.bottleBreakSound), 
       perks(&perks), 
-      damageMultiplier(perks.getRewardFromSingleKill())
+      damageMultiplier(perks.claimBoostedBottle())
 {
     // Set sprite position and velocity
     velocity = (mouseRelativePos - position).normalized() * linearVelocity;
 
     sprite.setOrigin(spriteOrigin);
     sprite.setPosition(position);
+
+    breakingSound.setVolume(70.f);
 }
 
 void Bottle::update(sf::Time deltaTime)

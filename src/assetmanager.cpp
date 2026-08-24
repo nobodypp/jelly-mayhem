@@ -19,6 +19,8 @@ AssetManager::AssetManager()
     if (!playerDieSound.loadFromFile("assets/sounds/player/die.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!playerHitSound.loadFromFile("assets/sounds/player/hit.flac")) std::cout << "Dźwięk nie istnieje!";
     if (!starHitSound.loadFromFile("assets/sounds/star/hit.mp3")) std::cout << "Dźwięk nie istnieje!";
+    if (!perkSound.loadFromFile("assets/sounds/ui/perk.mp3")) std::cout << "Dźwięk nie istnieje!";
+    if (!chargedHitSound.loadFromFile("assets/sounds/ui/charged_shot.wav")) std::cout << "Dźwięk nie istnieje!";
 
     groundTexture.setRepeated(true);
 

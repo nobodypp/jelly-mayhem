@@ -43,10 +43,9 @@ void CollisionManager::BottleCollisions(Player& player)
 
                         if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyGotKilled();
                         perks.snipeKill(distance);
-                        std::cout << distance << "\n";
                     }
 
-                    texts.addText(projectiles.bottleAt(i).getDamage(), true, enemies.jellyAt(j).getBounds());
+                    texts.addText(damage, true, enemies.jellyAt(j).getBounds());
 
                     enemiesHit++;
                 }
