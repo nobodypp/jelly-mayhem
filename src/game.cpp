@@ -145,6 +145,10 @@ void GameManager::handleEvents()
 					if (keyPressed->code == sf::Keyboard::Key::Space)
 					{
 						currentState = GameState::PAUSE;
+						audio.pauseAllSounds();
+						ui.resetBottleTime();
+						player.cancelShooting();
+
 					}
 				}
 				break;
@@ -157,6 +161,7 @@ void GameManager::handleEvents()
 					if (keyPressed->code == sf::Keyboard::Key::Space)
 					{
 						currentState = GameState::PLAY;
+						audio.resumeAllSounds();
 					}
 				}
 

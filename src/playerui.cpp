@@ -38,6 +38,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     deathScreenBackground[1].color = sf::Color::Red;
     deathScreenBackground[2].color = sf::Color::Black;
     deathScreenBackground[3].color = sf::Color::Red;
+
+    // Pause screen background
+    pauseBackground.setFillColor(sf::Color{0, 0, 0, 80});
     
 }
 
@@ -63,7 +66,7 @@ void PlayerUI::render(sf::RenderWindow& window)
         case GameState::PLAY:
         {
             // Bottle charge bar position and size
-            sf::Vector2f leftBottomCorner = {0.f, static_cast<float> (window.getSize().y)};
+            sf::Vector2f leftBottomCorner = {0.f, static_cast<float> (window.getView().getSize().y)};
             bottleSecondaryBar.setPosition({leftBottomCorner.x + windowMargin.x, leftBottomCorner.y - windowMargin.y - bottleBarSize.y});
             window.draw(bottleSecondaryBar);
 
@@ -87,6 +90,15 @@ void PlayerUI::render(sf::RenderWindow& window)
             killText.setString("Kills: " + std::to_string(killCount));
 
             window.draw(killText);
+            break;
+        }
+
+        case GameState::PAUSE:
+        {
+            pauseBackground.setPosition({0, 0});
+            pauseBackground.setSize(window.getView().getSize());
+
+            window.draw(pauseBackground);
             break;
         }
         

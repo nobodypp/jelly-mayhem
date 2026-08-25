@@ -22,6 +22,8 @@ class PlayerUI : public Drawable
         sf::RectangleShape bottleSecondaryBar;
         bool bottleBarActive;
 
+        sf::RectangleShape pauseBackground;
+
         int killCount;
         sf::Font& font;
         sf::Text killText;

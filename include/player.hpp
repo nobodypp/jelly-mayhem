@@ -64,6 +64,8 @@ class Player : public Entity
         std::size_t chargingSoundId;
         std::size_t blockSoundId;
 
+        sf::Vector2f mousePos;
+
 
     public:
         Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks, AudioManager& audio);
@@ -71,6 +73,7 @@ class Player : public Entity
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
         bool shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime);
+        void cancelShooting();
         bool startAiming();
         void startBlocking();
         void inflictDamage(int damage);

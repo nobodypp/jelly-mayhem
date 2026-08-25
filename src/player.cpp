@@ -26,31 +26,37 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
     handsSprite.setOrigin(corpseSprite.getOrigin());
 
     corpseSprite.setPosition({(windowSize.x - corpseSprite.getGlobalBounds().size.x) / 2.0f, (windowSize.y - corpseSprite.getGlobalBounds().size.y) / 2.0f});
-    legsSprite.setPosition(corpseSprite.getPosition());
-    handsSprite.setPosition(corpseSprite.getPosition());
 }
 
 void Player::update(sf::Time deltaTime)
 {
-    // Position and movement update
     if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
+        // Position and movement
         movement(deltaTime);
 
         corpseSprite.move(velocity * perks.getPlayerSpeedMultiplier() * deltaTime.asSeconds());
-        legsSprite.setPosition(corpseSprite.getPosition());
-        handsSprite.setPosition(corpseSprite.getPosition());
+
+        // Right / left facing
+        if (corpseSprite.getGlobalBounds().getCenter().x < mousePos.x) corpseSprite.setScale({1, 1});        
+        else corpseSprite.setScale({-1, 1});
     }
     else if (currentState == state::DYING)
     {
+        // During death animation, move towards the bottom of the screen and rotate
         corpseSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
-        legsSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
-        handsSprite.move(sf::Vector2f{0, dyingSpeed} * deltaTime.asSeconds());
-
         corpseSprite.rotate(dyingRotation * deltaTime.asSeconds());
-        legsSprite.rotate(dyingRotation * deltaTime.asSeconds());
-        handsSprite.rotate(dyingRotation * deltaTime.asSeconds());
     }
+    // If dead / dying sprite should face right by default
+    else corpseSprite.setScale({1, 1});
+
+    // Legs and hands always copy the transformations of the corpse sprite
+    legsSprite.setPosition(corpseSprite.getPosition());
+    handsSprite.setPosition(corpseSprite.getPosition());
+    legsSprite.setScale(corpseSprite.getScale());
+    handsSprite.setScale(corpseSprite.getScale());
+    legsSprite.setRotation(corpseSprite.getRotation());
+    handsSprite.setRotation(corpseSprite.getRotation());
 
     // State transitions
     switch (currentState)
@@ -72,30 +78,8 @@ void Player::update(sf::Time deltaTime)
 
 void Player::render(sf::RenderWindow& window)
 {
-    // Right / left facing
-    if (!std::set{state::DYING, state::DEAD}.contains(currentState))
-    {
-        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-        if (corpseSprite.getGlobalBounds().getCenter().x < mousePos.x)
-        {
-            corpseSprite.setScale({1, 1});
-            legsSprite.setScale({1, 1});
-            handsSprite.setScale({1, 1});
-        }
-        else 
-        {
-            corpseSprite.setScale({-1, 1});
-            legsSprite.setScale({-1, 1});
-            handsSprite.setScale({-1, 1});
-        }
-    }
-    else
-    {
-        corpseSprite.setScale({1, 1});
-        legsSprite.setScale({1, 1});
-        handsSprite.setScale({1, 1});
-    }
+    // Calculate mouse position for other functions
+    mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
     // Legs texture
     if (isRunning) legsSprite.setTexture(legsRunning.getCurrentFrame());
@@ -124,6 +108,7 @@ void Player::render(sf::RenderWindow& window)
             handsSprite.setTexture(assets.playerHandsDefaultTexture);
     }
 
+    // Draw if player is not dead
     if (currentState != state::DEAD)
     {
         window.draw(legsSprite);
@@ -136,7 +121,7 @@ void Player::render(sf::RenderWindow& window)
     window.getView().getCenter() - window.getView().getSize() / 2.f,
     window.getView().getSize()})) currentState = state::DEAD;
 
-    // Render health bar
+    // If alive, render health bar
     if (!std::set{state::DYING, state::DEAD}.contains(currentState))
     {
         health.attachToPosistion(corpseSprite.getGlobalBounds());
@@ -211,6 +196,8 @@ bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
     }
     return false;
 }
+
+void Player::cancelShooting() { if (currentState == state::AIMING) currentState = state::IDLE; }
 
 bool Player::startAiming()
 {

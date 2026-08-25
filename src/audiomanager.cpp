@@ -23,7 +23,12 @@ std::size_t AudioManager::addSound(sf::SoundBuffer &soundBuffer)
 }
 
 void AudioManager::pauseAllSounds()
-{ for (auto& sound : sounds) sound.second.pause(); }
+{
+    for (auto& sound : sounds)
+    {
+        if (sound.second.getStatus() == sf::Sound::Status::Playing) sound.second.pause();
+    }
+}
 
 void AudioManager::resumeAllSounds()
 {
