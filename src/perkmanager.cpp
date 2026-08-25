@@ -82,7 +82,7 @@ float PerkManager::getBottleBoundsScale() { return 1.f + perks.at("group").getLe
 
 float PerkManager::getKnockbackEnemyDamage() { return 1.f + perks.at("knockback").getLevel() * 2.0f; }
 
-float PerkManager::getPlayerSpeedMultiplier() { return 1.f + perks.at("dodger").getLevel() * 0.3f; }
+float PerkManager::getPlayerSpeedMultiplier() { return 1.f + perks.at("dodger").getLevel() * 0.4f; }
 
 float PerkManager::getHealingMultiplier() { return 1.f + perks.at("parry").getLevel() * 0.25f; }
 

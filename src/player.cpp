@@ -19,6 +19,7 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
       dyingRotation(sf::degrees(400)), 
       dieSound(assets.playerDieSound), 
       blockSound(assets.playerHitSound), 
+      charginShotSound(assets.charginHitSound),
       perks(perks)
 {
     // Sprites positions and origins (anchors)
@@ -198,8 +199,14 @@ bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
 {
     if (currentState == state::AIMING)
     {
+        // Stop the charging sound if it was playing
+        charginShotSound.stop();
+
+        // If was aiming, shoot a bottle
         sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
         projectiles.addBottle(bottlePosition, sf::Vector2f(mouseWorldPos), bottleTime);
+
+        // Change state and reset animation
         currentState = state::THROWING;
         bottleThrow.restart();
         return true;
@@ -212,6 +219,9 @@ bool Player::startAiming()
     if (currentState == state::IDLE || currentState == state::HITTING)
     {
         currentState = state::AIMING;
+
+        // If this shot is charged, play the sound
+        if (perks.isNextBottleBoosted()) charginShotSound.play();
         return true;
     }
     return false;

@@ -13,14 +13,14 @@ AssetManager::AssetManager()
 
     if (!bottleBreakSound.loadFromFile("assets/sounds/bottle/break.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!jellyBiteSound.loadFromFile("assets/sounds/jelly/bite.mp3")) std::cout << "Dźwięk nie istnieje!";
-    if (!jellyDieSound.loadFromFile("assets/sounds/jelly/die.wav")) std::cout << "Dźwięk nie istnieje!";
-    if (!jellyShootSound.loadFromFile("assets/sounds/jelly/shoot.ogg")) std::cout << "Dźwięk nie istnieje!";
+    if (!jellyDieSound.loadFromFile("assets/sounds/jelly/die.mp3")) std::cout << "Dźwięk nie istnieje!";
+    if (!jellyShootSound.loadFromFile("assets/sounds/jelly/shoot.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!jellyKnockbackSound.loadFromFile("assets/sounds/jelly/knockback.wav")) std::cout << "Dźwięk nie istnieje!";
     if (!playerDieSound.loadFromFile("assets/sounds/player/die.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!playerHitSound.loadFromFile("assets/sounds/player/hit.flac")) std::cout << "Dźwięk nie istnieje!";
     if (!starHitSound.loadFromFile("assets/sounds/star/hit.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!perkSound.loadFromFile("assets/sounds/ui/perk.mp3")) std::cout << "Dźwięk nie istnieje!";
-    if (!chargedHitSound.loadFromFile("assets/sounds/ui/charged_shot.wav")) std::cout << "Dźwięk nie istnieje!";
+    if (!charginHitSound.loadFromFile("assets/sounds/ui/charging.wav")) std::cout << "Dźwięk nie istnieje!";
 
     groundTexture.setRepeated(true);
 

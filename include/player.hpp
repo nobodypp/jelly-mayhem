@@ -58,6 +58,7 @@ class Player : public Entity
 
         sf::Sound dieSound;
         sf::Sound blockSound;
+        sf::Sound charginShotSound;
 
         PerkManager& perks;
 

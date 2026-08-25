@@ -28,8 +28,6 @@ class PlayerUI : public Drawable
         sf::Text deathScreenText;
 
         PerkManager& perks;
-        
-        sf::Sound chargedShotSound;
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks);

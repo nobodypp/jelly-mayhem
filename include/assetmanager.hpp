@@ -49,5 +49,5 @@ class AssetManager
         sf::SoundBuffer playerHitSound;
         sf::SoundBuffer starHitSound;
         sf::SoundBuffer perkSound;
-        sf::SoundBuffer chargedHitSound;
+        sf::SoundBuffer charginHitSound;
 };

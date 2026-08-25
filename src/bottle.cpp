@@ -17,8 +17,6 @@ Bottle::Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time fl
 
     sprite.setOrigin(spriteOrigin);
     sprite.setPosition(position);
-
-    breakingSound.setVolume(70.f);
 }
 
 void Bottle::update(sf::Time deltaTime)

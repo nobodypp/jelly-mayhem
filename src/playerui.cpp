@@ -15,8 +15,7 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks)
       killText(font), 
       deathScreenBackground(sf::PrimitiveType::TriangleStrip, 4), 
       deathScreenText(font), 
-      perks(perks), 
-      chargedShotSound(assets.chargedHitSound)
+      perks(perks)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -48,9 +47,6 @@ void PlayerUI::update(sf::Time deltaTime)
             if (bottleBarActive) bottleTime += deltaTime;
             else bottleTime = sf::Time::Zero;
             bottleTime = std::clamp(bottleTime, sf::Time::Zero, maxBottleTime);
-
-            // If next shot is charged, play sound
-            if (perks.isNextBottleBoosted() && chargedShotSound.getStatus() == sf::Sound::Status::Stopped) chargedShotSound.play();
             break;
     }
 }
