@@ -24,6 +24,7 @@ void CollisionManager::BottleCollisions(Player& player)
         {
             int enemiesHit = 0;
             int enemiesKilled = 0;
+            
             for (std::size_t j = 0; j < enemies.jelliesCount(); j++)
             {
                 if (projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
@@ -45,8 +46,9 @@ void CollisionManager::BottleCollisions(Player& player)
                         perks.snipeKill(distance);
                     }
 
+                    // Add floating damage text
                     texts.addText(damage, true, enemies.jellyAt(j).getBounds());
-
+                    
                     enemiesHit++;
                 }
             }

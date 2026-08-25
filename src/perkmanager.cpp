@@ -95,4 +95,7 @@ float PerkManager::claimBoostedBottle()
     return reward;
 }
 
-float PerkManager::getDamageRampup(float distance) { return (distance >= longDistance ? perks.at("sniper").getLevel() * 1.f : 0.f) + 1.f; }
+float PerkManager::getDamageRampup(float distance)
+{
+    return distance / longDistance * perks.at("sniper").getLevel() * 0.5f + 1.f;
+}
