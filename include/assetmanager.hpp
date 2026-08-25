@@ -37,6 +37,7 @@ class AssetManager
         std::vector<sf::Texture> starExplodeFrames;
         std::vector<sf::Texture> jellyBitingFrames;
         std::vector<sf::Texture> bottleHitFrames;
+        std::vector<sf::Texture> bottleBarChargedFrames;
 
         sf::Font font;
 
@@ -49,5 +50,5 @@ class AssetManager
         sf::SoundBuffer playerHitSound;
         sf::SoundBuffer starHitSound;
         sf::SoundBuffer perkSound;
-        sf::SoundBuffer charginHitSound;
+        sf::SoundBuffer chargingHitSound;
 };

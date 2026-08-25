@@ -5,6 +5,7 @@
 #include "assetmanager.hpp"
 #include "chromosome.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 
 
 class Star : public Projectile
@@ -29,12 +30,13 @@ class Star : public Projectile
         };
         state currentState;
 
-        sf::Sound hitSound;
-
         bool wasCloseToPlayer;
 
+        AudioManager* audio;
+        AssetManager* assets;
+
     public:
-        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks);
+        Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

@@ -3,15 +3,15 @@
 GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
     perks(assets),
-	projectiles(assets, perks),
-    player(gameWindow.getSize(), assets, projectiles, perks),
+	projectiles(assets, perks, audio),
+    player(gameWindow.getSize(), assets, projectiles, perks, audio),
 	ground(gameWindow.getSize(), assets), 
 	playerView(gameWindow.getDefaultView()), 
 	uiView(playerView),
-	enemies(assets, player, projectiles, randomizer, perks), 
+	enemies(assets, player, projectiles, randomizer, perks, audio), 
 	texts(assets),
 	collisions(enemies, projectiles, texts, perks), 
-	ui(assets, perks), 
+	ui(assets, perks, audio), 
 	currentState(GameState::PLAY), 
 	windowZoom(1.f)
 {}
@@ -30,7 +30,6 @@ void GameManager::GameLoop()
 
 		gameWindow.clear();
 		render();
-
 		gameWindow.display();
 	}
 }
@@ -89,6 +88,24 @@ void GameManager::render()
 			gameWindow.setView(uiView);
 			ui.render(gameWindow);
 			break;
+		
+		case GameState::PAUSE:
+			// Render level
+			gameWindow.setView(playerView);
+
+			ground.render(gameWindow);
+			player.render(gameWindow);
+			enemies.render(gameWindow);
+			projectiles.render(gameWindow);
+			texts.render(gameWindow);
+
+			// Render UI
+			gameWindow.setView(uiView);
+
+			ui.render(gameWindow);
+
+			audio.update();
+			break;
 	}
 }
 
@@ -123,7 +140,26 @@ void GameManager::handleEvents()
 					windowZoom += mouseWheelScrolled->delta * -0.1f;
 					windowZoom = std::max(0.1f, windowZoom);
 				}
+				else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+				{
+					if (keyPressed->code == sf::Keyboard::Key::Space)
+					{
+						currentState = GameState::PAUSE;
+					}
+				}
 				break;
+			
+			case GameState::PAUSE:
+				gameWindow.setView(uiView);
+
+				if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+				{
+					if (keyPressed->code == sf::Keyboard::Key::Space)
+					{
+						currentState = GameState::PLAY;
+					}
+				}
+
 		}
 	}
 }

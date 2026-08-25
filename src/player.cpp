@@ -1,7 +1,7 @@
 #include "player.hpp"
 #include <iostream>
 
-Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks)
+Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks, AudioManager& audio)
     : assets(assets),
       corpseSprite(assets.playerCorpseDefaultTexture),
       legsSprite(assets.playerLegsDefaultTexture),
@@ -17,10 +17,8 @@ Player::Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager&
       projectiles(projectiles), 
       currentState(state::IDLE), 
       dyingRotation(sf::degrees(400)), 
-      dieSound(assets.playerDieSound), 
-      blockSound(assets.playerHitSound), 
-      charginShotSound(assets.charginHitSound),
-      perks(perks)
+      perks(perks), 
+      audio(audio)
 {
     // Sprites positions and origins (anchors)
     corpseSprite.setOrigin(corpseSprite.getLocalBounds().getCenter());
@@ -200,7 +198,7 @@ bool Player::shootBottle(sf::Vector2f mouseWorldPos, sf::Time bottleTime)
     if (currentState == state::AIMING)
     {
         // Stop the charging sound if it was playing
-        charginShotSound.stop();
+        audio.stopSound(chargingSoundId);
 
         // If was aiming, shoot a bottle
         sf::Vector2f bottlePosition = corpseSprite.getGlobalBounds().position + throwHandAbsPosition * corpseSprite.getScale().x;
@@ -221,7 +219,7 @@ bool Player::startAiming()
         currentState = state::AIMING;
 
         // If this shot is charged, play the sound
-        if (perks.isNextBottleBoosted()) charginShotSound.play();
+        if (perks.isNextBottleBoosted()) chargingSoundId = audio.addSound(assets.chargingHitSound);
         return true;
     }
     return false;
@@ -234,7 +232,7 @@ void Player::startBlocking()
         currentState = state::HITTING;
         bottleHit.restart();
 
-        blockSound.play();
+        blockSoundId = audio.addSound(assets.playerHitSound);
     }
 }
 
@@ -246,7 +244,11 @@ void Player::inflictDamage(int damage)
     if (health.GetHealth() <= 0 && !std::set{state::DYING, state::DEAD}.contains(currentState))
     {
         currentState = state::DYING;
-        dieSound.play();
+        
+        // Stop all sounds and play dying sound
+        audio.stopSound(chargingSoundId);
+        audio.stopSound(blockSoundId);
+        audio.addSound(assets.playerDieSound);
     }
 }
 
@@ -261,6 +263,6 @@ int Player::succesfullParry()
     return healing;
 }
 
-bool Player::isAlive() { return currentState != state::DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
+bool Player::isAlive() { return currentState != state::DEAD; }
 
 bool Player::isDying() { return currentState == state::DYING; }

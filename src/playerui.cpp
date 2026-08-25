@@ -1,8 +1,9 @@
 #include "playerui.hpp"
 
 
-PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks)
-    : bottleBarSize({100.f, 20.f}), 
+PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio)
+    : bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f), 
+      bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()), 
       windowMargin({20.f, 20.f}), 
       bottleBarPrimaryColor(100, 100, 100), 
       bottleBarSecondaryColor(200, 200, 200), 
@@ -15,7 +16,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks)
       killText(font), 
       deathScreenBackground(sf::PrimitiveType::TriangleStrip, 4), 
       deathScreenText(font), 
-      perks(perks)
+      perks(perks), 
+      bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
+      audio(audio)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -47,6 +50,8 @@ void PlayerUI::update(sf::Time deltaTime)
             if (bottleBarActive) bottleTime += deltaTime;
             else bottleTime = sf::Time::Zero;
             bottleTime = std::clamp(bottleTime, sf::Time::Zero, maxBottleTime);
+
+            bottleChargingAnimation.update(deltaTime);
             break;
     }
 }
@@ -59,16 +64,28 @@ void PlayerUI::render(sf::RenderWindow& window)
         {
             // Bottle charge bar position and size
             sf::Vector2f leftBottomCorner = {0.f, static_cast<float> (window.getSize().y)};
-            bottlePrimaryBar.setPosition({leftBottomCorner.x + windowMargin.x, leftBottomCorner.y - windowMargin.y - bottleBarSize.y});
-            bottleSecondaryBar.setPosition(bottlePrimaryBar.getPosition());
-            bottlePrimaryBar.setSize({bottleTime.asSeconds() / maxBottleTime.asSeconds() * bottleBarSize.x, bottleBarSize.y});
+            bottleSecondaryBar.setPosition({leftBottomCorner.x + windowMargin.x, leftBottomCorner.y - windowMargin.y - bottleBarSize.y});
+            window.draw(bottleSecondaryBar);
+
+            if (perks.isNextBottleBoosted())
+            {
+                bottleChargedBarSprite.setPosition(bottleSecondaryBar.getPosition());
+                bottleChargedBarSprite.setTexture(bottleChargingAnimation.getCurrentFrame());
+                bottleChargedBarSprite.setTextureRect({{0, 0}, 
+                    {static_cast<int>(bottleTime.asSeconds() / maxBottleTime.asSeconds() * bottleBarSize.x), static_cast<int>(bottleBarSize.y)}});
+                window.draw(bottleChargedBarSprite);
+            }
+            else
+            {
+                bottlePrimaryBar.setPosition(bottleSecondaryBar.getPosition());
+                bottlePrimaryBar.setSize({bottleTime.asSeconds() / maxBottleTime.asSeconds() * bottleBarSize.x, bottleBarSize.y});
+                window.draw(bottlePrimaryBar);
+            }
             
             // Kill count position and text
             killText.setPosition({windowMargin.x, windowMargin.y});
             killText.setString("Kills: " + std::to_string(killCount));
 
-            window.draw(bottleSecondaryBar);
-            window.draw(bottlePrimaryBar);
             window.draw(killText);
             break;
         }

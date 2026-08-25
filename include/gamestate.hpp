@@ -3,5 +3,6 @@
 enum class GameState
 {
     PLAY,
-    LOSE_SCREEN
+    LOSE_SCREEN, 
+    PAUSE
 };

@@ -9,6 +9,7 @@
 #include "entity.hpp"
 #include "chromosome.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 #include <set>
 
 class Jelly : public Entity
@@ -30,7 +31,6 @@ class Jelly : public Entity
         Animation knockbackAnimation;
         sf::Sprite sprite;
         HealthBar health;
-        ProjectileManager* projectiles;
         sf::Vector2f targetPosition;
         sf::Time currentCooldown;
         sf::Time defaultCooldownTime;
@@ -51,15 +51,17 @@ class Jelly : public Entity
         bool hasBiten;
         float level;
 
-        sf::Sound biteSound;
-        sf::Sound dieSound;
-        sf::Sound knockbackSound;
-        sf::Sound shootSound;
-
+        ProjectileManager* projectiles;
         PerkManager* perks;
+        AudioManager* audio;
+        AssetManager* assets;
+
+        std::size_t shootSoundId;
+        std::size_t biteSoundId;
+        std::size_t knockbackSoundId;
         
     public:
-        Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks);
+        Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

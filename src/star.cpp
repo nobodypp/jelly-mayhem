@@ -1,7 +1,7 @@
 #include "star.hpp"
 
 
-Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks)
+Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks, AudioManager& audio)
     : flyAnimation(&assets.starFlyFrames, 10), 
       explodeAnimation(&assets.starExplodeFrames, 10), 
       sprite(flyAnimation.getCurrentFrame()), 
@@ -9,9 +9,10 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
       perks(&perks),
       linearVelocity(ownerChromosome.getStarSpeed() * level), 
       level(level), 
-      hitSound(assets.starHitSound), 
       currentState(state::FLYING), 
-      wasCloseToPlayer(false)
+      wasCloseToPlayer(false), 
+      audio(&audio), 
+      assets(&assets)
 {
     // Velocity vector
     velocity = (targetPos - position).normalized() * linearVelocity;
@@ -77,10 +78,10 @@ void Star::registerHit()
     currentState = state::EXPLODING;
     explodeAnimation.restart();
     if (ownerChromosome != nullptr) ownerChromosome->changeDamageInflicted(getDamage());
-    hitSound.play();
+    audio->addSound(assets->starHitSound);
 }
 
-bool Star::isAlive() { return currentState != state::DESTROY || hitSound.getStatus() == sf::SoundSource::Status::Playing; }
+bool Star::isAlive() { return currentState != state::DESTROY; }
 
 bool Star::isColliding() { return currentState == state::FLYING; }
 

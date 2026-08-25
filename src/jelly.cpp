@@ -1,7 +1,7 @@
 #include "jelly.hpp"
 
 
-Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks)
+Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks, AudioManager& audio)
     : chromosome(chromosome),
       walkingAnimation(&assets.jellyWalkingFrames, 10), 
       deathAnimation(&assets.jellyDyingFrames, 20),
@@ -20,11 +20,9 @@ Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& pro
       hasShot(false), 
       defaultCooldownTime(sf::seconds(1.f)), 
       level(level), 
-      biteSound(assets.jellyBiteSound), 
-      dieSound(assets.jellyDieSound), 
-      knockbackSound(assets.jellyKnockbackSound), 
-      shootSound(assets.jellyShootSound), 
-      perks(&perks)
+      perks(&perks), 
+      audio(&audio), 
+      assets(&assets)
 {
     sprite.setOrigin(sprite.getLocalBounds().getCenter());
     sprite.setPosition(position);
@@ -64,7 +62,7 @@ void Jelly::update(sf::Time deltaTime)
                 shootingAnimatin.restart();
                 hasShot = false;
                 
-                shootSound.play();
+                shootSoundId = audio->addSound(assets->jellyShootSound);
             }
             if ((targetPosition - sprite.getPosition()).length() <= bitingDistance)
             {
@@ -72,7 +70,7 @@ void Jelly::update(sf::Time deltaTime)
                 bitingAnimation.restart();
                 hasBiten = false;
 
-                biteSound.play();
+                biteSoundId = audio->addSound(assets->jellyBiteSound);
             }
             break;
 
@@ -179,10 +177,10 @@ bool Jelly::inflictDamage(int damage)
     // If health below 0, die
     if (health.GetHealth() <= 0 && currentState != state::DYING && currentState != state::DEAD)
     {
-        shootSound.stop();
-        biteSound.stop();
-        knockbackSound.stop();
-        dieSound.play();
+        audio->stopSound(shootSoundId);
+        audio->stopSound(biteSoundId);
+        audio->stopSound(knockbackSoundId);
+        audio->addSound(assets->jellyDieSound);
 
         currentState = state::DYING;
         deathAnimation.restart();
@@ -193,7 +191,7 @@ bool Jelly::inflictDamage(int damage)
     return false;
 }
 
-bool Jelly::isAlive() { return currentState != state::DEAD || dieSound.getStatus() == sf::SoundSource::Status::Playing; }
+bool Jelly::isAlive() { return currentState != state::DEAD; }
 
 bool Jelly::isColliding() { return currentState == state::BITING && !hasBiten; }
 
@@ -214,8 +212,8 @@ void Jelly::registerKnockback(sf::Vector2f playerPosition)
         currentState = state::KNOCKBACK;
         knockbackAnimation.restart();
 
-        biteSound.stop();
-        knockbackSound.play();
+        audio->stopSound(biteSoundId);
+        knockbackSoundId = audio->addSound(assets->jellyKnockbackSound);
     }
 }
 

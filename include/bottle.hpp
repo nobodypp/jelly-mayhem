@@ -6,6 +6,7 @@
 #include "assetmanager.hpp"
 #include "projectile.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 
 
 class Bottle : public Projectile
@@ -21,7 +22,6 @@ class Bottle : public Projectile
         sf::Time timeLeft;
         sf::Clock clock;
         bool damageDealt;
-        sf::Sound breakingSound;
         enum class state
         {
             FLYING, 
@@ -33,8 +33,11 @@ class Bottle : public Projectile
 
         float damageMultiplier;
 
+        AudioManager* audio;
+        AssetManager* assets;
+
     public:
-        Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& assets, PerkManager& perks);
+        Bottle(sf::Vector2f position, sf::Vector2f mouseRelativePos, sf::Time flyingTime, AssetManager& assets, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;

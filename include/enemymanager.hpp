@@ -9,6 +9,7 @@
 #include "manager.hpp"
 #include "chromosome.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 #include <cmath>
 
 class EnemyManager : Manager
@@ -45,9 +46,11 @@ class EnemyManager : Manager
         int killCount;
 
         PerkManager& perks;
+
+        AudioManager& audio;
     
     public:
-        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks);
+        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         std::size_t jelliesCount();

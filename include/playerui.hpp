@@ -4,14 +4,18 @@
 #include "assetmanager.hpp"
 #include "gamestate.hpp"
 #include "perkmanager.hpp"
+#include "animation.hpp"
+#include "audiomanager.hpp"
 
 class PlayerUI : public Drawable
 {
     private:
+        Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
         sf::Vector2f windowMargin;
         sf::Color bottleBarPrimaryColor;
         sf::Color bottleBarSecondaryColor;
+        sf::Sprite bottleChargedBarSprite;
         sf::Time maxBottleTime;
         sf::Time bottleTime;
         sf::RectangleShape bottlePrimaryBar;
@@ -29,8 +33,10 @@ class PlayerUI : public Drawable
 
         PerkManager& perks;
 
+        AudioManager& audio;
+
     public:
-        PlayerUI(AssetManager& assets, PerkManager& perks);
+        PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();

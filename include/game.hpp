@@ -13,6 +13,7 @@
 #include "random.hpp"
 #include "gamestate.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 
 class GameManager
 {
@@ -20,6 +21,7 @@ class GameManager
         static constexpr int winWidth = 1500, winHeight = 1000;
         sf::Clock clock;
         AssetManager assets;
+        AudioManager audio;
         sf::RenderWindow gameWindow;
         sf::View playerView;
         sf::View uiView;

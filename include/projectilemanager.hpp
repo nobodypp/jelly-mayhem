@@ -5,6 +5,7 @@
 #include "star.hpp"
 #include "manager.hpp"
 #include "perkmanager.hpp"
+#include "audiomanager.hpp"
 
 
 class ProjectileManager : public Manager
@@ -12,21 +13,22 @@ class ProjectileManager : public Manager
     private:
         AssetManager& assets;
         PerkManager& perks;
+        AudioManager& audio;
         std::vector<std::unique_ptr<Bottle>> bottles;
         std::vector< std::unique_ptr<Star>> stars;
 
     public:
-        ProjectileManager(AssetManager& assets, PerkManager& perks);
+        ProjectileManager(AssetManager& assets, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
 
         template<typename... Args>
-        void addBottle(Args&&... args) { bottles.push_back(std::make_unique<Bottle>(std::forward<Args>(args)..., assets, perks)); }
+        void addBottle(Args&&... args) { bottles.push_back(std::make_unique<Bottle>(std::forward<Args>(args)..., assets, perks, audio)); }
         std::size_t bottleCount();
         Bottle& bottleAt(std::size_t i);
 
         template<typename... Args>
-        void addStar(Args&&... args) { stars.push_back(std::make_unique<Star>(std::forward<Args>(args)..., assets, perks)); }
+        void addStar(Args&&... args) { stars.push_back(std::make_unique<Star>(std::forward<Args>(args)..., assets, perks, audio)); }
         std::size_t starsCount();
         Star& starAt(std::size_t i);
 };

@@ -20,7 +20,7 @@ AssetManager::AssetManager()
     if (!playerHitSound.loadFromFile("assets/sounds/player/hit.flac")) std::cout << "Dźwięk nie istnieje!";
     if (!starHitSound.loadFromFile("assets/sounds/star/hit.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!perkSound.loadFromFile("assets/sounds/ui/perk.mp3")) std::cout << "Dźwięk nie istnieje!";
-    if (!charginHitSound.loadFromFile("assets/sounds/ui/charging.wav")) std::cout << "Dźwięk nie istnieje!";
+    if (!chargingHitSound.loadFromFile("assets/sounds/ui/charging.wav")) std::cout << "Dźwięk nie istnieje!";
 
     groundTexture.setRepeated(true);
 
@@ -35,6 +35,7 @@ AssetManager::AssetManager()
     loadFramesFromLocation(jellyBitingFrames, "assets/textures/jelly/bite/bite-");
     loadFramesFromLocation(jellyKnockbackFrames, "assets/textures/jelly/knockback/knockback-");
     loadFramesFromLocation(bottleHitFrames, "assets/textures/player/bottle-hit/hit-");
+    loadFramesFromLocation(bottleBarChargedFrames, "assets/textures/ui/charging-bar/bar-");
 }
 
 void AssetManager::loadFramesFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
