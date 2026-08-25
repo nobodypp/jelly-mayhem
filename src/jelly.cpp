@@ -171,7 +171,7 @@ void Jelly::render(sf::RenderWindow& window)
 
     if (!std::set{state::DYING, state::DEAD}.contains(currentState)) health.render(window);
 
-    autoRemoveDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 1.2;
+    autoRemoveDistance = std::sqrt(window.getView().getSize().x * window.getView().getSize().x + window.getView().getSize().y * window.getView().getSize().y) / 1.2;
 }
 
 sf::FloatRect Jelly::getBounds() { return sprite.getGlobalBounds(); }

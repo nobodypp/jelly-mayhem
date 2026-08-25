@@ -51,7 +51,7 @@ class PerkManager
         PerkManager(AssetManager& assets);
         void bottleHitEnemyGroup(unsigned int enemiesNumber);
         float getBottleBoundsScale();
-        void knockbackEnemyGotKilled();
+        void knockbackEnemyHit();
         float getKnockbackEnemyDamage();
         void starDodged();
         float getPlayerSpeedMultiplier();

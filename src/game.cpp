@@ -12,7 +12,8 @@ GameManager::GameManager()
 	texts(assets),
 	collisions(enemies, projectiles, texts, perks), 
 	ui(assets, perks), 
-	currentState(GameState::PLAY)
+	currentState(GameState::PLAY), 
+	windowZoom(1.f)
 {}
 
 void GameManager::GameLoop()
@@ -117,6 +118,11 @@ void GameManager::handleEvents()
 						if (player.shootBottle(gameWindow.mapPixelToCoords(mouseButtonReleased->position), ui.getBottleTime())) ui.resetBottleTime();
 					}
 				}
+				else if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>())
+				{
+					windowZoom += mouseWheelScrolled->delta * -0.1f;
+					windowZoom = std::max(0.1f, windowZoom);
+				}
 				break;
 		}
 	}
@@ -129,6 +135,7 @@ void GameManager::updateViews()
 
 	// Update window size
 	playerView.setSize(sf::Vector2f(gameWindow.getSize()));
+	playerView.zoom(windowZoom);
 
 	uiView.setSize(sf::Vector2f(gameWindow.getSize()));
 	uiView.setCenter(sf::Vector2f(gameWindow.getSize() / 2u));

@@ -24,7 +24,7 @@ void CollisionManager::BottleCollisions(Player& player)
         {
             int enemiesHit = 0;
             int enemiesKilled = 0;
-            
+
             for (std::size_t j = 0; j < enemies.jelliesCount(); j++)
             {
                 if (projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
@@ -34,7 +34,9 @@ void CollisionManager::BottleCollisions(Player& player)
                     float distance = (projectiles.bottleAt(i).getBounds().getCenter() - player.getBounds().getCenter()).length();
                     
                     // Calculate damage from base, perks etc.
-                    int damage = projectiles.bottleAt(i).getDamage() * (enemies.jellyAt(j).isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f) * perks.getDamageRampup(distance);
+                    float knockbackBonus = enemies.jellyAt(j).isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f;
+                    float distanceBonus = perks.getDamageRampup(distance);
+                    int damage = projectiles.bottleAt(i).getDamage() * knockbackBonus * distanceBonus;
 
                     if (enemies.jellyAt(j).inflictDamage(damage))
                     {
@@ -42,12 +44,15 @@ void CollisionManager::BottleCollisions(Player& player)
                         killCount++;
                         enemiesKilled++;
 
-                        if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyGotKilled();
+                        // Register perk objective
                         perks.snipeKill(distance);
                     }
+                    
+                    // Register perk objective
+                    if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyHit();
 
                     // Add floating damage text
-                    texts.addText(damage, true, enemies.jellyAt(j).getBounds());
+                    texts.addText(damage, true, enemies.jellyAt(j).getBounds(), knockbackBonus > 1.f ? "Ogłuszony! " : "");
                     
                     enemiesHit++;
                 }

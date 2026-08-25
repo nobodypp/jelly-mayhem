@@ -26,7 +26,7 @@ void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
     }
 }
 
-void PerkManager::knockbackEnemyGotKilled()
+void PerkManager::knockbackEnemyHit()
 {
     if (perks.at("knockback").increaseObjective())
     {

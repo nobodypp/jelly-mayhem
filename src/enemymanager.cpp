@@ -61,7 +61,7 @@ void EnemyManager::render(sf::RenderWindow& window)
     renderVector(jellies, window);
 
     // Jellies spawning radius should be proportional to the window size
-    spawnDistance = std::sqrt(window.getSize().x * window.getSize().x + window.getSize().y * window.getSize().y) / 2.f;
+    spawnDistance = std::sqrt(window.getView().getSize().x * window.getView().getSize().x + window.getView().getSize().y * window.getView().getSize().y) / 2.f;
 }
 
 std::size_t EnemyManager::jelliesCount() { return jellies.size(); }

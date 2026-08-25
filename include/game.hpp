@@ -35,6 +35,8 @@ class GameManager
 
         GameState currentState;
 
+        float windowZoom;
+
         void handleEvents();
         void update(sf::Time deltaTime);
         void render();
