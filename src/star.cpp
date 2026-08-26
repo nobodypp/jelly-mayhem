@@ -8,11 +8,11 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
       ownerChromosome(&ownerChromosome), 
       perks(&perks),
       linearVelocity(ownerChromosome.getStarSpeed() * level), 
-      level(level), 
       currentState(state::FLYING), 
       wasCloseToPlayer(false), 
       audio(&audio), 
-      assets(&assets)
+      assets(&assets), 
+      damage(ownerChromosome.getStarDamage() * level)
 {
     // Velocity vector
     velocity = (targetPos - position).normalized() * linearVelocity;
@@ -71,7 +71,7 @@ void Star::render(sf::RenderWindow& window)
 
 sf::FloatRect Star::getBounds() { return sprite.getGlobalBounds(); }
 
-int Star::getDamage() { return ownerChromosome->getStarDamage() * level; }
+int Star::getDamage() { return damage; }
 
 void Star::registerHit()
 {

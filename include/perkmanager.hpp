@@ -5,6 +5,7 @@
 #include <functional>
 #include "assetmanager.hpp"
 #include <SFML/Audio.hpp>
+#include <queue>
 
 
 class PerkManager
@@ -46,6 +47,7 @@ class PerkManager
         static constexpr float longDistance = 500.f;
         AssetManager& assets;
         sf::Sound perkSound;
+        std::queue<std::string> announcements;
 
     public:
         PerkManager(AssetManager& assets);
@@ -62,4 +64,5 @@ class PerkManager
         float claimBoostedBottle();
         void snipeKill(float distance);
         float getDamageRampup(float distance);
+        std::string getAnnouncement();
 };

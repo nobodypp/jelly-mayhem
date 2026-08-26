@@ -21,6 +21,7 @@ void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
         if (perks.at("group").increaseObjective())
         {
             perkSound.play();
+            announcements.push("\"Crowd control\" " + (perks.at("group").getLevel() == 1 ? "" : std::to_string(perks.at("group").getLevel()) + " ") + "unlocked!");
             std::cout << "Rozmiar butelki na poziomie " << perks.at("group").getLevel() << "\n";
         }
     }
@@ -31,6 +32,7 @@ void PerkManager::knockbackEnemyHit()
     if (perks.at("knockback").increaseObjective())
     {
         perkSound.play();
+        announcements.push("\"Knockout crits" + (perks.at("knockback").getLevel() == 1 ? "" : std::to_string(perks.at("knockback").getLevel()) + " ") + "\" unlocked!");
         std::cout << "Kryty ogłuszone na poziomie  " << perks.at("knockback").getLevel() << "\n";
     }
 }
@@ -40,6 +42,7 @@ void PerkManager::starDodged()
     if (perks.at("dodger").increaseObjective())
     {
         perkSound.play();
+        announcements.push("\"Dodger" + (perks.at("dodger").getLevel() == 1 ? "" : std::to_string(perks.at("dodger").getLevel()) + " ") + "\" unlocked!");
         std::cout << "Prędkość na poziomie " << perks.at("dodger").getLevel() << "\n";
     }
 }
@@ -49,6 +52,7 @@ void PerkManager::parryKill()
     if (perks.at("parry").increaseObjective())
     {
         perkSound.play();
+        announcements.push("\"Knockout healing" + (perks.at("parry").getLevel() == 1 ? "" : std::to_string(perks.at("parry").getLevel()) + " ") + "\" unlocked!");
         std::cout << "Leczenie na poziomie " << perks.at("parry").getLevel() << "\n";
     }
 }
@@ -62,6 +66,7 @@ void PerkManager::singleKill()
     if (perks.at("single").increaseObjective())
     {
         perkSound.play();
+        announcements.push("\"Single kill boost" + (perks.at("single").getLevel() == 1 ? "" : std::to_string(perks.at("single").getLevel()) + " ") + "\" unlocked!");
         std::cout << "Nagroda za single kill na poziomie " << perks.at("single").getLevel() << "\n";
     }
 }
@@ -73,6 +78,7 @@ void PerkManager::snipeKill(float distance)
         if (perks.at("sniper").increaseObjective())
         {
             perkSound.play();
+            announcements.push("\"Increasing damage" + (perks.at("sniper").getLevel() == 1 ? "" : std::to_string(perks.at("sniper").getLevel()) + " ") + "\" unlocked!");
             std::cout << "Damage rampup na poziomie " << perks.at("sniper").getLevel() << "\n";
         }
     }
@@ -98,4 +104,13 @@ float PerkManager::claimBoostedBottle()
 float PerkManager::getDamageRampup(float distance)
 {
     return distance / longDistance * perks.at("sniper").getLevel() * 0.5f + 1.f;
+}
+
+std::string PerkManager::getAnnouncement()
+{
+    if (announcements.empty()) return "";
+
+    std::string result = announcements.front();
+    announcements.pop();
+    return result;
 }

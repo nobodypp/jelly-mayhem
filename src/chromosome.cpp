@@ -49,7 +49,7 @@ void Chromosome::applyMutation()
 {
     for(auto& stat: stats)
     {
-        mutateArray(stat.second);
+        stat.second = mutateArray(stat.second);
     }
 
     redColor = mutateArray(redColor);

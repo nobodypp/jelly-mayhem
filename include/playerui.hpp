@@ -10,6 +10,7 @@
 class PlayerUI : public Drawable
 {
     private:
+        static constexpr sf::Time announcementDefaultTime = sf::seconds(2.f);
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
         sf::Vector2f windowMargin;
@@ -39,6 +40,9 @@ class PlayerUI : public Drawable
 
         sf::Time gameTime;
         sf::Text timeText;
+
+        sf::Text announcementText;
+        sf::Time announcementTimeLeft;
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio);

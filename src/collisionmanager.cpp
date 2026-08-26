@@ -52,7 +52,7 @@ void CollisionManager::BottleCollisions(Player& player)
                     if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyHit();
 
                     // Add floating damage text
-                    texts.addText(damage, true, enemies.jellyAt(j).getBounds(), knockbackBonus > 1.f ? "Ogłuszony! " : "");
+                    texts.addText(damage, true, enemies.jellyAt(j).getBounds(), knockbackBonus > 1.f ? "Knocked out! " : "");
                     
                     enemiesHit++;
                 }
@@ -93,14 +93,14 @@ void CollisionManager::meleeCollisions(Player& player)
                 if (player.isHitting())
                 {
                     enemies.jellyAt(i).registerKnockback(player.getBounds().position + player.getBounds().getCenter());
-                    texts.addText(player.getMeleeDamage(), true, enemies.jellyAt(i).getBounds(), "Blok! ");
+                    texts.addText(player.getMeleeDamage(), true, enemies.jellyAt(i).getBounds(), "Block! ");
                     if (enemies.jellyAt(i).inflictDamage(player.getMeleeDamage()))
                     {
                         // If killed
                         killCount++;
 
                         int healed = player.succesfullParry();
-                        texts.addText(-healed, true, player.getBounds(), "Kill blokiem! ");
+                        texts.addText(-healed, true, player.getBounds(), "Block kill! ");
 
                         perks.parryKill();
                     }

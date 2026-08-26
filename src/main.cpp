@@ -3,5 +3,5 @@
 int main()
 {
 	GameManager game;
-	game.GameLoop();
+	game.GameLoop();	
 }

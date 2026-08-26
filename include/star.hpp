@@ -20,7 +20,6 @@ class Star : public Projectile
         sf::Vector2f velocity;
         Chromosome* ownerChromosome;
         PerkManager* perks;
-        float level;
 
         enum class state
         {
@@ -34,6 +33,8 @@ class Star : public Projectile
 
         AudioManager* audio;
         AssetManager* assets;
+
+        int damage;
 
     public:
         Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chromosome& ownerChromosome, float level, AssetManager& assets, PerkManager& perks, AudioManager& audio);

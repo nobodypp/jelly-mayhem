@@ -9,7 +9,7 @@ class DamageText: public Drawable
 {
     private:
         static constexpr float spawnRadius = 40.f;
-        sf::Time absoluteTime;
+        static constexpr sf::Time absoluteTime = sf::seconds(1.f);
         sf::Time timeLeft;
         sf::Text text;
 

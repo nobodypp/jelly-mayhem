@@ -20,7 +20,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
       audio(audio), 
       gameTime(sf::Time::Zero), 
-      timeText(assets.font)
+      timeText(assets.font), 
+      announcementText(assets.font), 
+      announcementTimeLeft(sf::Time::Zero)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -28,12 +30,17 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
 
     // Kill count text
     killText.setCharacterSize(25);
+    killText.setFillColor(sf::Color::White);
+    killText.setOutlineColor(sf::Color::Black);
+    killText.setOutlineThickness(1.f);
 
     // Game over text
     deathScreenText.setCharacterSize(50);
     deathScreenText.setString("Geym O'vah");
     deathScreenText.setOrigin(deathScreenText.getLocalBounds().getCenter());
     deathScreenText.setFillColor(sf::Color::White);
+    deathScreenText.setOutlineColor(sf::Color::Black);
+    deathScreenText.setOutlineThickness(1.f);
 
     // Death screen background
     deathScreenBackground[0].color = sf::Color::Black;
@@ -45,9 +52,16 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     pauseBackground.setFillColor(sf::Color{0, 0, 0, 80});
 
     // Time text
-    timeText.setFillColor(sf::Color::White);
     timeText.setCharacterSize(25);
-    
+    timeText.setFillColor(sf::Color::White);
+    timeText.setOutlineColor(sf::Color::Black);
+    timeText.setOutlineThickness(1.f);
+
+    // Perk announcement text
+    announcementText.setCharacterSize(25);
+    announcementText.setFillColor(sf::Color::White);
+    announcementText.setOutlineColor(sf::Color::Black);
+    announcementText.setOutlineThickness(1.f);
 }
 
 void PlayerUI::update(sf::Time deltaTime)
@@ -63,6 +77,13 @@ void PlayerUI::update(sf::Time deltaTime)
             bottleChargingAnimation.update(deltaTime);
 
             gameTime += deltaTime;
+
+            if (announcementTimeLeft > sf::Time::Zero) announcementTimeLeft = std::max(sf::Time::Zero, announcementTimeLeft - deltaTime);
+            else if (const std::string text = perks.getAnnouncement(); text != "")
+            {
+                announcementText.setString(text);
+                announcementTimeLeft = announcementDefaultTime;
+            }
             break;
     }
 }
@@ -107,6 +128,15 @@ void PlayerUI::render(sf::RenderWindow& window)
             timeText.setString(minutes + ":" + seconds);
             timeText.setPosition(rightTopCorner + sf::Vector2f{-windowMargin.x - timeText.getGlobalBounds().size.x, windowMargin.y});
             window.draw(timeText);
+
+            // Perk announcement
+            if (announcementTimeLeft > sf::Time::Zero)
+            {
+                announcementText.setOrigin(announcementText.getLocalBounds().getCenter());
+                announcementText.setPosition({window.getView().getSize().x / 2.f , windowMargin.y});
+                announcementText.setFillColor(sf::Color{255, 255, 255, static_cast<uint8_t>(announcementTimeLeft.asSeconds() / announcementDefaultTime.asSeconds() * 255)});
+                window.draw(announcementText);
+            }
 
             break;
         }
