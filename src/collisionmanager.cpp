@@ -27,7 +27,7 @@ void CollisionManager::BottleCollisions(Player& player)
 
             for (std::size_t j = 0; j < enemies.jelliesCount(); j++)
             {
-                if (projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
+                if (enemies.jellyAt(j).isAlive() && projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
                 {
                     projectiles.bottleAt(i).registerHit();
 

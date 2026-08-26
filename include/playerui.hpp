@@ -37,6 +37,9 @@ class PlayerUI : public Drawable
 
         AudioManager& audio;
 
+        sf::Time gameTime;
+        sf::Text timeText;
+
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;

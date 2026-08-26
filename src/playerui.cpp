@@ -18,7 +18,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       deathScreenText(font), 
       perks(perks), 
       bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
-      audio(audio)
+      audio(audio), 
+      gameTime(sf::Time::Zero), 
+      timeText(assets.font)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -41,6 +43,10 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
 
     // Pause screen background
     pauseBackground.setFillColor(sf::Color{0, 0, 0, 80});
+
+    // Time text
+    timeText.setFillColor(sf::Color::White);
+    timeText.setCharacterSize(25);
     
 }
 
@@ -55,6 +61,8 @@ void PlayerUI::update(sf::Time deltaTime)
             bottleTime = std::clamp(bottleTime, sf::Time::Zero, maxBottleTime);
 
             bottleChargingAnimation.update(deltaTime);
+
+            gameTime += deltaTime;
             break;
     }
 }
@@ -88,8 +96,18 @@ void PlayerUI::render(sf::RenderWindow& window)
             // Kill count position and text
             killText.setPosition({windowMargin.x, windowMargin.y});
             killText.setString("Kills: " + std::to_string(killCount));
-
             window.draw(killText);
+
+            // Time text
+            sf::Vector2f rightTopCorner = {static_cast<float> (window.getView().getSize().x), 0.f};
+            std::string seconds = std::to_string(static_cast<int>(gameTime.asSeconds()) % 60);
+            if (seconds.length() == 1) seconds = "0" + seconds;
+            std::string minutes = std::to_string(static_cast<int>(gameTime.asSeconds()) / 60);
+            if (minutes.length() == 1) minutes = "0" + minutes;
+            timeText.setString(minutes + ":" + seconds);
+            timeText.setPosition(rightTopCorner + sf::Vector2f{-windowMargin.x - timeText.getGlobalBounds().size.x, windowMargin.y});
+            window.draw(timeText);
+
             break;
         }
 
@@ -117,9 +135,14 @@ void PlayerUI::render(sf::RenderWindow& window)
             killText.setOrigin(killText.getLocalBounds().getCenter());
             killText.setPosition(deathScreenText.getPosition() + sf::Vector2f{0.f, 100.f});
 
+            // Time
+            timeText.setOrigin(timeText.getLocalBounds().getCenter());
+            timeText.setPosition(killText.getPosition() + sf::Vector2f{0.f, 100.f});
+
             window.draw(deathScreenBackground);
             window.draw(deathScreenText);
             window.draw(killText);
+            window.draw(timeText);
             break;
         }
     }
