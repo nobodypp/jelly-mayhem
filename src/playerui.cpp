@@ -22,7 +22,8 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       gameTime(sf::Time::Zero), 
       timeText(assets.font), 
       announcementText(assets.font), 
-      announcementTimeLeft(sf::Time::Zero)
+      announcementTimeLeft(sf::Time::Zero), 
+      exampleButton({500, 500}, {300, 100}, "example", 30.f, assets, audio)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -76,8 +77,10 @@ void PlayerUI::update(sf::Time deltaTime)
 
             bottleChargingAnimation.update(deltaTime);
 
+            // Update time counter
             gameTime += deltaTime;
 
+            // If a new announcement is pending, show it
             if (announcementTimeLeft > sf::Time::Zero) announcementTimeLeft = std::max(sf::Time::Zero, announcementTimeLeft - deltaTime);
             else if (const std::string text = perks.getAnnouncement(); text != "")
             {
@@ -143,10 +146,13 @@ void PlayerUI::render(sf::RenderWindow& window)
 
         case GameState::PAUSE:
         {
+            // Black background
             pauseBackground.setPosition({0, 0});
             pauseBackground.setSize(window.getView().getSize());
-
             window.draw(pauseBackground);
+
+            exampleButton.render(window);
+
             break;
         }
         
@@ -188,3 +194,13 @@ void PlayerUI::resetBottleTime() { bottleBarActive = false; }
 void PlayerUI::updateKillCount(int kills) { killCount = kills; }
 
 void PlayerUI::setGameState(GameState state) { currentState = state; }
+
+void PlayerUI::mouseClicked(sf::Vector2f mousePos)
+{
+    exampleButton.mouseClicked(mousePos);
+}
+
+void PlayerUI::mouseReleased(sf::Vector2f mousePos)
+{
+    exampleButton.mouseReleased(mousePos);
+}

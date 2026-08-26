@@ -6,12 +6,10 @@ AudioManager::AudioManager()
 
 void AudioManager::update()
 {
-    for (auto& sound : sounds)
+    for (auto i = sounds.begin(); i != sounds.end();)
     {
-        if (sound.second.getStatus() == sf::Sound::Status::Stopped)
-        {
-            sounds.erase(sound.first);
-        }
+        if (i->second.getStatus() == sf::Sound::Status::Stopped) i = sounds.erase(i);
+        else ++i;
     }
 }
 

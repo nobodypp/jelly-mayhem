@@ -20,7 +20,8 @@ AssetManager::AssetManager()
     if (!playerHitSound.loadFromFile("assets/sounds/player/hit.flac")) std::cout << "Dźwięk nie istnieje!";
     if (!starHitSound.loadFromFile("assets/sounds/star/hit.mp3")) std::cout << "Dźwięk nie istnieje!";
     if (!perkSound.loadFromFile("assets/sounds/ui/perk.mp3")) std::cout << "Dźwięk nie istnieje!";
-    if (!chargingHitSound.loadFromFile("assets/sounds/ui/charging.wav")) std::cout << "Dźwięk nie istnieje!";
+    if (!chargingHitSound.loadFromFile("assets/sounds/player/charging.wav")) std::cout << "Dźwięk nie istnieje!";
+    if (!buttonSound.loadFromFile("assets/sounds/ui/button.wav")) std::cout << "Dźwięk nie istnieje!";
 
     groundTexture.setRepeated(true);
 

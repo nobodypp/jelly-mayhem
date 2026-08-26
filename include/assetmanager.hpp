@@ -51,4 +51,5 @@ class AssetManager
         sf::SoundBuffer starHitSound;
         sf::SoundBuffer perkSound;
         sf::SoundBuffer chargingHitSound;
+        sf::SoundBuffer buttonSound;
 };
