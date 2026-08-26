@@ -137,7 +137,18 @@ void PlayerUI::render(sf::RenderWindow& window)
             {
                 announcementText.setOrigin(announcementText.getLocalBounds().getCenter());
                 announcementText.setPosition({window.getView().getSize().x / 2.f , windowMargin.y});
-                announcementText.setFillColor(sf::Color{255, 255, 255, static_cast<uint8_t>(announcementTimeLeft.asSeconds() / announcementDefaultTime.asSeconds() * 255)});
+
+                // Transparency
+                std::uint8_t a = static_cast<uint8_t>(announcementTimeLeft.asSeconds() / announcementDefaultTime.asSeconds() * 255);
+                
+                sf::Color color = announcementText.getFillColor();
+                color.a = a;
+                announcementText.setFillColor(color);
+
+                color = announcementText.getOutlineColor();
+                color.a = a;
+                announcementText.setOutlineColor(color);
+
                 window.draw(announcementText);
             }
 

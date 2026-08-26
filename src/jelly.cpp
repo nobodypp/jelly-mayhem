@@ -222,3 +222,5 @@ void Jelly::move(sf::Vector2f translation) { sprite.move(translation); }
 Chromosome Jelly::getChromosome() { return chromosome; }
 
 bool Jelly::isDuringKnockback() { return currentState == state::KNOCKBACK; }
+
+bool Jelly::isDying() { return currentState == state::DYING; }

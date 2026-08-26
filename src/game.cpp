@@ -2,7 +2,7 @@
 
 GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
-    perks(assets),
+    perks(assets, audio),
 	projectiles(assets, perks, audio),
     player(gameWindow.getSize(), assets, projectiles, perks, audio),
 	ground(gameWindow.getSize(), assets), 

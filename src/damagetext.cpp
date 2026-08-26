@@ -6,7 +6,7 @@ DamageText::DamageText(AssetManager& assets, int damage, bool positive, sf::Floa
       timeLeft(absoluteTime)
 {
     // Set text position, size, string and color
-    text.setCharacterSize(20);
+    text.setCharacterSize(characterSize);
     text.setString(description + (damage < 0 ? "+" : "") +  std::to_string(-damage));
     text.setFillColor(positive ? sf::Color::Green : sf::Color::Red);
     sf::Vector2f deviation = sf::Vector2f(spawnRadius, 0.f).rotatedBy(sf::degrees(rand() % 360));
@@ -24,9 +24,18 @@ void DamageText::update(sf::Time deltaTime)
 
 void DamageText::render(sf::RenderWindow& window)
 {
+    std::uint8_t a = static_cast<std::uint8_t> (timeLeft.asSeconds() / absoluteTime.asSeconds() * 255);
+
+    // Fil color transparency
     sf::Color color = text.getFillColor();
-    color.a = static_cast<int> (timeLeft.asSeconds() / absoluteTime.asSeconds() * 255);
+    color.a = a;
     text.setFillColor(color);
+
+    // Outline color transparency
+    color = text.getOutlineColor();
+    color.a = a;
+    text.setOutlineColor(color);
+
     window.draw(text);
 }
 

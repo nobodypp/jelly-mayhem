@@ -20,25 +20,29 @@ void CollisionManager::BottleCollisions(Player& player)
 {
     for (std::size_t i = 0; i < projectiles.bottleCount(); i++)
     {
-        if (projectiles.bottleAt(i).isColliding())
+        auto& bottle = projectiles.bottleAt(i);
+        
+        if (bottle.isColliding())
         {
             int enemiesHit = 0;
             int enemiesKilled = 0;
 
             for (std::size_t j = 0; j < enemies.jelliesCount(); j++)
             {
-                if (enemies.jellyAt(j).isAlive() && projectiles.bottleAt(i).getBounds().findIntersection(enemies.jellyAt(j).getBounds()))
-                {
-                    projectiles.bottleAt(i).registerHit();
+                auto& jelly = enemies.jellyAt(j);
 
-                    float distance = (projectiles.bottleAt(i).getBounds().getCenter() - player.getBounds().getCenter()).length();
+                if (!jelly.isDying() && jelly.isAlive() && bottle.getBounds().findIntersection(jelly.getBounds()))
+                {
+                    bottle.registerHit();
+
+                    float distance = (bottle.getBounds().getCenter() - player.getBounds().getCenter()).length();
                     
                     // Calculate damage from base, perks etc.
-                    float knockbackBonus = enemies.jellyAt(j).isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f;
+                    float knockbackBonus = jelly.isDuringKnockback() ? perks.getKnockbackEnemyDamage() : 1.f;
                     float distanceBonus = perks.getDamageRampup(distance);
-                    int damage = projectiles.bottleAt(i).getDamage() * knockbackBonus * distanceBonus;
+                    int damage = bottle.getDamage() * knockbackBonus * distanceBonus;
 
-                    if (enemies.jellyAt(j).inflictDamage(damage))
+                    if (jelly.inflictDamage(damage))
                     {
                         // If jelly was killed
                         killCount++;
@@ -49,10 +53,10 @@ void CollisionManager::BottleCollisions(Player& player)
                     }
                     
                     // Register perk objective
-                    if (enemies.jellyAt(j).isDuringKnockback()) perks.knockbackEnemyHit();
+                    if (jelly.isDuringKnockback()) perks.knockbackEnemyHit();
 
                     // Add floating damage text
-                    texts.addText(damage, true, enemies.jellyAt(j).getBounds(), knockbackBonus > 1.f ? "Knocked out! " : "");
+                    texts.addText(damage, true, jelly.getBounds(), knockbackBonus > 1.f ? "Knocked out! " : "");
                     
                     enemiesHit++;
                 }
@@ -68,16 +72,18 @@ void CollisionManager::StarCollisions(Player& player)
 {
     for (std::size_t i = 0; i < projectiles.starsCount(); i++)
     {
-        if (projectiles.starAt(i).isColliding())
+        auto& star = projectiles.starAt(i);
+
+        if (star.isColliding())
         {
-            if (projectiles.starAt(i).getBounds().findIntersection(player.getBounds()))
+            if (star.getBounds().findIntersection(player.getBounds()))
             {
-                projectiles.starAt(i).registerHit();
-                player.inflictDamage(projectiles.starAt(i).getDamage());
-                texts.addText(projectiles.starAt(i).getDamage(), false, player.getBounds());
+                star.registerHit();
+                player.inflictDamage(star.getDamage());
+                texts.addText(star.getDamage(), false, player.getBounds());
             }
             // Check if star was dodged by player
-            else if (distanceBetweenTwoRects(player.getBounds(), projectiles.starAt(i).getBounds()) <= dodgeDistance) projectiles.starAt(i).registerProximityToPlayer();
+            else if (distanceBetweenTwoRects(player.getBounds(), star.getBounds()) <= dodgeDistance) star.registerProximityToPlayer();
         }
     }
 }
@@ -86,15 +92,17 @@ void CollisionManager::meleeCollisions(Player& player)
 {
     for (std::size_t i = 0; i < enemies.jelliesCount(); i++)
     {
-        if (enemies.jellyAt(i).isColliding())
+        auto& jelly = enemies.jellyAt(i);
+
+        if (jelly.isColliding())
         {
-            if (enemies.jellyAt(i).getBounds().findIntersection(player.getBounds()))
+            if (jelly.getBounds().findIntersection(player.getBounds()))
             {
                 if (player.isHitting())
                 {
-                    enemies.jellyAt(i).registerKnockback(player.getBounds().position + player.getBounds().getCenter());
-                    texts.addText(player.getMeleeDamage(), true, enemies.jellyAt(i).getBounds(), "Block! ");
-                    if (enemies.jellyAt(i).inflictDamage(player.getMeleeDamage()))
+                    jelly.registerKnockback(player.getBounds().position + player.getBounds().getCenter());
+                    texts.addText(player.getMeleeDamage(), true, jelly.getBounds(), "Block! ");
+                    if (jelly.inflictDamage(player.getMeleeDamage()))
                     {
                         // If killed
                         killCount++;
@@ -107,9 +115,9 @@ void CollisionManager::meleeCollisions(Player& player)
                 }
                 else
                 {
-                    enemies.jellyAt(i).registerHit();
-                    player.inflictDamage(enemies.jellyAt(i).getDamage());
-                    texts.addText(enemies.jellyAt(i).getDamage(), false, player.getBounds());
+                    jelly.registerHit();
+                    player.inflictDamage(jelly.getDamage());
+                    texts.addText(jelly.getDamage(), false, player.getBounds());
                 }
             }
         }

@@ -116,7 +116,7 @@ class PlayerUI : public Drawable
                 }
         };
 
-        static constexpr sf::Time announcementDefaultTime = sf::seconds(2.f);
+        static constexpr sf::Time announcementDefaultTime = sf::seconds(5.f);
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
         sf::Vector2f windowMargin;

@@ -75,4 +75,5 @@ class Jelly : public Entity
         void move(sf::Vector2f translation);
         Chromosome getChromosome();
         bool isDuringKnockback();
+        bool isDying();
 };

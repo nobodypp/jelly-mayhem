@@ -1,10 +1,10 @@
 #include "perkmanager.hpp"
 
 
-PerkManager::PerkManager(AssetManager& assets)
-    : singleKillReward(false), 
-      assets(assets), 
-      perkSound(assets.perkSound)
+PerkManager::PerkManager(AssetManager &assets, AudioManager& audio)
+    : singleKillReward(false),
+      assets(assets),
+      audio(audio)
 {
     perks.insert({"group", Perk{[](unsigned int level){return 10;}}});
     perks.insert({"knockback", Perk{[](unsigned int level){return (level + 1) * 5;}}});
@@ -18,69 +18,38 @@ void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
 {
     if (enemiesNumber >= 4 + perks.at("group").getLevel() * 2)
     {
-        if (perks.at("group").increaseObjective())
-        {
-            perkSound.play();
-            announcements.push("\"Crowd control\" " + (perks.at("group").getLevel() == 1 ? "" : std::to_string(perks.at("group").getLevel()) + " ") + "unlocked!");
-            std::cout << "Rozmiar butelki na poziomie " << perks.at("group").getLevel() << "\n";
-        }
+        if (perks.at("group").increaseObjective()) addAnouncement("Crowd control", "group");
     }
 }
 
 void PerkManager::knockbackEnemyHit()
 {
-    if (perks.at("knockback").increaseObjective())
-    {
-        perkSound.play();
-        announcements.push("\"Knockout crits" + (perks.at("knockback").getLevel() == 1 ? "" : std::to_string(perks.at("knockback").getLevel()) + " ") + "\" unlocked!");
-        std::cout << "Kryty ogłuszone na poziomie  " << perks.at("knockback").getLevel() << "\n";
-    }
+    if (perks.at("knockback").increaseObjective()) addAnouncement("Knockout crits", "knockback");   
 }
 
 void PerkManager::starDodged()
 {
-    if (perks.at("dodger").increaseObjective())
-    {
-        perkSound.play();
-        announcements.push("\"Dodger" + (perks.at("dodger").getLevel() == 1 ? "" : std::to_string(perks.at("dodger").getLevel()) + " ") + "\" unlocked!");
-        std::cout << "Prędkość na poziomie " << perks.at("dodger").getLevel() << "\n";
-    }
+    if (perks.at("dodger").increaseObjective()) addAnouncement("Dodger", "dodger");
 }
 
 void PerkManager::parryKill()
 {
-    if (perks.at("parry").increaseObjective())
-    {
-        perkSound.play();
-        announcements.push("\"Knockout healing" + (perks.at("parry").getLevel() == 1 ? "" : std::to_string(perks.at("parry").getLevel()) + " ") + "\" unlocked!");
-        std::cout << "Leczenie na poziomie " << perks.at("parry").getLevel() << "\n";
-    }
+    if (perks.at("parry").increaseObjective()) addAnouncement("Healing upgrade", "parry");
 }
 
 void PerkManager::singleKill()
 {
-    if (perks.at("single").getLevel() >= 1)
-    {
-        singleKillReward = true;
-    }
-    if (perks.at("single").increaseObjective())
-    {
-        perkSound.play();
-        announcements.push("\"Single kill boost" + (perks.at("single").getLevel() == 1 ? "" : std::to_string(perks.at("single").getLevel()) + " ") + "\" unlocked!");
-        std::cout << "Nagroda za single kill na poziomie " << perks.at("single").getLevel() << "\n";
-    }
+    // If already have perk, next shot will be boosted
+    if (perks.at("single").getLevel() >= 1) singleKillReward = true;
+    
+    if (perks.at("single").increaseObjective()) addAnouncement("Single kill boost", "single");
 }
 
 void PerkManager::snipeKill(float distance)
 {
     if (distance >= longDistance)
     {
-        if (perks.at("sniper").increaseObjective())
-        {
-            perkSound.play();
-            announcements.push("\"Increasing damage" + (perks.at("sniper").getLevel() == 1 ? "" : std::to_string(perks.at("sniper").getLevel()) + " ") + "\" unlocked!");
-            std::cout << "Damage rampup na poziomie " << perks.at("sniper").getLevel() << "\n";
-        }
+        if (perks.at("sniper").increaseObjective()) addAnouncement("Increasing damage", "sniper");
     }
 }
 
@@ -113,4 +82,11 @@ std::string PerkManager::getAnnouncement()
     std::string result = announcements.front();
     announcements.pop();
     return result;
+}
+
+
+void PerkManager::addAnouncement(std::string name, std::string key)
+{
+    audio.addSound(assets.perkSound);
+    announcements.push(name + " " + (perks.at(key).getLevel() == 1 ? "" : std::to_string(perks.at(key).getLevel()) + " ") + "unlocked!");    
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <functional>
 #include "assetmanager.hpp"
-#include <SFML/Audio.hpp>
+#include "audiomanager.hpp"
 #include <queue>
 
 
@@ -46,11 +46,13 @@ class PerkManager
         bool singleKillReward;
         static constexpr float longDistance = 500.f;
         AssetManager& assets;
-        sf::Sound perkSound;
+        AudioManager& audio;
         std::queue<std::string> announcements;
 
+        void addAnouncement(std::string name, std::string key);
+
     public:
-        PerkManager(AssetManager& assets);
+        PerkManager(AssetManager& assets, AudioManager& audio);
         void bottleHitEnemyGroup(unsigned int enemiesNumber);
         float getBottleBoundsScale();
         void knockbackEnemyHit();
