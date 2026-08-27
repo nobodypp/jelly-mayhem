@@ -1,16 +1,21 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types:
+      - published
 
 permissions:
   contents: write
 
 jobs:
 
+  # ==========================================================
+  # Build Linux + Windows packages
+  # ==========================================================
+
   build:
+
     name: ${{ matrix.name }}
 
     runs-on: ubuntu-latest
@@ -40,13 +45,14 @@ jobs:
 
 
       # ------------------------------------------------------
-      # Set version from Git tag
+      # Set version from GitHub Release tag
       # ------------------------------------------------------
 
       - name: Set version
         shell: bash
         run: |
-          echo "PROJECT1_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          echo "PROJECT1_VERSION=${{ github.event.release.tag_name }}" \
+            | sed 's/^v//' >> "$GITHUB_ENV"
 
 
       - name: Show version
@@ -66,9 +72,11 @@ jobs:
             gcc-mingw-w64-x86-64 \
             g++-mingw-w64-x86-64 \
             ntldd
-      
 
-      # Linux dev tools
+
+      # ------------------------------------------------------
+      # Linux build dependencies
+      # ------------------------------------------------------
 
       - name: Install Linux Tools
         if: matrix.preset == 'linux-release'
@@ -103,18 +111,18 @@ jobs:
           cmake --install build/${{ matrix.preset }}
 
 
-      # --------------------------------------------------------
+      # ------------------------------------------------------
       # Package
-      # --------------------------------------------------------
+      # ------------------------------------------------------
 
       - name: Package
         run: |
           cpack --preset ${{ matrix.preset }}-package
 
 
-      # --------------------------------------------------------
-      # Upload package
-      # --------------------------------------------------------
+      # ------------------------------------------------------
+      # Upload package as workflow artifact
+      # ------------------------------------------------------
 
       - name: Upload package
         uses: actions/upload-artifact@v5
@@ -124,12 +132,12 @@ jobs:
 
 
   # ==========================================================
-  # Create GitHub Release
+  # Add packages to existing GitHub Release
   # ==========================================================
 
   create-release:
 
-    name: Create GitHub Release
+    name: Add packages to GitHub Release
 
     needs: build
 
@@ -137,9 +145,9 @@ jobs:
 
     steps:
 
-      # --------------------------------------------------------
+      # ------------------------------------------------------
       # Download Linux + Windows packages
-      # --------------------------------------------------------
+      # ------------------------------------------------------
 
       - name: Download packages
         uses: actions/download-artifact@v5
@@ -147,23 +155,23 @@ jobs:
           path: release
 
 
-      # --------------------------------------------------------
+      # ------------------------------------------------------
       # Show downloaded files
-      # --------------------------------------------------------
+      # ------------------------------------------------------
 
       - name: List release files
         run: |
           find release -type f -print
 
 
-      # --------------------------------------------------------
-      # Create GitHub Release
-      # --------------------------------------------------------
+      # ------------------------------------------------------
+      # Upload packages to existing GitHub Release
+      # ------------------------------------------------------
 
-      - name: Create GitHub Release
+      - name: Upload packages to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.release.tag_name }}
           files: |
             release/**/*.tar.gz
             release/**/*.zip
-          generate_release_notes: true
