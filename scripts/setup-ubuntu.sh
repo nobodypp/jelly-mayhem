@@ -21,7 +21,8 @@ sudo apt-get install -y \
     libfreetype6-dev \
     libharfbuzz-dev \
     libvorbis-dev \
-    libflac-dev
+    libflac-dev \
+    libmbedtls-dev
 
 echo
 echo "Project1 Ubuntu environment is ready."

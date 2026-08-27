@@ -40,6 +40,10 @@ FetchContent_Declare(
     SYSTEM
 )
 
+# Project1 does not use SFML Network.
+# Disable it to avoid unnecessary dependencies such as MbedTLS.
+set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(SFML)
 
 
