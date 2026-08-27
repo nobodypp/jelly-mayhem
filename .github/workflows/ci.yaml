@@ -48,7 +48,7 @@ jobs:
       # Linux dev tools
 
       - name: Install Linux Tools
-        if: matrix.preset == 'windows-release'
+        if: matrix.preset == 'linux-release'
         run: ./scripts/setup-ubuntu.sh
 
 
