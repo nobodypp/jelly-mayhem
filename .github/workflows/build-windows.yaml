@@ -17,3 +17,15 @@ jobs:
 
       - name: Build
         run: cmake --build --preset windows-release
+
+      - name: Install
+        run: cmake --install build/windows-release
+
+      - name: Package
+        run: cpack --preset windows-release-package
+      
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Project1-Windows
+          path: build/windows-release/*.zip

@@ -113,22 +113,6 @@ install(
     DESTINATION "${CMAKE_INSTALL_BINDIR}/assets"
 )
 
-# ============================================================
-# Windows / MinGW runtime (temporary)
-# ============================================================
-
-if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-
-    install(
-        FILES
-            /usr/lib/gcc/x86_64-w64-mingw32/13-posix/libstdc++-6.dll
-            /usr/lib/gcc/x86_64-w64-mingw32/13-posix/libgcc_s_seh-1.dll
-            /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-    )
-
-endif()
-
 
 # ============================================================
 # Packaging
