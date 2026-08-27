@@ -17,10 +17,11 @@ sudo apt-get install -y \
     libxcursor-dev \
     libxi-dev \
     libudev-dev \
+    libgl1-mesa-dev \
     libfreetype6-dev \
-    libflac-dev \
-    libogg-dev \
-    libvorbis-dev
+    libharfbuzz-dev \
+    libvorbis-dev \
+    libflac-dev
 
 echo
 echo "Project1 Ubuntu environment is ready."
