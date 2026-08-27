@@ -1,27 +1,29 @@
 cmake_minimum_required(VERSION 3.28)
 
 project(Project1
-    VERSION 1.0
+    VERSION 1.0.0
     LANGUAGES CXX
 )
 
 # ============================================================
-# C++ configuration
+# Project configuration
 # ============================================================
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Executables created by the build go to build/bin/
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# All executables go to:
+# build/<preset>/bin/
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
     ${CMAKE_BINARY_DIR}/bin
 )
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ============================================================
-# SFML
+# Dependencies
 # ============================================================
 
 include(FetchContent)
@@ -63,14 +65,29 @@ add_executable(main
 
 target_include_directories(main
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 target_link_libraries(main
     PRIVATE
         SFML::Graphics
         SFML::Audio
+)
 
+
+# ============================================================
+# Development
+# ============================================================
+
+# Make assets available next to the executable after every build.
+#
+# This is only for local development.
+# Release packaging uses install() below.
+
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:main>/assets"
 )
 
 
@@ -80,47 +97,48 @@ target_link_libraries(main
 
 include(GNUInstallDirs)
 
-# Copy executable to install/bin/
+# Install executable and its runtime dependencies.
+#
+# On Windows this is important because the executable may depend
+# on SFML DLLs and other runtime libraries.
+
 install(
     TARGETS main
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Copy assets to install/bin/assets/
+# Install game assets.
 install(
-    DIRECTORY assets/
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/assets
-)
-
-
-# ============================================================
-# Development helper
-# ============================================================
-
-# Build + install the project with one command:
-#
-# cmake --build build --target install_project
-#
-add_custom_target(install_project
-    COMMAND ${CMAKE_COMMAND}
-        --install ${CMAKE_BINARY_DIR}
-        --prefix ${CMAKE_SOURCE_DIR}/install
-    DEPENDS main
-)
-
-
-# ============================================================
-# Visual Studio
-# ============================================================
-
-set_property(
-    DIRECTORY
-    PROPERTY VS_STARTUP_PROJECT main
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
+    DESTINATION "${CMAKE_INSTALL_BINDIR}/assets"
 )
 
 # ============================================================
-add_custom_command(TARGET main POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets
-        $<TARGET_FILE_DIR:main>/assets
-)
+# Windows / MinGW runtime (temporary)
+# ============================================================
+
+if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+
+    install(
+        FILES
+            /usr/lib/gcc/x86_64-w64-mingw32/13-posix/libstdc++-6.dll
+            /usr/lib/gcc/x86_64-w64-mingw32/13-posix/libgcc_s_seh-1.dll
+            /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+endif()
+
+
+# ============================================================
+# Packaging
+# ============================================================
+
+set(CPACK_PACKAGE_NAME "Project1")
+set(CPACK_PACKAGE_VENDOR "fsliwa")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+
+# ZIP is portable and does not require an installer framework.
+set(CPACK_GENERATOR "ZIP")
+
+include(CPack)

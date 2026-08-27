@@ -1,0 +1,49 @@
+{
+    "version": 6,
+
+    "configurePresets": [
+        {
+            "name": "linux-debug",
+            "displayName": "Linux Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/linux-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/windows-debug",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/windows-mingw.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+
+        {
+            "name": "windows-release",
+            "displayName": "Windows Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/windows-release",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/windows-mingw.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/windows-release"
+            }
+        }
+    ],
+
+    "packagePresets": [
+        {
+            "name": "windows-release-package",
+            "displayName": "Windows Release Package",
+            "configurePreset": "windows-release",
+            "generators": [
+                "ZIP"
+            ]
+        }
+    ]
+}
