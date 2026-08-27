@@ -166,7 +166,7 @@ install(
 # Install Windows runtime dependencies
 # ------------------------------------------------------------
 
-if(PROJECT1_WINDOWS_MINGW)
+if(PROJECT1_WINDOWS_CROSS_COMPILE)
 
     install(
         SCRIPT
