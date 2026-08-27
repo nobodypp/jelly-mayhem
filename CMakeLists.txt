@@ -109,7 +109,10 @@ include(GNUInstallDirs)
 # Windows runtime dependency detection
 # ------------------------------------------------------------
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(
+    CMAKE_CROSSCOMPILING
+    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
+)
 
     find_program(
         NTLDD_EXECUTABLE
