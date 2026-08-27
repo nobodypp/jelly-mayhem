@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.10](https://github.com/nobodypp/project1/compare/v1.0.9...v1.0.10) (2026-08-27)
+
+
+### Bug Fixes
+
+* windows package had no libraries ([551d15f](https://github.com/nobodypp/project1/commit/551d15f4bcca9985122337f69fd8a60a8ab55bc4))
+
 ## [1.0.9](https://github.com/nobodypp/project1/compare/v1.0.8...v1.0.9) (2026-08-27)
 
 
