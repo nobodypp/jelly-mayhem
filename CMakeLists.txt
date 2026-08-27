@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
+# ============================================================
+# Project
+# ============================================================
+
 set(PROJECT1_VERSION "1.0.0" CACHE STRING "Project version")
 
 project(Project1
@@ -18,10 +22,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# All executables go to:
+# Executables are placed in:
 # build/<preset>/bin/
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/bin
+    "${CMAKE_BINARY_DIR}/bin"
 )
 
 
@@ -31,6 +35,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
 include(FetchContent)
 
+# Project1 does not use SFML Network.
+# Disable it to avoid unnecessary dependencies such as MbedTLS.
+set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -39,10 +47,6 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL
     SYSTEM
 )
-
-# Project1 does not use SFML Network.
-# Disable it to avoid unnecessary dependencies such as MbedTLS.
-set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(SFML)
 
@@ -86,10 +90,10 @@ target_link_libraries(main
 # Development
 # ============================================================
 
-# Make assets available next to the executable after every build.
+# Copy assets next to the executable after every build.
 #
-# This is only for local development.
-# Release packaging uses install() below.
+# This is intended for local development.
+# Release packages use install() instead.
 
 add_custom_command(TARGET main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -106,31 +110,30 @@ include(GNUInstallDirs)
 
 
 # ------------------------------------------------------------
-# Windows runtime dependency detection
+# Windows cross-compilation runtime dependencies
+#
+# When building Windows binaries from another operating system
+# using MinGW, ntldd is used to locate the required DLLs.
 # ------------------------------------------------------------
+
+set(PROJECT1_WINDOWS_CROSS_COMPILE
+    FALSE
+)
 
 if(
     CMAKE_CROSSCOMPILING
     AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
 )
+
+    set(PROJECT1_WINDOWS_CROSS_COMPILE
+        TRUE
+    )
 
     find_program(
         NTLDD_EXECUTABLE
         ntldd
         REQUIRED
     )
-
-endif()
-
-
-# ------------------------------------------------------------
-# Generate Windows runtime installation script
-# ------------------------------------------------------------
-
-if(
-    CMAKE_CROSSCOMPILING
-    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
-)
 
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake/InstallWindowsRuntime.cmake.in"
@@ -167,10 +170,7 @@ install(
 # Install Windows runtime dependencies
 # ------------------------------------------------------------
 
-if(
-    CMAKE_CROSSCOMPILING
-    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
-)
+if(PROJECT1_WINDOWS_CROSS_COMPILE)
 
     install(
         SCRIPT
