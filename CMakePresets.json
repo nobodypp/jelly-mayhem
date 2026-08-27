@@ -36,6 +36,21 @@
         }
     ],
 
+    "buildPresets": [
+        {
+            "name": "linux-debug",
+            "configurePreset": "linux-debug"
+        },
+        {
+            "name": "windows-debug",
+            "configurePreset": "windows-debug"
+        },
+        {
+            "name": "windows-release",
+            "configurePreset": "windows-release"
+        }
+    ],
+
     "packagePresets": [
         {
             "name": "windows-release-package",
