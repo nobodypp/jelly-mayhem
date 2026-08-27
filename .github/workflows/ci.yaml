@@ -6,46 +6,37 @@ on:
       - '**'
   pull_request:
 
-permissions:
-  contents: read
-
 jobs:
 
-  # ==========================================================
-  # Linux
-  # ==========================================================
+  build:
+    name: ${{ matrix.name }}
 
-  build-linux:
-    name: Linux Build
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+          - name: Linux Release
+            preset: linux-release
+
+          - name: Windows Release
+            preset: windows-release
+
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Linux dependencies
-        run: ./scripts/setup-ubuntu.sh
 
-      - name: Configure
-        run: cmake --preset linux-release
+      # ------------------------------------------------------
+      # Windows cross-compilation dependencies
+      # ------------------------------------------------------
 
-      - name: Build
-        run: cmake --build --preset linux-release
-
-
-  # ==========================================================
-  # Windows
-  # ==========================================================
-
-  build-windows:
-    name: Windows Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Install Tools
+      - name: Install Compile Tools
+        if: matrix.preset == 'windows-release'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -53,8 +44,20 @@ jobs:
             g++-mingw-w64-x86-64 \
             ntldd
 
+
+      # ------------------------------------------------------
+      # Configure
+      # ------------------------------------------------------
+
       - name: Configure
-        run: cmake --preset windows-release
+        run: |
+          cmake --preset ${{ matrix.preset }}
+
+
+      # ------------------------------------------------------
+      # Build
+      # ------------------------------------------------------
 
       - name: Build
-        run: cmake --build --preset windows-release
+        run: |
+          cmake --build --preset ${{ matrix.preset }}

@@ -4,9 +4,9 @@ set -euo pipefail
 
 echo "Installing Project1 Ubuntu dependencies..."
 
-sudo apt-get update
+sudo apt update
 
-sudo apt-get install -y \
+sudo apt install -y \
     build-essential \
     cmake \
     ninja-build \
