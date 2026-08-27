@@ -108,46 +108,167 @@ add_custom_command(TARGET main POST_BUILD
 
 include(GNUInstallDirs)
 
-# ------------------------------------------------------------
-# Windows cross-compilation runtime dependencies
-#
-# When building Windows binaries from another operating system
-# using MinGW, ntldd is used to locate the required DLLs.
-# ------------------------------------------------------------
 
-set(PROJECT1_WINDOWS_CROSS_COMPILE
-    FALSE
-)
+# ------------------------------------------------------------
+# Runtime dependency search paths
+# ------------------------------------------------------------
 
 if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
-    set(PROJECT1_WINDOWS_CROSS_COMPILE
-        TRUE
+    execute_process(
+        COMMAND
+            "${CMAKE_CXX_COMPILER}"
+            -print-search-dirs
+        OUTPUT_VARIABLE
+            PROJECT1_GCC_SEARCH_DIRS
+        ERROR_VARIABLE
+            PROJECT1_GCC_SEARCH_ERROR
+        RESULT_VARIABLE
+            PROJECT1_GCC_SEARCH_RESULT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-    find_program(
-        NTLDD_EXECUTABLE
-        ntldd
-        REQUIRED
+    if(NOT PROJECT1_GCC_SEARCH_RESULT EQUAL 0)
+        message(FATAL_ERROR
+            "Could not determine MinGW runtime library paths.\n"
+            "Compiler: ${CMAKE_CXX_COMPILER}\n\n"
+            "${PROJECT1_GCC_SEARCH_ERROR}"
+        )
+    endif()
+
+    string(
+        REGEX MATCH
+        "libraries:[^\n]*"
+        PROJECT1_GCC_LIBRARIES_LINE
+        "${PROJECT1_GCC_SEARCH_DIRS}"
     )
 
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/InstallWindowsRuntime.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/InstallWindowsRuntime.cmake"
-        @ONLY
+    if(NOT PROJECT1_GCC_LIBRARIES_LINE)
+        message(FATAL_ERROR
+            "Could not determine GCC library search paths."
+        )
+    endif()
+
+    string(
+        REGEX REPLACE
+        "^libraries:[ \t]*=[ \t]*"
+        ""
+        PROJECT1_GCC_LIBRARY_PATHS
+        "${PROJECT1_GCC_LIBRARIES_LINE}"
+    )
+
+    string(
+        REPLACE
+        ":"
+        ";"
+        PROJECT1_GCC_LIBRARY_PATHS
+        "${PROJECT1_GCC_LIBRARY_PATHS}"
+    )
+
+    set(PROJECT1_RUNTIME_DIRECTORIES)
+
+    foreach(PROJECT1_PATH IN LISTS PROJECT1_GCC_LIBRARY_PATHS)
+
+        if(IS_DIRECTORY "${PROJECT1_PATH}")
+
+            list(
+                APPEND
+                PROJECT1_RUNTIME_DIRECTORIES
+                "${PROJECT1_PATH}"
+            )
+
+        endif()
+
+    endforeach()
+
+    list(
+        REMOVE_DUPLICATES
+        PROJECT1_RUNTIME_DIRECTORIES
+    )
+
+    message(STATUS "MinGW runtime search directories:")
+
+    foreach(PROJECT1_PATH IN LISTS PROJECT1_RUNTIME_DIRECTORIES)
+
+        message(STATUS "  ${PROJECT1_PATH}")
+
+    endforeach()
+
+
+    # --------------------------------------------------------
+    # CMake runtime dependency analyzer
+    # --------------------------------------------------------
+
+    set(
+        CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM
+        windows+pe
+    )
+
+    set(
+        CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL
+        objdump
+    )
+
+    set(
+        CMAKE_GET_RUNTIME_DEPENDENCIES_COMMAND
+        "${CMAKE_OBJDUMP}"
     )
 
 endif()
 
 
 # ------------------------------------------------------------
-# Install executable
+# Install executable and collect runtime dependencies
 # ------------------------------------------------------------
 
-install(
-    TARGETS main
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+message(STATUS "CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES:")
+foreach(DIR IN LISTS CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES)
+    message(STATUS "  ${DIR}")
+endforeach()
+
+message(STATUS "CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_OBJDUMP = ${CMAKE_OBJDUMP}")
+
+if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
+    install(
+        TARGETS main
+        RUNTIME_DEPENDENCY_SET Project1Runtime
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+else()
+
+    install(
+        TARGETS main
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+endif()
+
+
+# ------------------------------------------------------------
+# Install Windows runtime dependencies
+# ------------------------------------------------------------
+
+if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
+    install(
+        RUNTIME_DEPENDENCY_SET Project1Runtime
+
+        DESTINATION
+            ${CMAKE_INSTALL_BINDIR}
+
+        DIRECTORIES
+            ${PROJECT1_RUNTIME_DIRECTORIES}
+
+        PRE_EXCLUDE_REGEXES
+            "^(advapi32|gdi32|kernel32|opengl32|user32|winmm|msvcrt)\\.dll$"
+            "^api-ms-win-.*"
+            "^ext-ms-win-.*"
+    )
+
+endif()
 
 
 # ------------------------------------------------------------
@@ -160,20 +281,6 @@ install(
     DESTINATION
         "${CMAKE_INSTALL_BINDIR}/assets"
 )
-
-
-# ------------------------------------------------------------
-# Install Windows runtime dependencies
-# ------------------------------------------------------------
-
-if(PROJECT1_WINDOWS_CROSS_COMPILE)
-
-    install(
-        SCRIPT
-            "${CMAKE_CURRENT_BINARY_DIR}/InstallWindowsRuntime.cmake"
-    )
-
-endif()
 
 
 # ============================================================
