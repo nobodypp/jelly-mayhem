@@ -1,0 +1,9 @@
+# Changelog
+
+## [1.0.6](https://github.com/nobodypp/project1/compare/v1.0.5...v1.0.6) (2026-08-27)
+
+
+### Bug Fixes
+
+* release please test ([f3dcc1e](https://github.com/nobodypp/project1/commit/f3dcc1ea7f57b54be0b152b0bb436b27d4baeee6))
+* release please test ([1b474fe](https://github.com/nobodypp/project1/commit/1b474fe25f58fb4c2bf3fcabd1c93c3b14f8eabb))
