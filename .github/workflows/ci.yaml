@@ -35,7 +35,7 @@ jobs:
       # Windows cross-compilation dependencies
       # ------------------------------------------------------
 
-      - name: Install Compile Tools
+      - name: Install Windows Tools
         if: matrix.preset == 'windows-release'
         run: |
           sudo apt-get update
@@ -43,6 +43,13 @@ jobs:
             gcc-mingw-w64-x86-64 \
             g++-mingw-w64-x86-64 \
             ntldd
+      
+
+      # Linux dev tools
+
+      - name: Install Linux Tools
+        if: matrix.preset == 'windows-release'
+        run: ./scripts/setup-ubuntu.sh
 
 
       # ------------------------------------------------------
