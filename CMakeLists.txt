@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.28)
 
+set(PROJECT1_VERSION "1.0.0" CACHE STRING "Project version")
+
 project(Project1
-    VERSION 1.0.0
+    VERSION ${PROJECT1_VERSION}
     LANGUAGES CXX
 )
+
 
 # ============================================================
 # Project configuration
@@ -97,32 +100,97 @@ add_custom_command(TARGET main POST_BUILD
 
 include(GNUInstallDirs)
 
-# Install executable and its runtime dependencies.
-#
-# On Windows this is important because the executable may depend
-# on SFML DLLs and other runtime libraries.
+
+# ------------------------------------------------------------
+# Windows runtime dependency detection
+# ------------------------------------------------------------
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
+    find_program(
+        NTLDD_EXECUTABLE
+        ntldd
+        REQUIRED
+    )
+
+endif()
+
+
+# ------------------------------------------------------------
+# Generate Windows runtime installation script
+# ------------------------------------------------------------
+
+if(
+    CMAKE_CROSSCOMPILING
+    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
+)
+
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/InstallWindowsRuntime.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/InstallWindowsRuntime.cmake"
+        @ONLY
+    )
+
+endif()
+
+
+# ------------------------------------------------------------
+# Install executable
+# ------------------------------------------------------------
 
 install(
     TARGETS main
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Install game assets.
+
+# ------------------------------------------------------------
+# Install assets
+# ------------------------------------------------------------
+
 install(
-    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
-    DESTINATION "${CMAKE_INSTALL_BINDIR}/assets"
+    DIRECTORY
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
+    DESTINATION
+        "${CMAKE_INSTALL_BINDIR}/assets"
 )
+
+
+# ------------------------------------------------------------
+# Install Windows runtime dependencies
+# ------------------------------------------------------------
+
+if(
+    CMAKE_CROSSCOMPILING
+    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
+)
+
+    install(
+        SCRIPT
+            "${CMAKE_CURRENT_BINARY_DIR}/InstallWindowsRuntime.cmake"
+    )
+
+endif()
 
 
 # ============================================================
 # Packaging
 # ============================================================
 
-set(CPACK_PACKAGE_NAME "Project1")
-set(CPACK_PACKAGE_VENDOR "fsliwa")
-set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
-
-# ZIP is portable and does not require an installer framework.
-set(CPACK_GENERATOR "ZIP")
-
 include(CPack)
+
+set(CPACK_PACKAGE_NAME
+    "Project1"
+)
+
+set(CPACK_PACKAGE_VERSION
+    "${PROJECT_VERSION}"
+)
+
+set(CPACK_PACKAGE_VENDOR
+    "fsliwa"
+)
+
+set(CPACK_GENERATOR
+    "ZIP"
+)

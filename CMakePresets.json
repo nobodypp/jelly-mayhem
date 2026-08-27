@@ -13,6 +13,17 @@
         },
 
         {
+            "name": "linux-release",
+            "displayName": "Linux Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/linux-release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/linux-release"
+            }
+        },
+
+        {
             "name": "windows-debug",
             "displayName": "Windows Debug",
             "generator": "Ninja",
@@ -42,6 +53,10 @@
             "configurePreset": "linux-debug"
         },
         {
+            "name": "linux-release", 
+            "configurePreset": "linux-release"
+        },
+        {
             "name": "windows-debug",
             "configurePreset": "windows-debug"
         },
@@ -52,6 +67,13 @@
     ],
 
     "packagePresets": [
+        {
+            "name": "linux-release-package",
+            "displayName": "Linux Release Package", 
+            "configurePreset": "linux-release"
+
+        },
+
         {
             "name": "windows-release-package",
             "displayName": "Windows Release Package",
