@@ -36,7 +36,7 @@ jobs:
       # ------------------------------------------------------
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
 
       # ------------------------------------------------------
@@ -103,21 +103,67 @@ jobs:
           cmake --install build/${{ matrix.preset }}
 
 
-      # ------------------------------------------------------
+      # --------------------------------------------------------
       # Package
-      # ------------------------------------------------------
+      # --------------------------------------------------------
 
       - name: Package
         run: |
           cpack --preset ${{ matrix.preset }}-package
 
 
-      # ------------------------------------------------------
-      # Upload package as workflow artifact
-      # ------------------------------------------------------
+      # --------------------------------------------------------
+      # Upload package
+      # --------------------------------------------------------
 
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
           name: Project1-${{ matrix.name }}
           path: build/${{ matrix.preset }}/${{ matrix.package }}
+
+
+  # ==========================================================
+  # Create GitHub Release
+  # ==========================================================
+
+  create-release:
+
+    name: Create GitHub Release
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # --------------------------------------------------------
+      # Download Linux + Windows packages
+      # --------------------------------------------------------
+
+      - name: Download packages
+        uses: actions/download-artifact@v5
+        with:
+          path: release
+
+
+      # --------------------------------------------------------
+      # Show downloaded files
+      # --------------------------------------------------------
+
+      - name: List release files
+        run: |
+          find release -type f -print
+
+
+      # --------------------------------------------------------
+      # Create GitHub Release
+      # --------------------------------------------------------
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/**/*.tar.gz
+            release/**/*.zip
+          generate_release_notes: true
