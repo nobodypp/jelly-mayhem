@@ -108,11 +108,6 @@ add_custom_command(TARGET main POST_BUILD
 
 include(GNUInstallDirs)
 
-message(STATUS "CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
-message(STATUS "CMAKE_CROSSCOMPILING = ${CMAKE_CROSSCOMPILING}")
-message(STATUS "MINGW = ${MINGW}")
-message(STATUS "CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
-
 # ------------------------------------------------------------
 # Windows cross-compilation runtime dependencies
 #

@@ -80,8 +80,9 @@ jobs:
       - name: Set version
         shell: bash
         run: |
-          echo "PROJECT1_VERSION=${{ needs.release-please.outputs.tag_name }}" \
-            | sed 's/^v//' >> "$GITHUB_ENV"
+          TAG="${{ needs.release-please.outputs.tag_name }}"
+          VERSION="${TAG#v}"
+          echo "PROJECT1_VERSION=$VERSION" >> "$GITHUB_ENV"
 
 
       - name: Show version
