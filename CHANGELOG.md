@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9](https://github.com/nobodypp/project1/compare/v1.0.8...v1.0.9) (2026-08-27)
+
+
+### Bug Fixes
+
+* release workflow update 2 ([c1d0cbe](https://github.com/nobodypp/project1/commit/c1d0cbebc77c3727083c98a75e99f69b509e6fea))
+
 ## [1.0.8](https://github.com/nobodypp/project1/compare/v1.0.7...v1.0.8) (2026-08-27)
 
 
