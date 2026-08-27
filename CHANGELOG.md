@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.11](https://github.com/nobodypp/project1/compare/v1.0.10...v1.0.11) (2026-08-27)
+
+
+### Bug Fixes
+
+* dll searching fixed ([4218210](https://github.com/nobodypp/project1/commit/4218210fcb886aa1c03b7c5b769480d0091f0029))
+
 ## [1.0.10](https://github.com/nobodypp/project1/compare/v1.0.9...v1.0.10) (2026-08-27)
 
 
