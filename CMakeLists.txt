@@ -108,6 +108,10 @@ add_custom_command(TARGET main POST_BUILD
 
 include(GNUInstallDirs)
 
+message(STATUS "CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
+message(STATUS "CMAKE_CROSSCOMPILING = ${CMAKE_CROSSCOMPILING}")
+message(STATUS "MINGW = ${MINGW}")
+message(STATUS "CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
 
 # ------------------------------------------------------------
 # Windows cross-compilation runtime dependencies
@@ -120,10 +124,7 @@ set(PROJECT1_WINDOWS_CROSS_COMPILE
     FALSE
 )
 
-if(
-    CMAKE_CROSSCOMPILING
-    AND CMAKE_SYSTEM_NAME STREQUAL "Windows"
-)
+if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     set(PROJECT1_WINDOWS_CROSS_COMPILE
         TRUE
@@ -170,7 +171,7 @@ install(
 # Install Windows runtime dependencies
 # ------------------------------------------------------------
 
-if(PROJECT1_WINDOWS_CROSS_COMPILE)
+if(PROJECT1_WINDOWS_MINGW)
 
     install(
         SCRIPT
