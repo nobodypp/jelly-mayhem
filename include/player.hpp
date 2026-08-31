@@ -21,8 +21,16 @@ class Player : public Entity
         static constexpr float acceleration = 400.f;
         static constexpr float speedFriction = 800.f;
         static constexpr float dyingSpeed = 500.f;
+        static constexpr sf::Vector2f maxVelocity = {200.f, 200.f};
+        static constexpr sf::Vector2f throwHandAbsPosition = {46.f, 36.f};
+        static constexpr sf::Angle dyingRotation = sf::degrees(400);
+        static constexpr int maxHealth = 500;
+        static constexpr float bottleThrowFps = 18;
         
-        AssetManager assets;
+        AssetManager& assets;
+        ProjectileManager& projectiles;
+        PerkManager& perks;
+        AudioManager& audio;
 
         Animation legsRunning;
         Animation bottleThrow;
@@ -32,21 +40,14 @@ class Player : public Entity
         sf::Sprite handsSprite;
         sf::Sprite legsSprite;
 
-        sf::FloatRect croppedBounds;
-
         sf::Vector2f velocity;
-        const sf::Vector2f maxVelocity;
         bool isRunning;
 
         HealthBar health;
 
-        sf::Vector2f throwHandAbsPosition;
-
-        sf::Angle dyingRotation;
-
         void movement(sf::Time deltaTime);
 
-        enum class state
+        enum class State
         {
             IDLE,
             AIMING, 
@@ -55,20 +56,15 @@ class Player : public Entity
             DYING, 
             DEAD
         };
-        state currentState;
-
-        ProjectileManager& projectiles;
-        PerkManager& perks;
-        AudioManager& audio;
+        State currentState;
 
         std::size_t chargingSoundId;
         std::size_t blockSoundId;
 
         sf::Vector2f mousePos;
 
-
     public:
-        Player(sf::Vector2u windowSize, AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks, AudioManager& audio);
+        Player(AssetManager& assets, ProjectileManager& projectiles, PerkManager& perks, AudioManager& audio);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::FloatRect getBounds() override;
@@ -82,4 +78,5 @@ class Player : public Entity
         int succesfullParry();
         bool isAlive();
         bool isDying();
+        void reset();
 };

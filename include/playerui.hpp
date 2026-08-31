@@ -29,6 +29,7 @@ class PlayerUI : public Drawable
                 sf::Text text;
 
                 bool isClicked = false;
+                bool wasClicked = false;
 
                 bool isInsideButton(sf::Vector2f pos)
                 {
@@ -41,7 +42,7 @@ class PlayerUI : public Drawable
                 AudioManager* audio;
             
             public:
-                Button(sf::Vector2f position, sf::Vector2f size, std::string text, float circleRadius, AssetManager& assets, AudioManager& audio)
+                Button(sf::Vector2f size, std::string text, float circleRadius, AssetManager& assets, AudioManager& audio)
                     : size(size), 
                       leftTopCorner(circleRadius), 
                       rightTopCorner(circleRadius), 
@@ -59,7 +60,7 @@ class PlayerUI : public Drawable
                     this->text.setOrigin(this->text.getLocalBounds().getCenter());
                     this->text.setFillColor(textColor);
 
-                    setPosition(position);
+                    if (circleRadius > std::min(size.x, size.y) / 2) std::cout << "Correct button circle radius!\n";
                 }
 
                 void render(sf::RenderWindow& window)
@@ -108,22 +109,31 @@ class PlayerUI : public Drawable
                 {
                     if (isClicked && isInsideButton(mousePos))
                     {
+                        wasClicked = true;
                         isClicked = false;
                         audio->addSound(assets->buttonSound);
                         return true;
                     }
                     return false;
                 }
+
+                void resetWasClicked() { wasClicked = false; }
+
+                bool getWasClicked() { return wasClicked; }
         };
 
         static constexpr sf::Time announcementDefaultTime = sf::seconds(5.f);
+        static constexpr sf::Vector2f windowMargin{20.f, 20.f};
+        static constexpr sf::Color bottleBarPrimaryColor{100, 100, 100};
+        static constexpr sf::Color bottleBarSecondaryColor{200, 200, 200};
+        static constexpr sf::Time maxBottleTime = sf::seconds(1.5f);
+
+        PerkManager& perks;
+        AudioManager& audio;
+
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
-        sf::Vector2f windowMargin;
-        sf::Color bottleBarPrimaryColor;
-        sf::Color bottleBarSecondaryColor;
         sf::Sprite bottleChargedBarSprite;
-        sf::Time maxBottleTime;
         sf::Time bottleTime;
         sf::RectangleShape bottlePrimaryBar;
         sf::RectangleShape bottleSecondaryBar;
@@ -132,7 +142,6 @@ class PlayerUI : public Drawable
         sf::RectangleShape pauseBackground;
 
         int killCount;
-        sf::Font& font;
         sf::Text killText;
 
         GameState currentState;
@@ -140,17 +149,15 @@ class PlayerUI : public Drawable
         sf::VertexArray deathScreenBackground;
         sf::Text deathScreenText;
 
-        PerkManager& perks;
-
-        AudioManager& audio;
-
         sf::Time gameTime;
         sf::Text timeText;
 
         sf::Text announcementText;
         sf::Time announcementTimeLeft;
 
-        Button exampleButton;
+        Button retryButton;
+
+        
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio);
@@ -163,4 +170,5 @@ class PlayerUI : public Drawable
         void setGameState(GameState state);
         void mouseClicked(sf::Vector2f mousePos);
         void mouseReleased(sf::Vector2f mousePos);
+        bool getRetry();
 };

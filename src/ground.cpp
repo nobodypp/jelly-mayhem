@@ -1,8 +1,8 @@
 #include "ground.hpp"
 
 
-Ground::Ground(sf::Vector2u windowSize, AssetManager& assets)
-    : sprite(assets.groundTexture, sf::IntRect({0, 0}, {(int) windowSize.x, (int) windowSize.y}))
+Ground::Ground(AssetManager& assets)
+    : sprite(assets.groundTexture)
 {}
 
 void Ground::render(sf::RenderWindow& window)

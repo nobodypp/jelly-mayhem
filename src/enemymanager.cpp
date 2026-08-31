@@ -5,16 +5,15 @@ EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManag
     : assets(assets), 
       projectiles(projectiles),
       player(player), 
-      killCount(0), 
-      spawningCooldown(sf::seconds(3.f)),
-      timeToNextSpawn(spawningCooldown), 
+      perks(perks), 
+      audio(audio), 
       randomizer(randomizer), 
+      killCount(0), 
+      timeToNextSpawn(spawningCooldown),
       currentLevel(1.0), 
       mutationRate(baseMutationRate), 
       bestFitness(0), 
-      spawnDistance(910.f), 
-      perks(perks), 
-      audio(audio)
+      spawnDistance(910.f)
 {}
 
 void EnemyManager::update(sf::Time deltaTime)
@@ -142,3 +141,13 @@ int EnemyManager::getTotalFitness()
 }
 
 int EnemyManager::getKillCount() { return killCount; }
+
+void EnemyManager::reset()
+{
+    jellies.clear();
+    currentLevel = 1.0f;
+    killCount = 0;
+    bestFitness = 0;
+    mutationRate = baseMutationRate;
+    timeToNextSpawn = spawningCooldown;
+}

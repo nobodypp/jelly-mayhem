@@ -21,13 +21,13 @@ class Star : public Projectile
         Chromosome* ownerChromosome;
         PerkManager* perks;
 
-        enum class state
+        enum class State
         {
             FLYING,
             EXPLODING, 
             DESTROY
         };
-        state currentState;
+        State currentState;
 
         bool wasCloseToPlayer;
 

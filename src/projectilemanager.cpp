@@ -26,3 +26,9 @@ Bottle& ProjectileManager::bottleAt(std::size_t i) { return *bottles.at(i); }
 std::size_t ProjectileManager::starsCount() { return stars.size(); }
 
 Star& ProjectileManager::starAt(std::size_t i) { return *stars.at(i); }
+
+void ProjectileManager::reset()
+{
+    bottles.clear();
+    stars.clear();
+}

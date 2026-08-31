@@ -19,3 +19,5 @@ unsigned int Animation::getCurrentCycle() { return int(fps * timeFromRestart.asS
 unsigned int Animation::getCurrentFrameNumber() { return int (fps * timeFromRestart.asSeconds()) % frames->size();}
 
 void Animation::update(sf::Time deltaTime) { timeFromRestart += deltaTime; }
+
+void Animation::setFps(float fps) { this->fps = fps; }

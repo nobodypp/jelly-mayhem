@@ -4,8 +4,8 @@ GameManager::GameManager()
   : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
     perks(assets, audio),
 	projectiles(assets, perks, audio),
-    player(gameWindow.getSize(), assets, projectiles, perks, audio),
-	ground(gameWindow.getSize(), assets), 
+    player(assets, projectiles, perks, audio),
+	ground(assets), 
 	playerView(gameWindow.getDefaultView()), 
 	uiView(playerView),
 	enemies(assets, player, projectiles, randomizer, perks, audio), 
@@ -60,6 +60,20 @@ void GameManager::update(sf::Time deltaTime)
 			// State transition
 			if (!player.isAlive()) currentState = GameState::LOSE_SCREEN;
 
+			break;
+		
+		case GameState::LOSE_SCREEN:
+			// State transition
+			if (ui.getRetry())
+			{
+				currentState = GameState::PLAY;
+				player.reset();
+				enemies.reset();
+				projectiles.reset();
+				audio.stopAllSounds();
+				texts.reset();
+			}
+			
 			break;
 	}
 }
@@ -151,6 +165,7 @@ void GameManager::handleEvents()
 
 					}
 				}
+
 				break;
 			
 			case GameState::PAUSE:
@@ -173,6 +188,19 @@ void GameManager::handleEvents()
 					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
 				}
 
+				break;
+			
+			case GameState::LOSE_SCREEN:
+				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
+				{
+					if (mouseButtonPressed->button == sf::Mouse::Button::Left) ui.mouseClicked(sf::Vector2f(mouseButtonPressed->position));
+				}
+				else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>())
+				{
+					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
+				}
+
+				break;
 		}
 	}
 }

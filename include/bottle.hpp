@@ -22,13 +22,13 @@ class Bottle : public Projectile
         sf::Time timeLeft;
         sf::Clock clock;
         bool damageDealt;
-        enum class state
+        enum class State
         {
             FLYING, 
             BREAKING,
             DESTROY
         };
-        state currentState;
+        State currentState;
         PerkManager* perks;
 
         float damageMultiplier;

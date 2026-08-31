@@ -21,11 +21,11 @@ class EnemyManager : Manager
         static constexpr float baseMutationRate = 0.05f;
         static constexpr float maxMutationRate = 0.4f;
         static constexpr int stagnationThreshold = 5;
+        static constexpr sf::Time spawningCooldown = sf::seconds(3.f);
 
         float mutationRate;
         int bestFitness;
 
-        sf::Time spawningCooldown;
         sf::Time timeToNextSpawn;
         std::vector<std::unique_ptr<Jelly>> jellies;
 
@@ -56,4 +56,5 @@ class EnemyManager : Manager
         std::size_t jelliesCount();
         Jelly& jellyAt(std::size_t i);
         int getKillCount();
+        void reset();
 };

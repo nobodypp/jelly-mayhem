@@ -20,3 +20,5 @@ void DamageTextManager::render(sf::RenderWindow& window)
 {
     for (auto& text : texts) text.render(window);
 }
+
+void DamageTextManager::reset() { texts.clear(); }

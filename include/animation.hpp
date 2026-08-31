@@ -18,4 +18,5 @@ class Animation
         unsigned int getCurrentCycle();
         unsigned int getCurrentFrameNumber();
         void update(sf::Time deltaTime);
+        void setFps(float fps);
 };

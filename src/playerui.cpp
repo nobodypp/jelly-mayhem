@@ -4,26 +4,21 @@
 PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio)
     : bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f), 
       bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()), 
-      windowMargin({20.f, 20.f}), 
-      bottleBarPrimaryColor(100, 100, 100), 
-      bottleBarSecondaryColor(200, 200, 200), 
-      maxBottleTime(sf::seconds(1.5)), 
-      bottleTime(maxBottleTime),
       bottlePrimaryBar(bottleBarSize), 
       bottleSecondaryBar(bottleBarSize), 
+      bottleTime(maxBottleTime),
       bottleBarActive(false), 
-      font(assets.font), 
-      killText(font), 
+      killText(assets.font), 
       deathScreenBackground(sf::PrimitiveType::TriangleStrip, 4), 
-      deathScreenText(font), 
+      deathScreenText(assets.font), 
       perks(perks), 
-      bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
       audio(audio), 
+      bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
       gameTime(sf::Time::Zero), 
       timeText(assets.font), 
       announcementText(assets.font), 
       announcementTimeLeft(sf::Time::Zero), 
-      exampleButton({500, 500}, {300, 100}, "example", 30.f, assets, audio)
+      retryButton({400.f, 100.f}, "Get good", 30.f, assets, audio)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -82,7 +77,7 @@ void PlayerUI::update(sf::Time deltaTime)
 
             // If a new announcement is pending, show it
             if (announcementTimeLeft > sf::Time::Zero) announcementTimeLeft = std::max(sf::Time::Zero, announcementTimeLeft - deltaTime);
-            else if (const std::string text = perks.getAnnouncement(); text != "")
+            else if (const std::string text = perks.getNextAnnouncement(); text != "")
             {
                 announcementText.setString(text);
                 announcementTimeLeft = announcementDefaultTime;
@@ -118,6 +113,7 @@ void PlayerUI::render(sf::RenderWindow& window)
             }
             
             // Kill count position and text
+            killText.setOrigin({0.f, 0.f});
             killText.setPosition({windowMargin.x, windowMargin.y});
             killText.setString("Kills: " + std::to_string(killCount));
             window.draw(killText);
@@ -128,6 +124,7 @@ void PlayerUI::render(sf::RenderWindow& window)
             if (seconds.length() == 1) seconds = "0" + seconds;
             std::string minutes = std::to_string(static_cast<int>(gameTime.asSeconds()) / 60);
             if (minutes.length() == 1) minutes = "0" + minutes;
+            timeText.setOrigin({0.f, 0.f});
             timeText.setString(minutes + ":" + seconds);
             timeText.setPosition(rightTopCorner + sf::Vector2f{-windowMargin.x - timeText.getGlobalBounds().size.x, windowMargin.y});
             window.draw(timeText);
@@ -162,8 +159,6 @@ void PlayerUI::render(sf::RenderWindow& window)
             pauseBackground.setSize(window.getView().getSize());
             window.draw(pauseBackground);
 
-            exampleButton.render(window);
-
             break;
         }
         
@@ -186,10 +181,14 @@ void PlayerUI::render(sf::RenderWindow& window)
             timeText.setOrigin(timeText.getLocalBounds().getCenter());
             timeText.setPosition(killText.getPosition() + sf::Vector2f{0.f, 100.f});
 
+            // Retry button
+            retryButton.setPosition(timeText.getPosition() + sf::Vector2f{0.f, 100.f});
+
             window.draw(deathScreenBackground);
             window.draw(deathScreenText);
             window.draw(killText);
             window.draw(timeText);
+            retryButton.render(window);
             break;
         }
     }
@@ -204,14 +203,41 @@ void PlayerUI::resetBottleTime() { bottleBarActive = false; }
 
 void PlayerUI::updateKillCount(int kills) { killCount = kills; }
 
-void PlayerUI::setGameState(GameState state) { currentState = state; }
+void PlayerUI::setGameState(GameState state)
+{
+    // State transitions
+
+    if (currentState == GameState::PLAY && state == GameState::LOSE_SCREEN)
+    {
+        retryButton.resetWasClicked();
+    }
+    if (currentState == GameState::LOSE_SCREEN && state == GameState::PLAY)
+    {
+        gameTime = sf::Time::Zero;
+        bottleBarActive = false;
+    }
+
+    currentState = state;
+}
 
 void PlayerUI::mouseClicked(sf::Vector2f mousePos)
 {
-    exampleButton.mouseClicked(mousePos);
+    switch (currentState)
+    {
+        case GameState::LOSE_SCREEN:
+            retryButton.mouseClicked(mousePos);
+            break;
+    }
 }
 
 void PlayerUI::mouseReleased(sf::Vector2f mousePos)
 {
-    exampleButton.mouseReleased(mousePos);
+    switch (currentState)
+    {
+        case GameState::LOSE_SCREEN:
+            retryButton.mouseReleased(mousePos);
+            break;
+    }
 }
+
+bool PlayerUI::getRetry() { return retryButton.getWasClicked(); }

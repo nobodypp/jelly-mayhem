@@ -12,9 +12,10 @@ PerkManager::PerkManager(AssetManager &assets, AudioManager& audio)
     perks.insert({"parry", Perk{}});
     perks.insert({"single", Perk{}});
     perks.insert({"sniper", Perk{}});
+    perks.insert({"close", Perk{[](unsigned int level){return (level + 1) * 15;}}});
 }
 
-void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
+void PerkManager::registerGroupBottleHit(unsigned int enemiesNumber)
 {
     if (enemiesNumber >= 4 + perks.at("group").getLevel() * 2)
     {
@@ -22,22 +23,22 @@ void PerkManager::bottleHitEnemyGroup(unsigned int enemiesNumber)
     }
 }
 
-void PerkManager::knockbackEnemyHit()
+void PerkManager::registerKnockbackHit()
 {
     if (perks.at("knockback").increaseObjective()) addAnouncement("Knockout crits", "knockback");   
 }
 
-void PerkManager::starDodged()
+void PerkManager::registerStarDodged()
 {
     if (perks.at("dodger").increaseObjective()) addAnouncement("Dodger", "dodger");
 }
 
-void PerkManager::parryKill()
+void PerkManager::registerBlockKill()
 {
     if (perks.at("parry").increaseObjective()) addAnouncement("Healing upgrade", "parry");
 }
 
-void PerkManager::singleKill()
+void PerkManager::registerSingleKill()
 {
     // If already have perk, next shot will be boosted
     if (perks.at("single").getLevel() >= 1) singleKillReward = true;
@@ -45,11 +46,19 @@ void PerkManager::singleKill()
     if (perks.at("single").increaseObjective()) addAnouncement("Single kill boost", "single");
 }
 
-void PerkManager::snipeKill(float distance)
+void PerkManager::registerKill(float distance)
 {
     if (distance >= longDistance)
     {
         if (perks.at("sniper").increaseObjective()) addAnouncement("Increasing damage", "sniper");
+    }
+}
+
+void PerkManager::registerHit(float distance)
+{
+    if (distance <= closeDistance)
+    {
+        if (perks.at("close").increaseObjective()) addAnouncement("Faster reload", "close");
     }
 }
 
@@ -75,7 +84,12 @@ float PerkManager::getDamageRampup(float distance)
     return distance / longDistance * perks.at("sniper").getLevel() * 0.5f + 1.f;
 }
 
-std::string PerkManager::getAnnouncement()
+float PerkManager::getReloadSpeedMultiplier()
+{
+    return 1.f + perks.at("close").getLevel() * 0.3f;
+}
+
+std::string PerkManager::getNextAnnouncement()
 {
     if (announcements.empty()) return "";
 
@@ -84,6 +98,10 @@ std::string PerkManager::getAnnouncement()
     return result;
 }
 
+void PerkManager::reset()
+{
+    for (auto& perk : perks) perk.second.reset(); 
+}
 
 void PerkManager::addAnouncement(std::string name, std::string key)
 {

@@ -40,31 +40,43 @@ class PerkManager
                     }
                     return false;
                 }
+
+                void reset()
+                {
+                    objectiveCounter = 0;
+                    level = 0;
+                    objectiveRequired = levelUpObjective(level);
+                }
         };
 
-        std::map<std::string, PerkManager::Perk> perks;
-        bool singleKillReward;
         static constexpr float longDistance = 500.f;
+        static constexpr float closeDistance = 180.f;
+        std::map<std::string, PerkManager::Perk> perks;
         AssetManager& assets;
         AudioManager& audio;
+        bool singleKillReward;
         std::queue<std::string> announcements;
 
         void addAnouncement(std::string name, std::string key);
 
     public:
         PerkManager(AssetManager& assets, AudioManager& audio);
-        void bottleHitEnemyGroup(unsigned int enemiesNumber);
+        void registerGroupBottleHit(unsigned int enemiesNumber);
         float getBottleBoundsScale();
-        void knockbackEnemyHit();
+        void registerKnockbackHit();
         float getKnockbackEnemyDamage();
-        void starDodged();
+        void registerStarDodged();
         float getPlayerSpeedMultiplier();
-        void parryKill();
+        void registerBlockKill();
         float getHealingMultiplier();
-        void singleKill();
+        void registerSingleKill();
         bool isNextBottleBoosted();
         float claimBoostedBottle();
-        void snipeKill(float distance);
+        void registerKill(float distance);
+        void registerHit(float distance);
         float getDamageRampup(float distance);
-        std::string getAnnouncement();
+        float getReloadSpeedMultiplier();
+        std::string getNextAnnouncement();
+        void reset();
+
 };

@@ -18,4 +18,5 @@ class DamageTextManager : public Drawable
         void addText(Args&&... args) { texts.emplace_back(assets, std::forward<Args>(args)...); }
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
+        void reset();
 };

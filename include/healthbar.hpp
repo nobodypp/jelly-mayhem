@@ -22,8 +22,8 @@ class HealthBar : public Drawable
 
     public:
         HealthBar(int maxHealth, AssetManager& assets);
-        int GetHealth();
-        void ResetHealth();
+        int getHealth();
+        void resetHealth();
         void render(sf::RenderWindow& window) override;
         void changeHealth(int change);
         void attachToPosistion(sf::FloatRect spriteBounds);

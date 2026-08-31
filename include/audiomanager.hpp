@@ -17,4 +17,5 @@ class AudioManager
         void pauseAllSounds();
         void resumeAllSounds();
         void stopSound(std::size_t soundId);
+        void stopAllSounds();
 };

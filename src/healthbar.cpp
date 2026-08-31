@@ -27,9 +27,9 @@ HealthBar::HealthBar(int maxHealth, AssetManager& assets)
     text.setOrigin(text.getLocalBounds().size / 2.f);
 }
 
-int HealthBar::GetHealth() {return health;}
+int HealthBar::getHealth() { return health; }
 
-void HealthBar::ResetHealth() {health = maxHealth;}
+void HealthBar::resetHealth() { health = maxHealth; }
 
 void HealthBar::render(sf::RenderWindow& window)
 {

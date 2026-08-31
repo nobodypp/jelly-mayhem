@@ -31,4 +31,6 @@ class ProjectileManager : public Manager
         void addStar(Args&&... args) { stars.push_back(std::make_unique<Star>(std::forward<Args>(args)..., assets, perks, audio)); }
         std::size_t starsCount();
         Star& starAt(std::size_t i);
+
+        void reset();
 };

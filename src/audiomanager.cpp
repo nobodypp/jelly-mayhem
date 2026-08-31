@@ -44,3 +44,5 @@ void AudioManager::stopSound(std::size_t soundId)
         sounds.erase(soundId);
     }
 }
+
+void AudioManager::stopAllSounds() { sounds.clear(); }

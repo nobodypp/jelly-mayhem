@@ -36,7 +36,7 @@ class Jelly : public Entity
         sf::Time defaultCooldownTime;
         sf::Texture* defaultTexture;
         sf::Vector2f knockbackVelocity;
-        enum class state
+        enum class State
         {
             WALKING, 
             SHOOTING,
@@ -46,7 +46,7 @@ class Jelly : public Entity
             DYING, 
             DEAD
         };
-        state currentState;
+        State currentState;
         bool hasShot;
         bool hasBiten;
         float level;

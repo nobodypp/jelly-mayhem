@@ -49,11 +49,12 @@ void CollisionManager::BottleCollisions(Player& player)
                         enemiesKilled++;
 
                         // Register perk objective
-                        perks.snipeKill(distance);
+                        perks.registerKill(distance);
                     }
                     
                     // Register perk objective
-                    if (jelly.isDuringKnockback()) perks.knockbackEnemyHit();
+                    if (jelly.isDuringKnockback()) perks.registerKnockbackHit();
+                    perks.registerHit(distance);
 
                     // Add floating damage text
                     texts.addText(damage, true, jelly.getBounds(), knockbackBonus > 1.f ? "Knocked out! " : "");
@@ -62,8 +63,8 @@ void CollisionManager::BottleCollisions(Player& player)
                 }
             }
 
-            perks.bottleHitEnemyGroup(enemiesHit);
-            if (enemiesHit == 1 && enemiesKilled == 1) perks.singleKill();
+            perks.registerGroupBottleHit(enemiesHit);
+            if (enemiesHit == 1 && enemiesKilled == 1) perks.registerSingleKill();
         }
     }
 }
@@ -110,7 +111,7 @@ void CollisionManager::meleeCollisions(Player& player)
                         int healed = player.succesfullParry();
                         texts.addText(-healed, true, player.getBounds(), "Block kill! ");
 
-                        perks.parryKill();
+                        perks.registerBlockKill();
                     }
                 }
                 else
