@@ -18,7 +18,7 @@ GameManager::GameManager()
 
 void GameManager::GameLoop()
 {
-	while ( gameWindow.isOpen() )
+	while ( gameWindow.isOpen() && !ui.getQuit())
 	{
 		// Get current delta time
 		sf::Time deltaTime = clock.restart();
@@ -71,6 +71,7 @@ void GameManager::update(sf::Time deltaTime)
 				enemies.reset();
 				projectiles.reset();
 				audio.stopAllSounds();
+				perks.reset();
 				texts.reset();
 			}
 			

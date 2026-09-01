@@ -11,7 +11,7 @@ class CollisionManager
 {
     private:
         static constexpr float minEnemiesDistance = 30.f;
-        static constexpr float dodgeDistance = 30.f;
+        static constexpr float dodgeDistance = 60.f;
         EnemyManager& enemies;
         ProjectileManager& projectiles;
         DamageTextManager& texts;

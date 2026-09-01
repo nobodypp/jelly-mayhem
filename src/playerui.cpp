@@ -18,7 +18,8 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       timeText(assets.font), 
       announcementText(assets.font), 
       announcementTimeLeft(sf::Time::Zero), 
-      retryButton({400.f, 100.f}, "Get good", 30.f, assets, audio)
+      retryButton({300.f, 80.f}, "Get good", 25.f, assets, audio), 
+      quitButton({300.f, 80.f}, "Rage quit", 25.f, assets, audio)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -179,16 +180,20 @@ void PlayerUI::render(sf::RenderWindow& window)
 
             // Time
             timeText.setOrigin(timeText.getLocalBounds().getCenter());
-            timeText.setPosition(killText.getPosition() + sf::Vector2f{0.f, 100.f});
+            timeText.setPosition(killText.getPosition() + sf::Vector2f{0.f, 70.f});
 
             // Retry button
-            retryButton.setPosition(timeText.getPosition() + sf::Vector2f{0.f, 100.f});
+            retryButton.setPosition(timeText.getPosition() + sf::Vector2f{0.f, 200.f});
+
+            // Quit button
+            quitButton.setPosition(retryButton.getPosition() + sf::Vector2f{0.f, 150.f});
 
             window.draw(deathScreenBackground);
             window.draw(deathScreenText);
             window.draw(killText);
             window.draw(timeText);
             retryButton.render(window);
+            quitButton.render(window);
             break;
         }
     }
@@ -210,6 +215,7 @@ void PlayerUI::setGameState(GameState state)
     if (currentState == GameState::PLAY && state == GameState::LOSE_SCREEN)
     {
         retryButton.resetWasClicked();
+        quitButton.resetWasClicked();
     }
     if (currentState == GameState::LOSE_SCREEN && state == GameState::PLAY)
     {
@@ -226,6 +232,7 @@ void PlayerUI::mouseClicked(sf::Vector2f mousePos)
     {
         case GameState::LOSE_SCREEN:
             retryButton.mouseClicked(mousePos);
+            quitButton.mouseClicked(mousePos);
             break;
     }
 }
@@ -236,8 +243,11 @@ void PlayerUI::mouseReleased(sf::Vector2f mousePos)
     {
         case GameState::LOSE_SCREEN:
             retryButton.mouseReleased(mousePos);
+            quitButton.mouseReleased(mousePos);
             break;
     }
 }
 
 bool PlayerUI::getRetry() { return retryButton.getWasClicked(); }
+
+bool PlayerUI::getQuit() { return quitButton.getWasClicked(); }

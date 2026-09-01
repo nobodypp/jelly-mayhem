@@ -92,15 +92,20 @@ void Jelly::update(sf::Time deltaTime)
             break;
         
         case State::BITING:
-            sprite.move((targetPosition - sprite.getPosition()).normalized() * bitingSpeed * deltaTime.asSeconds());
-
-            // State transition
-            if (bitingAnimation.getCurrentCycle() >= 1)
             {
-                currentState = State::COOLDOWN;
-                currentCooldown = defaultCooldownTime;
+                sf::Vector2f distance = targetPosition - sprite.getPosition();
+                if (bitingSpeed * deltaTime.asSeconds() > distance.length()) sprite.setPosition(targetPosition);
+                else sprite.move(distance.normalized() * bitingSpeed * deltaTime.asSeconds());
+
+                // State transition
+                if (bitingAnimation.getCurrentCycle() >= 1)
+                {
+                    currentState = State::COOLDOWN;
+                    currentCooldown = defaultCooldownTime;
+                }
+                
+                break;
             }
-            break;
         
         case State::COOLDOWN:
             currentCooldown -= deltaTime;

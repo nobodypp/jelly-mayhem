@@ -10,7 +10,7 @@
 class PlayerUI : public Drawable
 {
     private:
-        class Button
+        class Button : public Drawable
         {
             private:
                 static constexpr sf::Color primaryFillColor{200, 200, 200};
@@ -63,7 +63,7 @@ class PlayerUI : public Drawable
                     if (circleRadius > std::min(size.x, size.y) / 2) std::cout << "Correct button circle radius!\n";
                 }
 
-                void render(sf::RenderWindow& window)
+                void render(sf::RenderWindow& window) override
                 {
                     // If button lost focus, it is no longer being clicked
                     if (isClicked && (!isInsideButton(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) || !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))) isClicked = false;
@@ -120,6 +120,8 @@ class PlayerUI : public Drawable
                 void resetWasClicked() { wasClicked = false; }
 
                 bool getWasClicked() { return wasClicked; }
+
+                sf::Vector2f getPosition() { return text.getPosition(); }
         };
 
         static constexpr sf::Time announcementDefaultTime = sf::seconds(5.f);
@@ -156,6 +158,7 @@ class PlayerUI : public Drawable
         sf::Time announcementTimeLeft;
 
         Button retryButton;
+        Button quitButton;
 
         
 
@@ -171,4 +174,5 @@ class PlayerUI : public Drawable
         void mouseClicked(sf::Vector2f mousePos);
         void mouseReleased(sf::Vector2f mousePos);
         bool getRetry();
+        bool getQuit();
 };
