@@ -6,6 +6,8 @@
 #include "perkmanager.hpp"
 #include "animation.hpp"
 #include "audiomanager.hpp"
+#include <array>
+
 
 class PlayerUI : public Drawable
 {
@@ -18,6 +20,7 @@ class PlayerUI : public Drawable
                 static constexpr sf::Color textColor{30, 30, 30};
 
                 sf::Vector2f size;
+                sf::Vector2f position;
 
                 sf::CircleShape leftTopCorner;
                 sf::CircleShape rightTopCorner;
@@ -44,30 +47,26 @@ class PlayerUI : public Drawable
             public:
                 Button(sf::Vector2f size, std::string text, float circleRadius, AssetManager& assets, AudioManager& audio)
                     : size(size), 
+                      position(position),
                       leftTopCorner(circleRadius), 
                       rightTopCorner(circleRadius), 
                       leftBottomCorner(circleRadius), 
                       rightBottomCorner(circleRadius), 
-                      horizontalFill(sf::Vector2f{size.x, size.y - 2 * circleRadius}), 
-                      verticalFill(sf::Vector2f{size.x - 2 * circleRadius, size.y}), 
+                      horizontalFill({size.x, size.y - 2 * circleRadius}), 
+                      verticalFill({size.x - 2 * circleRadius, size.y}), 
                       text(assets.font), 
                       audio(&audio), 
                       assets(&assets)
                 {
-                    horizontalFill.setOrigin(horizontalFill.getLocalBounds().getCenter());
-                    verticalFill.setOrigin(verticalFill.getLocalBounds().getCenter());
                     this->text.setString(text);
                     this->text.setOrigin(this->text.getLocalBounds().getCenter());
                     this->text.setFillColor(textColor);
 
-                    if (circleRadius > std::min(size.x, size.y) / 2) std::cout << "Correct button circle radius!\n";
+                    if (circleRadius > std::min(size.x, size.y) / 2) std::cout << "Incorrect button circle radius!\n";
                 }
 
                 void render(sf::RenderWindow& window) override
                 {
-                    // If button lost focus, it is no longer being clicked
-                    if (isClicked && (!isInsideButton(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) || !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))) isClicked = false;
-
                     // Dependig on the isClicked state, change color
                     if (isClicked) leftTopCorner.setFillColor(secondaryFillcolor);
                     else leftTopCorner.setFillColor(primaryFillColor);
@@ -76,6 +75,21 @@ class PlayerUI : public Drawable
                     rightBottomCorner.setFillColor(leftTopCorner.getFillColor());
                     horizontalFill.setFillColor(leftTopCorner.getFillColor());
                     verticalFill.setFillColor(leftTopCorner.getFillColor());
+
+                    // Set size, origin and position
+                    horizontalFill.setSize({size.x, size.y - 2 * leftBottomCorner.getRadius()});
+                    verticalFill.setSize({size.x - 2 * leftBottomCorner.getRadius(), size.y});
+
+                    horizontalFill.setOrigin(horizontalFill.getLocalBounds().getCenter());
+                    verticalFill.setOrigin(verticalFill.getLocalBounds().getCenter());
+
+                    horizontalFill.setPosition(position);
+                    verticalFill.setPosition(position);
+                    leftTopCorner.setPosition({position.x - size.x / 2.f, position.y - size.y / 2.f});
+                    rightTopCorner.setPosition({position.x + size.x / 2.f - rightTopCorner.getRadius() * 2, position.y - size.y / 2.f});
+                    leftBottomCorner.setPosition({position.x - size.x / 2.f, position.y + size.y / 2.f - leftBottomCorner.getRadius() * 2});
+                    rightBottomCorner.setPosition({position.x + size.x / 2.f - rightBottomCorner.getRadius() * 2, position.y + size.y / 2.f - rightBottomCorner.getRadius() * 2});
+                    text.setPosition(position);
                     
                     window.draw(leftTopCorner);
                     window.draw(rightTopCorner);
@@ -86,16 +100,7 @@ class PlayerUI : public Drawable
                     window.draw(text);
                 }
 
-                void setPosition(sf::Vector2f position)
-                {
-                    horizontalFill.setPosition(position);
-                    verticalFill.setPosition(position);
-                    leftTopCorner.setPosition(sf::Vector2f{position.x - size.x / 2.f, position.y - size.y / 2.f});
-                    rightTopCorner.setPosition(sf::Vector2f{position.x + size.x / 2.f - rightTopCorner.getRadius() * 2, position.y - size.y / 2.f});
-                    leftBottomCorner.setPosition(sf::Vector2f{position.x - size.x / 2.f, position.y + size.y / 2.f - leftBottomCorner.getRadius() * 2});
-                    rightBottomCorner.setPosition(sf::Vector2f{position.x + size.x / 2.f - rightBottomCorner.getRadius() * 2, position.y + size.y / 2.f - rightBottomCorner.getRadius() * 2});
-                    text.setPosition(position);
-                }
+                void setPosition(sf::Vector2f position) { this->position = position; }
 
                 void mouseClicked(sf::Vector2f mousePos)
                 {
@@ -114,6 +119,7 @@ class PlayerUI : public Drawable
                         audio->addSound(assets->buttonSound);
                         return true;
                     }
+                    else isClicked = false;
                     return false;
                 }
 
@@ -121,7 +127,12 @@ class PlayerUI : public Drawable
 
                 bool getWasClicked() { return wasClicked; }
 
-                sf::Vector2f getPosition() { return text.getPosition(); }
+                sf::Vector2f getPosition() { return position; }
+
+                sf::Vector2f getSize() { return size; }
+
+                void setSize(sf::Vector2f size) { this->size = size; }
+
         };
 
         static constexpr sf::Time announcementDefaultTime = sf::seconds(5.f);
@@ -129,6 +140,7 @@ class PlayerUI : public Drawable
         static constexpr sf::Color bottleBarPrimaryColor{100, 100, 100};
         static constexpr sf::Color bottleBarSecondaryColor{200, 200, 200};
         static constexpr sf::Time maxBottleTime = sf::seconds(1.5f);
+        static constexpr sf::Vector2f buttonSize = {280.f, 80.f};
 
         PerkManager& perks;
         AudioManager& audio;
@@ -157,22 +169,64 @@ class PlayerUI : public Drawable
         sf::Text announcementText;
         sf::Time announcementTimeLeft;
 
-        Button retryButton;
-        Button quitButton;
+        enum class LoseButtonId
+        {
+            Retry, 
+            Quit, 
 
+            Count
+        };
+
+        enum class PauseButtonId
+        {
+            Resume, 
+            Perks, 
+            Options, 
+            Quit, 
+
+            Count
+        };
+
+        enum class PauseScreenState
+        {
+            Menu, 
+            Perks,
+            Options
+        };
+
+        PauseScreenState pauseState;
+
+        template<typename T>
+        static constexpr std::size_t index(T value)
+        {
+            return static_cast<std::size_t>(value);
+        }
+
+        std::array<Button, static_cast<std::size_t>(LoseButtonId::Count)> loseButtons;
+        std::array<Button, static_cast<std::size_t>(PauseButtonId::Count)> pauseButtons;
+
+        Button perkBackground;
+        sf::Text perkName;
+        sf::Text perkObjective;
+        sf::Text perkReward;
+        Button previousButton;
+        Button nextButton;
+        std::size_t perkId;
         
+        Button returnButton;
 
     public:
-        PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio);
+        PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();
         void resetBottleTime();
         void activateBottleBar();
         void updateKillCount(int kills);
-        void setGameState(GameState state);
+        void changeGameState(GameState state);
         void mouseClicked(sf::Vector2f mousePos);
         void mouseReleased(sf::Vector2f mousePos);
         bool getRetry();
         bool getQuit();
+        bool getResume();
 };

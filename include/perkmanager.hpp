@@ -1,11 +1,11 @@
 #pragma once
 
-#include <map>
-#include <iostream>
 #include <functional>
+#include <queue>
+#include <array>
+#include <tuple>
 #include "assetmanager.hpp"
 #include "audiomanager.hpp"
-#include <queue>
 
 
 class PerkManager
@@ -14,15 +14,19 @@ class PerkManager
         class Perk
         {
             private:
-                unsigned int objectiveRequired;
                 unsigned int objectiveCounter = 0;
                 unsigned int level = 0;
-                std::function<unsigned int(unsigned int)> levelUpObjective;
+                std::function<unsigned int(unsigned int)> requiredObjective;
+                std::string name;
+                std::string objective;
+                std::string reward;
             
             public:
-                Perk(std::function<unsigned int(unsigned int)> levelUpObjective = [](unsigned int level){return (level + 1) * 5;})
-                : objectiveRequired(levelUpObjective(0)), 
-                  levelUpObjective(levelUpObjective)
+                Perk(std::string name, std::string objective, std::string reward, std::function<unsigned int(unsigned int)> requiredObjective = [](unsigned int level){return (level + 1) * 5;})
+                  : requiredObjective(requiredObjective), 
+                    objective(objective), 
+                    reward(reward),
+                    name(name)
                 {}
 
                 unsigned int getLevel() { return level; }
@@ -30,11 +34,10 @@ class PerkManager
                 bool increaseObjective()
                 {
                     objectiveCounter++;
-                    if (objectiveCounter >= objectiveRequired)
+                    if (objectiveCounter >= requiredObjective(level))
                     {
                         level++;
                         objectiveCounter = 0;
-                        objectiveRequired = levelUpObjective(level);
 
                         return true;
                     }
@@ -45,19 +48,51 @@ class PerkManager
                 {
                     objectiveCounter = 0;
                     level = 0;
-                    objectiveRequired = levelUpObjective(level);
                 }
+
+                std::string getName() const { return name + " " + std::to_string(level); }
+
+                std::string getObjective() const { return objective + ": " + std::to_string(objectiveCounter) + "/" + std::to_string(requiredObjective(level)); }
+
+                std::string getReward() const { return reward; }
+
+                void updateObjective(std::string text) { objective = text; }
         };
 
         static constexpr float longDistance = 500.f;
         static constexpr float closeDistance = 180.f;
-        std::map<std::string, PerkManager::Perk> perks;
+
+        enum class PerkId
+        {
+            Group,
+            Knockback,
+            Dodger,
+            Parry,
+            Single,
+            Sniper,
+            Close,
+
+            Count
+        };
+
+        static constexpr std::size_t index(PerkId id)
+        {
+            return static_cast<std::size_t>(id);
+        }
+
+        std::array<Perk, static_cast<std::size_t>(PerkId::Count)> perks;
+
+        Perk& getPerk(PerkId id)
+        {
+            return perks[index(id)];
+        }
+
         AssetManager& assets;
         AudioManager& audio;
         bool singleKillReward;
         std::queue<std::string> announcements;
 
-        void addAnouncement(std::string name, std::string key);
+        void increasePerk(PerkId id);
 
     public:
         PerkManager(AssetManager& assets, AudioManager& audio);
@@ -78,5 +113,5 @@ class PerkManager
         float getReloadSpeedMultiplier();
         std::string getNextAnnouncement();
         void reset();
-
+        std::tuple<std::string, std::string, std::string> getPerkInfo(std::size_t id);      
 };

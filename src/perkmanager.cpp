@@ -1,92 +1,77 @@
 #include "perkmanager.hpp"
 
 
-PerkManager::PerkManager(AssetManager &assets, AudioManager& audio)
+PerkManager::PerkManager(AssetManager& assets, AudioManager& audio)
     : singleKillReward(false),
       assets(assets),
-      audio(audio)
+      audio(audio),
+      perks{
+          Perk{"Crowd control", "", "Increased bottle area", [](unsigned int level) { return 10; }},
+          Perk{"Knockout crits", "Hit a knocked out enemy", "Increased damage against knocked out enemies", [](unsigned int level) { return (level + 1) * 5; }},
+          Perk{"Dodger", "Dodge stars", "Faster movement speed", [](unsigned int level) { return (level + 1) * 20; }},
+          Perk{"Healing upgrade", "Do a block kill", "Increased healing"},
+          Perk{"Single kill boost", "Kill with a bottle that only hit one enemy", "After a single kill the next bottle has increased damage"},
+          Perk{"Increasing damage", "Kill from a distance", "Damage increases with distance"},
+          Perk{"Faster reload", "Kill at close range", "Faster reload speed", [](unsigned int level) { return (level + 1) * 15; }}
+      }
 {
-    perks.insert({"group", Perk{[](unsigned int level){return 10;}}});
-    perks.insert({"knockback", Perk{[](unsigned int level){return (level + 1) * 5;}}});
-    perks.insert({"dodger", Perk{[](unsigned int level){return (level + 1) * 25;}}});
-    perks.insert({"parry", Perk{}});
-    perks.insert({"single", Perk{}});
-    perks.insert({"sniper", Perk{}});
-    perks.insert({"close", Perk{[](unsigned int level){return (level + 1) * 15;}}});
+    getPerk(PerkId::Group).updateObjective("Hit a group of " + std::to_string(4 + getPerk(PerkId::Group).getLevel() * 2) + " enemies with one bottle");
 }
 
 void PerkManager::registerGroupBottleHit(unsigned int enemiesNumber)
 {
-    if (enemiesNumber >= 4 + perks.at("group").getLevel() * 2)
-    {
-        if (perks.at("group").increaseObjective()) addAnouncement("Crowd control", "group");
-    }
+    if (enemiesNumber >= 4 + getPerk(PerkId::Group).getLevel() * 2) { increasePerk(PerkId::Group); }
 }
 
-void PerkManager::registerKnockbackHit()
-{
-    if (perks.at("knockback").increaseObjective()) addAnouncement("Knockout crits", "knockback");   
-}
+void PerkManager::registerKnockbackHit() { increasePerk(PerkId::Knockback); }
 
-void PerkManager::registerStarDodged()
-{
-    if (perks.at("dodger").increaseObjective()) addAnouncement("Dodger", "dodger");
-}
+void PerkManager::registerStarDodged() { increasePerk(PerkId::Dodger); }
 
-void PerkManager::registerBlockKill()
-{
-    if (perks.at("parry").increaseObjective()) addAnouncement("Healing upgrade", "parry");
-}
+void PerkManager::registerBlockKill() { increasePerk(PerkId::Parry); }
 
 void PerkManager::registerSingleKill()
 {
     // If already have perk, next shot will be boosted
-    if (perks.at("single").getLevel() >= 1) singleKillReward = true;
+    if (getPerk(PerkId::Single).getLevel() >= 1) singleKillReward = true;
     
-    if (perks.at("single").increaseObjective()) addAnouncement("Single kill boost", "single");
+    increasePerk(PerkId::Single);
 }
 
 void PerkManager::registerKill(float distance)
 {
-    if (distance >= longDistance)
-    {
-        if (perks.at("sniper").increaseObjective()) addAnouncement("Increasing damage", "sniper");
-    }
+    if (distance >= longDistance) { increasePerk(PerkId::Sniper); }
 }
 
 void PerkManager::registerHit(float distance)
 {
-    if (distance <= closeDistance)
-    {
-        if (perks.at("close").increaseObjective()) addAnouncement("Faster reload", "close");
-    }
+    if (distance <= closeDistance) { increasePerk(PerkId::Close); }
 }
 
-float PerkManager::getBottleBoundsScale() { return 1.f + perks.at("group").getLevel() * 0.3f; }
+float PerkManager::getBottleBoundsScale() { return 1.f + getPerk(PerkId::Group).getLevel() * 0.3f; }
 
-float PerkManager::getKnockbackEnemyDamage() { return 1.f + perks.at("knockback").getLevel() * 2.0f; }
+float PerkManager::getKnockbackEnemyDamage() { return 1.f + getPerk(PerkId::Knockback).getLevel() * 2.0f; }
 
-float PerkManager::getPlayerSpeedMultiplier() { return 1.f + perks.at("dodger").getLevel() * 0.3f; }
+float PerkManager::getPlayerSpeedMultiplier() { return 1.f + getPerk(PerkId::Dodger).getLevel() * 0.3f; }
 
-float PerkManager::getHealingMultiplier() { return 1.f + perks.at("parry").getLevel() * 0.25f; }
+float PerkManager::getHealingMultiplier() { return 1.f + getPerk(PerkId::Parry).getLevel() * 0.25f; }
 
 bool PerkManager::isNextBottleBoosted() { return singleKillReward; }
 
 float PerkManager::claimBoostedBottle()
 {
-    float reward = singleKillReward ? (1.f + perks.at("single").getLevel() * 1.f) : 1.f;
+    float reward = singleKillReward ? (1.f + getPerk(PerkId::Single).getLevel() * 1.f) : 1.f;
     singleKillReward = false;
     return reward;
 }
 
 float PerkManager::getDamageRampup(float distance)
 {
-    return distance / longDistance * perks.at("sniper").getLevel() * 0.5f + 1.f;
+    return distance / longDistance * getPerk(PerkId::Sniper).getLevel() * 0.5f + 1.f;
 }
 
 float PerkManager::getReloadSpeedMultiplier()
 {
-    return 1.f + perks.at("close").getLevel() * 0.3f;
+    return 1.f + getPerk(PerkId::Close).getLevel() * 0.3f;
 }
 
 std::string PerkManager::getNextAnnouncement()
@@ -98,13 +83,26 @@ std::string PerkManager::getNextAnnouncement()
     return result;
 }
 
-void PerkManager::reset()
+void PerkManager::reset() { for (auto& perk : perks) perk.reset(); }
+
+std::tuple<std::string, std::string, std::string> PerkManager::getPerkInfo(std::size_t id)
 {
-    for (auto& perk : perks) perk.second.reset(); 
+    const auto& perk = perks.at(id % perks.size());
+
+    return {
+        perk.getName(),
+        perk.getObjective(),
+        perk.getReward()
+    };
 }
 
-void PerkManager::addAnouncement(std::string name, std::string key)
+void PerkManager::increasePerk(PerkId id)
 {
-    audio.addSound(assets.perkSound);
-    announcements.push(name + " " + (perks.at(key).getLevel() == 1 ? "" : std::to_string(perks.at(key).getLevel()) + " ") + "unlocked!");    
+    if (getPerk(id).increaseObjective())
+    {
+        if (id == PerkId::Group) getPerk(id).updateObjective("Hit a group of " + std::to_string(4 + getPerk(PerkId::Group).getLevel() * 2) + " enemies with one bottle");
+
+        audio.addSound(assets.perkSound);
+        announcements.push(getPerk(id).getName() + " unlocked!");
+    }
 }

@@ -43,6 +43,7 @@ class GameManager
         void update(sf::Time deltaTime);
         void render();
         void updateViews();
+        void changeState(GameState state);
 
     public:
         GameManager();

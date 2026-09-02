@@ -11,8 +11,8 @@ GameManager::GameManager()
 	enemies(assets, player, projectiles, randomizer, perks, audio), 
 	texts(assets),
 	collisions(enemies, projectiles, texts, perks), 
-	ui(assets, perks, audio), 
-	currentState(GameState::PLAY), 
+	ui(assets, perks, audio, currentState), 
+	currentState(GameState::Play), 
 	windowZoom(1.f)
 {}
 
@@ -36,11 +36,9 @@ void GameManager::GameLoop()
 
 void GameManager::update(sf::Time deltaTime)
 {
-	ui.setGameState(currentState);
-
 	switch (currentState)
 	{
-		case GameState::PLAY:
+		case GameState::Play:
 			gameWindow.setView(playerView);
 
 			player.update(deltaTime);
@@ -58,23 +56,19 @@ void GameManager::update(sf::Time deltaTime)
 			ui.updateKillCount(collisions.getKillCount());
 
 			// State transition
-			if (!player.isAlive()) currentState = GameState::LOSE_SCREEN;
+			if (!player.isAlive()) changeState(GameState::LoseScreen);
 
 			break;
 		
-		case GameState::LOSE_SCREEN:
+		case GameState::LoseScreen:
 			// State transition
-			if (ui.getRetry())
-			{
-				currentState = GameState::PLAY;
-				player.reset();
-				enemies.reset();
-				projectiles.reset();
-				audio.stopAllSounds();
-				perks.reset();
-				texts.reset();
-			}
-			
+			if (ui.getRetry()) changeState(GameState::Play);
+			break;
+		
+		case GameState::Pause:
+			// State transition
+			if (ui.getResume()) changeState(GameState::Play);
+			ui.update(deltaTime);
 			break;
 	}
 }
@@ -83,7 +77,7 @@ void GameManager::render()
 {
 	switch (currentState)
 	{
-		case GameState::PLAY:
+		case GameState::Play:
 			// Render level
 			gameWindow.setView(playerView);
 
@@ -99,12 +93,12 @@ void GameManager::render()
 			ui.render(gameWindow);
 			break;
 		
-		case GameState::LOSE_SCREEN:
+		case GameState::LoseScreen:
 			gameWindow.setView(uiView);
 			ui.render(gameWindow);
 			break;
 		
-		case GameState::PAUSE:
+		case GameState::Pause:
 			// Render level
 			gameWindow.setView(playerView);
 
@@ -132,7 +126,7 @@ void GameManager::handleEvents()
 
 		switch (currentState)
 		{
-			case GameState::PLAY:
+			case GameState::Play:
 				gameWindow.setView(playerView);
 
 				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
@@ -157,28 +151,17 @@ void GameManager::handleEvents()
 				}
 				else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 				{
-					if (keyPressed->code == sf::Keyboard::Key::Space)
-					{
-						currentState = GameState::PAUSE;
-						audio.pauseAllSounds();
-						ui.resetBottleTime();
-						player.cancelShooting();
-
-					}
+					if (keyPressed->code == sf::Keyboard::Key::Space) changeState(GameState::Pause);
 				}
 
 				break;
 			
-			case GameState::PAUSE:
+			case GameState::Pause:
 				gameWindow.setView(uiView);
 
 				if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 				{
-					if (keyPressed->code == sf::Keyboard::Key::Space)
-					{
-						currentState = GameState::PLAY;
-						audio.resumeAllSounds();
-					}
+					if (keyPressed->code == sf::Keyboard::Key::Space) changeState(GameState::Play);
 				}
 				else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
 				{
@@ -191,7 +174,7 @@ void GameManager::handleEvents()
 
 				break;
 			
-			case GameState::LOSE_SCREEN:
+			case GameState::LoseScreen:
 				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
 				{
 					if (mouseButtonPressed->button == sf::Mouse::Button::Left) ui.mouseClicked(sf::Vector2f(mouseButtonPressed->position));
@@ -217,4 +200,30 @@ void GameManager::updateViews()
 
 	uiView.setSize(sf::Vector2f(gameWindow.getSize()));
 	uiView.setCenter(sf::Vector2f(gameWindow.getSize() / 2u));
+}
+
+void GameManager::changeState(GameState state)
+{
+	// State transitions
+	if (currentState == GameState::Play && state == GameState::Pause)
+	{
+		audio.pauseAllSounds();
+		ui.resetBottleTime();
+		player.cancelShooting();		
+	}
+	else if (currentState == GameState::Pause && state == GameState::Play)
+	{
+		audio.resumeAllSounds();
+	}
+	else if (currentState == GameState::LoseScreen && state == GameState::Play)
+	{
+		player.reset();
+		enemies.reset();
+		projectiles.reset();
+		audio.stopAllSounds();
+		perks.reset();
+		texts.reset();
+	}
+	ui.changeGameState(state);
+	currentState = state;
 }
