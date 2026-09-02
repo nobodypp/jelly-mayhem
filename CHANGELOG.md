@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.12](https://github.com/nobodypp/project1/compare/v1.0.11...v1.0.12) (2026-09-02)
+
+
+### Bug Fixes
+
+* added  quit button, balanced dodger ([308c99b](https://github.com/nobodypp/project1/commit/308c99b8741708e959f261179a9d1c416b270002))
+* added pause menu ([5ab127e](https://github.com/nobodypp/project1/commit/5ab127e6f1c029d62835a306f2f8ef9ac6d2cb4e))
+* added retry and close perk ([0de1b6c](https://github.com/nobodypp/project1/commit/0de1b6cd0cf766d867e2e6452ce1b07e67711c37))
+
 ## [1.0.11](https://github.com/nobodypp/project1/compare/v1.0.10...v1.0.11) (2026-08-27)
 
 
