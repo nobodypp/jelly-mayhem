@@ -215,6 +215,12 @@ class PlayerUI : public Drawable
         
         Button returnButton;
 
+        sf::RectangleShape volumePrimaryBar;
+        sf::RectangleShape volumeSecondaryBar;
+        sf::Text volumeText;
+        sf::CircleShape volumeButton;
+        bool isVolumeBarClicked;
+
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);
         void update(sf::Time deltaTime) override;
@@ -226,6 +232,7 @@ class PlayerUI : public Drawable
         void changeGameState(GameState state);
         void mouseClicked(sf::Vector2f mousePos);
         void mouseReleased(sf::Vector2f mousePos);
+        void mouseMoved(sf::Vector2f mousePos);
         bool getRetry();
         bool getQuit();
         bool getResume();

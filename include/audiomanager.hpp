@@ -9,6 +9,7 @@ class AudioManager
     private:
         std::map<std::size_t, sf::Sound> sounds;
         std::size_t nextId;
+        int volume;
 
     public:
         AudioManager();
@@ -18,4 +19,6 @@ class AudioManager
         void resumeAllSounds();
         void stopSound(std::size_t soundId);
         void stopAllSounds();
+        int getVolume();
+        void setVolume(int volume);
 };

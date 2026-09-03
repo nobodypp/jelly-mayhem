@@ -35,7 +35,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       perkReward(assets.font), 
       perkBackground({1000.f, 300.f}, "", 30.f, assets, audio), 
       returnButton(buttonSize, "Back", 25.f, assets, audio), 
-      currentState(state)
+      currentState(state), 
+      volumeText(assets.font), 
+      volumeButton(20.f)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -83,6 +85,17 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     perkName.setLineAlignment(sf::Text::LineAlignment::Center);
     perkObjective.setLineAlignment(sf::Text::LineAlignment::Center);
     perkReward.setLineAlignment(sf::Text::LineAlignment::Center);
+
+    // Volume bar
+    volumePrimaryBar.setFillColor(sf::Color(200, 200, 200));
+    volumeSecondaryBar.setFillColor(sf::Color(50, 50, 50));
+    volumeButton.setFillColor(sf::Color(230, 230, 230));
+    volumeButton.setOutlineColor(sf::Color::Black);
+    volumeButton.setOutlineThickness(1.f);
+    volumeButton.setOrigin(volumeButton.getLocalBounds().getCenter());
+    volumeText.setString("Volume");
+    volumeText.setCharacterSize(30);
+    volumeText.setOrigin(volumeText.getLocalBounds().getCenter());
 }
 
 void PlayerUI::update(sf::Time deltaTime)
@@ -122,14 +135,26 @@ void PlayerUI::update(sf::Time deltaTime)
                     else if (pauseButtons.at(index(PauseButtonId::Options)).getWasClicked())
                     {
                         pauseState = PauseScreenState::Options;
+                        isVolumeBarClicked = false;
+                        returnButton.resetWasClicked();
                     }
                     break;
                 
                 case PauseScreenState::Perks:
-                    if (returnButton.getWasClicked())
-                    {
-                        changeGameState(GameState::Pause);
-                    }
+                    if (returnButton.getWasClicked()) changeGameState(GameState::Pause);
+                    break;
+                
+                case PauseScreenState::Options:
+                    if (returnButton.getWasClicked()) changeGameState(GameState::Pause);
+
+                    const auto bounds = volumeSecondaryBar.getGlobalBounds();
+                    const float volume = static_cast<float>(audio.getVolume()) / 100.f;
+
+                    volumeButton.setPosition({
+                        bounds.position.x + bounds.size.x * volume,
+                        bounds.getCenter().y
+                    });
+                    break;
             }
             break;
     }
@@ -251,11 +276,28 @@ void PlayerUI::render(sf::RenderWindow& window)
                     returnButton.render(window);
                     break;
                 }
+                
+                case PauseScreenState::Options:
+                {
+                    volumeText.setPosition({window.getView().getCenter().x, window.getView().getSize().y * 0.2f});
+                    window.draw(volumeText);
 
+                    volumeSecondaryBar.setSize({window.getView().getSize().x * 0.7f, 15.f});
+                    volumeSecondaryBar.setOrigin(volumeSecondaryBar.getLocalBounds().getCenter());
+                    volumeSecondaryBar.setPosition({window.getView().getCenter().x, window.getView().getSize().y * 0.4f});
+                    window.draw(volumeSecondaryBar);
+                    
+                    volumePrimaryBar.setPosition(volumeSecondaryBar.getGlobalBounds().position);
+                    volumePrimaryBar.setSize({volumeSecondaryBar.getSize().x * audio.getVolume() / 100.f, volumeSecondaryBar.getSize().y});
+                    window.draw(volumePrimaryBar);
 
-            }
-            
-            
+                    window.draw(volumeButton);
+
+                    returnButton.setPosition({window.getView().getCenter().x, window.getView().getSize().y * 0.7f});
+                    returnButton.render(window);
+                    break;
+                }
+            }  
             break;
         }
         
@@ -345,6 +387,12 @@ void PlayerUI::mouseClicked(sf::Vector2f mousePos)
                     nextButton.mouseClicked(mousePos);
                     returnButton.mouseClicked(mousePos);
                     break;
+                
+                case PauseScreenState::Options:
+                    returnButton.mouseClicked(mousePos);
+
+                    if (volumeSecondaryBar.getGlobalBounds().contains(mousePos)) isVolumeBarClicked = true;
+                    break;
             }
             break;
     }
@@ -370,8 +418,24 @@ void PlayerUI::mouseReleased(sf::Vector2f mousePos)
                     if (nextButton.mouseReleased(mousePos)) perkId++;
                     returnButton.mouseReleased(mousePos);
                     break;
+                
+                case PauseScreenState::Options:
+                    returnButton.mouseReleased(mousePos);
+                    isVolumeBarClicked = false;
+                    break;
             }            
             break;
+    }
+}
+
+void PlayerUI::mouseMoved(sf::Vector2f mousePos)
+{
+    if (currentState == GameState::Pause && pauseState == PauseScreenState::Options && isVolumeBarClicked)
+    {
+        sf::Vector2f pos{std::clamp(static_cast<float>(mousePos.x), volumeSecondaryBar.getGlobalBounds().position.x, volumeSecondaryBar.getGlobalBounds().position.x + volumeSecondaryBar.getGlobalBounds().size.x), volumeSecondaryBar.getGlobalBounds().getCenter().y};
+        volumeButton.setPosition(pos);
+        int volume = static_cast<int>((volumeButton.getPosition().x - volumeSecondaryBar.getGlobalBounds().position.x) * 100.f / volumeSecondaryBar.getGlobalBounds().size.x);
+        audio.setVolume(volume);
     }
 }
 

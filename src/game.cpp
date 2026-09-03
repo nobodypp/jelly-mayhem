@@ -171,6 +171,10 @@ void GameManager::handleEvents()
 				{
 					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
 				}
+				else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>())
+				{
+					ui.mouseMoved(sf::Vector2f(mouseMoved->position));
+				}
 
 				break;
 			

@@ -1,7 +1,9 @@
 #include "audiomanager.hpp"
 
+
 AudioManager::AudioManager()
-    : nextId(0)
+    : nextId(0),
+      volume(100)
 {}
 
 void AudioManager::update()
@@ -43,6 +45,15 @@ void AudioManager::stopSound(std::size_t soundId)
         sounds.at(soundId).stop();
         sounds.erase(soundId);
     }
+    
 }
 
 void AudioManager::stopAllSounds() { sounds.clear(); }
+
+int AudioManager::getVolume() { return volume; }
+
+void AudioManager::setVolume(int volume)
+{
+    this->volume = volume;
+    sf::Listener::setGlobalVolume(volume);
+}
