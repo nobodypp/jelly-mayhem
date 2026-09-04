@@ -8,11 +8,11 @@ PerkManager::PerkManager(AssetManager& assets, AudioManager& audio)
       perks{
           Perk{"Crowd control", "", "Increased bottle area", [](unsigned int level) { return 10; }},
           Perk{"Knockout crits", "Hit a knocked out enemy", "Increased damage against knocked out enemies", [](unsigned int level) { return (level + 1) * 5; }},
-          Perk{"Dodger", "Dodge stars", "Faster movement speed", [](unsigned int level) { return (level + 1) * 20; }},
+          Perk{"Dodger", "Dodge stars", "Faster movement speed", [](unsigned int level) { return 20 + level * 10; }},
           Perk{"Healing upgrade", "Do a block kill", "Increased healing"},
           Perk{"Single kill boost", "Kill with a bottle that only hit one enemy", "After a single kill the next bottle has increased damage"},
           Perk{"Increasing damage", "Kill from a distance", "Damage increases with distance"},
-          Perk{"Faster reload", "Kill at close range", "Faster reload speed", [](unsigned int level) { return (level + 1) * 15; }}
+          Perk{"Faster reload", "Hit at close range", "Faster reload speed", [](unsigned int level) { return 15 + level * 10; }}
       }
 {
     getPerk(PerkId::Group).updateObjective("Hit a group of " + std::to_string(4 + getPerk(PerkId::Group).getLevel() * 2) + " enemies with one bottle");
@@ -20,7 +20,7 @@ PerkManager::PerkManager(AssetManager& assets, AudioManager& audio)
 
 void PerkManager::registerGroupBottleHit(unsigned int enemiesNumber)
 {
-    if (enemiesNumber >= 4 + getPerk(PerkId::Group).getLevel() * 2) { increasePerk(PerkId::Group); }
+    if (enemiesNumber >= 4 + getPerk(PerkId::Group).getLevel() * 2) increasePerk(PerkId::Group);
 }
 
 void PerkManager::registerKnockbackHit() { increasePerk(PerkId::Knockback); }
@@ -39,12 +39,12 @@ void PerkManager::registerSingleKill()
 
 void PerkManager::registerKill(float distance)
 {
-    if (distance >= longDistance) { increasePerk(PerkId::Sniper); }
+    if (distance >= longDistance) increasePerk(PerkId::Sniper);
 }
 
 void PerkManager::registerHit(float distance)
 {
-    if (distance <= closeDistance) { increasePerk(PerkId::Close); }
+    if (distance <= closeDistance) increasePerk(PerkId::Close); 
 }
 
 float PerkManager::getBottleBoundsScale() { return 1.f + getPerk(PerkId::Group).getLevel() * 0.3f; }
