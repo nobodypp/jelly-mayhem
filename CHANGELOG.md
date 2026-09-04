@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/nobodypp/project1/compare/v1.0.12...v1.1.0) (2026-09-04)
+
+
+### Features
+
+* volume setting ([cc124a8](https://github.com/nobodypp/project1/commit/cc124a85b1181872857aeeb75bfcf9ad8604106a))
+
 ## [1.0.12](https://github.com/nobodypp/project1/compare/v1.0.11...v1.0.12) (2026-09-02)
 
 
