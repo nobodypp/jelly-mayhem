@@ -6,11 +6,19 @@
 #include <vector>
 #include <filesystem>
 #include <iostream>
+#include <array>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 
 
 class AssetManager
 {
     private:
+        static std::filesystem::path getExecutableDirectory();
+        static std::filesystem::path findAssetsDirectory();
+        static std::filesystem::path assetPath(const std::filesystem::path& relativePath);
+
         void loadFramesFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix);
 
     public:

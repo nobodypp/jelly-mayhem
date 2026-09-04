@@ -47,7 +47,6 @@ class PlayerUI : public Drawable
             public:
                 Button(sf::Vector2f size, std::string text, float circleRadius, AssetManager& assets, AudioManager& audio)
                     : size(size), 
-                      position(position),
                       leftTopCorner(circleRadius), 
                       rightTopCorner(circleRadius), 
                       leftBottomCorner(circleRadius), 
@@ -155,10 +154,10 @@ class PlayerUI : public Drawable
 
         sf::RectangleShape pauseBackground;
 
-        int killCount;
+        int killCount = 0;
         sf::Text killText;
 
-        GameState currentState;
+        GameState currentState = GameState::Play;
 
         sf::VertexArray deathScreenBackground;
         sf::Text deathScreenText;

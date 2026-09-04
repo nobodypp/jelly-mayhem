@@ -53,7 +53,7 @@ void GameManager::update(sf::Time deltaTime)
 
 			// Update UI
 			ui.update(deltaTime);
-			ui.updateKillCount(collisions.getKillCount());
+			ui.updateKillCount(enemies.getKillCount());
 
 			// State transition
 			if (!player.isAlive()) changeState(GameState::LoseScreen);

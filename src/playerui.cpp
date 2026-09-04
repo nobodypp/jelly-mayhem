@@ -35,7 +35,6 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       perkReward(assets.font), 
       perkBackground({1000.f, 300.f}, "", 30.f, assets, audio), 
       returnButton(buttonSize, "Back", 25.f, assets, audio), 
-      currentState(state), 
       volumeText(assets.font), 
       volumeButton(20.f)
 {

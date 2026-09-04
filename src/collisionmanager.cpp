@@ -45,7 +45,6 @@ void CollisionManager::BottleCollisions(Player& player)
                     if (jelly.inflictDamage(damage))
                     {
                         // If jelly was killed
-                        killCount++;
                         enemiesKilled++;
 
                         // Register perk objective
@@ -106,8 +105,6 @@ void CollisionManager::meleeCollisions(Player& player)
                     if (jelly.inflictDamage(player.getMeleeDamage()))
                     {
                         // If killed
-                        killCount++;
-
                         int healed = player.succesfullParry();
                         texts.addText(-healed, true, player.getBounds(), "Block kill! ");
 
@@ -174,5 +171,3 @@ float CollisionManager::distanceBetweenTwoRects(const sf::FloatRect a, const sf:
 
     return std::sqrt(dx * dx + dy * dy);
 }
-
-int CollisionManager::getKillCount() { return killCount; }

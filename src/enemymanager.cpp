@@ -8,7 +8,6 @@ EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManag
       perks(perks), 
       audio(audio), 
       randomizer(randomizer), 
-      killCount(0), 
       timeToNextSpawn(spawningCooldown),
       currentLevel(1.0), 
       mutationRate(baseMutationRate), 

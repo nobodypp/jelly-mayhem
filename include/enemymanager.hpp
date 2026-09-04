@@ -43,7 +43,7 @@ class EnemyManager : Manager
         int getTotalFitness();
         Chromosome rouletteWheelParent();
 
-        int killCount;
+        int killCount = 0;
 
         PerkManager& perks;
 

@@ -23,10 +23,7 @@ class CollisionManager
         void enemiesAntiCrowd();
         float distanceBetweenTwoRects(const sf::FloatRect a, const sf::FloatRect b);
 
-        int killCount;
-
     public:
         CollisionManager(EnemyManager& enemies, ProjectileManager& projectiles, DamageTextManager& texts, PerkManager& perks);
         void handleCollisions(Player& player);
-        int getKillCount();
 };
