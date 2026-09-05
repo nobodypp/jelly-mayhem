@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.1...v1.1.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* test release ([a3bcc14](https://github.com/nobodypp/jelly-mayhem/commit/a3bcc14c31da0c49f1ffe048835f50aaf2504f67))
+
 ## [1.1.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.0...v1.1.1) (2026-09-05)
 
 
