@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.3...v1.1.4) (2026-09-05)
+
+
+### Bug Fixes
+
+* deb and exe format added to package ([2234b45](https://github.com/nobodypp/jelly-mayhem/commit/2234b4574057a992acc04e90f294e39cffe45c6f))
+
 ## [1.1.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.2...v1.1.3) (2026-09-05)
 
 
