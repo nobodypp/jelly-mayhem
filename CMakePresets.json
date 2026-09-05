@@ -70,7 +70,10 @@
         {
             "name": "linux-release-package",
             "displayName": "Linux Release Package", 
-            "configurePreset": "linux-release"
+            "configurePreset": "linux-release", 
+            "generators": [
+                "DEB"
+            ]
 
         },
 
@@ -79,7 +82,7 @@
             "displayName": "Windows Release Package",
             "configurePreset": "windows-release",
             "generators": [
-                "ZIP"
+                "NSIS"
             ]
         }
     ]

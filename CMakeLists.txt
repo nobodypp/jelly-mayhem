@@ -312,8 +312,40 @@ set(CPACK_PACKAGE_VENDOR
     "fsliwa"
 )
 
-set(CPACK_GENERATOR
-    "ZIP"
+set(CPACK_PACKAGE_CONTACT
+    "fsliwa"
 )
 
-include (CPack)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER
+    "fsliwa"
+)
+
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
+    "Jelly-Mayhem - a fast-paced 2D action game"
+)
+
+set(CPACK_NSIS_DISPLAY_NAME
+    "Jelly-Mayhem"
+)
+
+set(CPACK_NSIS_PACKAGE_NAME
+    "Jelly-Mayhem"
+)
+
+set(CPACK_NSIS_INSTALL_ROOT
+    "$PROGRAMFILES64"
+)
+
+set(CPACK_NSIS_HELP_LINK
+    "https://github.com/fsliwa/jelly-mayhem"
+)
+
+set(CPACK_NSIS_URL_INFO_ABOUT
+    "https://github.com/fsliwa/jelly-mayhem"
+)
+
+set(CPACK_NSIS_CONTACT
+    "fsliwa"
+)
+
+include(CPack)

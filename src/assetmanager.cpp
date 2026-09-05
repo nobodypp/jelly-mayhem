@@ -43,14 +43,25 @@ AssetManager::AssetManager()
 void AssetManager::loadFramesFromLocation(std::vector<sf::Texture>& vector, std::string filePrefix)
 {
     int frameIndex = 0;
-    do 
+    while (true)
     {
+        const std::string filename =
+            filePrefix + std::to_string(frameIndex) + ".png";
+        const auto path = assetPath(filename);
+
+        if (!std::filesystem::exists(path))
+            break;
+
         sf::Texture texture;
-        const auto filename = filePrefix + std::to_string(frameIndex) + ".png";
-        if (!texture.loadFromFile(assetPath(filename))) std::cout << "Tekstura " << filename << " nie istnieje!\n";
+        if (!texture.loadFromFile(path))
+        {
+            std::cout << "Failed to load animation frame: " << path << '\n';
+            break;
+        }
         vector.push_back(std::move(texture));
+
         frameIndex++;
-    } while (std::filesystem::exists(filePrefix + std::to_string(frameIndex) + ".png"));
+    }
 }
 
 

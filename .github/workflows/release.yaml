@@ -57,11 +57,11 @@ jobs:
 
           - name: Linux Release
             preset: linux-release
-            package: "*.tar.gz"
+            package: "*.deb"
 
           - name: Windows Release
             preset: windows-release
-            package: "*.zip"
+            package: "*.exe"
 
     steps:
 
@@ -82,12 +82,12 @@ jobs:
         run: |
           TAG="${{ needs.release-please.outputs.tag_name }}"
           VERSION="${TAG#v}"
-          echo "PROJECT1_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "GAME_VERSION=$VERSION" >> "$GITHUB_ENV"
 
 
       - name: Show version
         run: |
-          echo "Building Project1 version $PROJECT1_VERSION"
+          echo "Building Project1 version $GAME_VERSION"
 
 
       # ------------------------------------------------------
@@ -120,7 +120,7 @@ jobs:
       - name: Configure
         run: |
           cmake --preset ${{ matrix.preset }} \
-            -DPROJECT1_VERSION=${{ env.PROJECT1_VERSION }}
+            -DGAME_VERSION=${{ env.GAME_VERSION }}
 
 
       # ------------------------------------------------------
@@ -130,15 +130,6 @@ jobs:
       - name: Build
         run: |
           cmake --build --preset ${{ matrix.preset }}
-
-
-      # ------------------------------------------------------
-      # Install
-      # ------------------------------------------------------
-
-      - name: Install
-        run: |
-          cmake --install build/${{ matrix.preset }}
 
 
       # ------------------------------------------------------
