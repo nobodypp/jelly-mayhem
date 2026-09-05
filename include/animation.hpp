@@ -7,7 +7,7 @@
 class Animation
 {
     private:
-        sf::Time timeFromRestart;
+        sf::Time timeFromRestart = sf::Time::Zero;
         std::vector<sf::Texture>* frames;
         float fps;
 

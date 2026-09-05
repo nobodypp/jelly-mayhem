@@ -8,8 +8,8 @@ class AudioManager
 {
     private:
         std::map<std::size_t, sf::Sound> sounds;
-        std::size_t nextId;
-        int volume;
+        std::size_t nextId = 0;
+        int volume = 100;
 
     public:
         AudioManager();

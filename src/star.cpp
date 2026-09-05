@@ -8,8 +8,6 @@ Star::Star(sf::Vector2f position, sf::Vector2f targetPos, sf::Color color, Chrom
       ownerChromosome(&ownerChromosome), 
       perks(&perks),
       linearVelocity(ownerChromosome.getStarSpeed() * level), 
-      currentState(State::FLYING), 
-      wasCloseToPlayer(false), 
       audio(&audio), 
       assets(&assets), 
       damage(ownerChromosome.getStarDamage() * level)
@@ -28,16 +26,16 @@ void Star::update(sf::Time deltaTime)
 {
     switch(currentState)
     {
-        case State::FLYING:
+        case State::Flying:
             sprite.move(velocity * deltaTime.asSeconds());
             flyAnimation.update(deltaTime);
             break;
         
-        case State::EXPLODING:
+        case State::Exploding:
             explodeAnimation.update(deltaTime);
 
             // State transition
-            if (explodeAnimation.getCurrentCycle() >= 1) currentState = State::DESTROY;
+            if (explodeAnimation.getCurrentCycle() >= 1) currentState = State::Destroy;
             break;
     }
 }
@@ -49,7 +47,7 @@ void Star::render(sf::RenderWindow& window)
     window.getView().getCenter() - window.getView().getSize() / 2.f,
     window.getView().getSize()}))
     {
-        currentState = State::DESTROY;
+        currentState = State::Destroy;
 
         // If before was close to player, it means it was dodged
         if (wasCloseToPlayer) perks->registerStarDodged();
@@ -57,16 +55,16 @@ void Star::render(sf::RenderWindow& window)
 
     switch(currentState)
     {
-        case State::FLYING:
+        case State::Flying:
             sprite.setTexture(flyAnimation.getCurrentFrame());
             break;
 
-        case State::EXPLODING:
+        case State::Exploding:
             sprite.setTexture(explodeAnimation.getCurrentFrame());
             break;
     }
 
-    if (currentState != State::DESTROY) window.draw(sprite);
+    if (currentState != State::Destroy) window.draw(sprite);
 }
 
 sf::FloatRect Star::getBounds() { return sprite.getGlobalBounds(); }
@@ -75,14 +73,14 @@ int Star::getDamage() { return damage; }
 
 void Star::registerHit()
 {
-    currentState = State::EXPLODING;
+    currentState = State::Exploding;
     explodeAnimation.restart();
     if (ownerChromosome != nullptr) ownerChromosome->changeDamageInflicted(getDamage());
     audio->addSound(assets->starHitSound);
 }
 
-bool Star::isAlive() { return currentState != State::DESTROY; }
+bool Star::isAlive() { return currentState != State::Destroy; }
 
-bool Star::isColliding() { return currentState == State::FLYING; }
+bool Star::isColliding() { return currentState == State::Flying; }
 
 void Star::registerProximityToPlayer() { wasCloseToPlayer = true; }

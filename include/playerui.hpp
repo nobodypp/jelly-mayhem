@@ -147,10 +147,10 @@ class PlayerUI : public Drawable
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
         sf::Sprite bottleChargedBarSprite;
-        sf::Time bottleTime;
+        sf::Time bottleTime = maxBottleTime;
         sf::RectangleShape bottlePrimaryBar;
         sf::RectangleShape bottleSecondaryBar;
-        bool bottleBarActive;
+        bool bottleBarActive = false;
 
         sf::RectangleShape pauseBackground;
 
@@ -159,14 +159,14 @@ class PlayerUI : public Drawable
 
         GameState currentState = GameState::Play;
 
-        sf::VertexArray deathScreenBackground;
+        sf::VertexArray deathScreenBackground{sf::PrimitiveType::TriangleStrip, 4};
         sf::Text deathScreenText;
 
-        sf::Time gameTime;
+        sf::Time gameTime = sf::Time::Zero;
         sf::Text timeText;
 
         sf::Text announcementText;
-        sf::Time announcementTimeLeft;
+        sf::Time announcementTimeLeft = sf::Time::Zero;
 
         enum class LoseButtonId
         {
@@ -217,7 +217,7 @@ class PlayerUI : public Drawable
         sf::RectangleShape volumePrimaryBar;
         sf::RectangleShape volumeSecondaryBar;
         sf::Text volumeText;
-        sf::CircleShape volumeButton;
+        sf::CircleShape volumeButton{20.f};
         bool isVolumeBarClicked;
 
     public:

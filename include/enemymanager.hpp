@@ -15,7 +15,7 @@
 class EnemyManager : Manager
 {
     private:
-        float spawnDistance = 850.f;
+        float spawnDistance = 910.f;
         static constexpr int jelliesPopulationSize = 20;
         static constexpr float difficulty = 0.002;
         static constexpr float baseMutationRate = 0.05f;
@@ -23,10 +23,10 @@ class EnemyManager : Manager
         static constexpr int stagnationThreshold = 5;
         static constexpr sf::Time spawningCooldown = sf::seconds(3.f);
 
-        float mutationRate;
-        int bestFitness;
+        float mutationRate = baseMutationRate;
+        int bestFitness = 0;
 
-        sf::Time timeToNextSpawn;
+        sf::Time timeToNextSpawn = spawningCooldown;
         std::vector<std::unique_ptr<Jelly>> jellies;
 
         ProjectileManager& projectiles;
@@ -34,7 +34,7 @@ class EnemyManager : Manager
         Player& player;
         RandomGenerator& randomizer;
 
-        float currentLevel;
+        float currentLevel = 1.f;
 
         void addDefaultJelly();
         void addChildJelly();

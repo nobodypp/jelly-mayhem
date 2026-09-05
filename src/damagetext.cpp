@@ -2,8 +2,7 @@
 
 
 DamageText::DamageText(AssetManager& assets, int damage, bool positive, sf::FloatRect targetBounds, std::string description)
-    : text(assets.font), 
-      timeLeft(absoluteTime)
+    : text(assets.font)
 {
     // Set text position, size, string and color
     text.setCharacterSize(characterSize);

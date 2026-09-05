@@ -2,8 +2,6 @@
 
 
 AudioManager::AudioManager()
-    : nextId(0),
-      volume(100)
 {}
 
 void AudioManager::update()

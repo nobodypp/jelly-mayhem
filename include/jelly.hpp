@@ -15,14 +15,15 @@
 class Jelly : public Entity
 {
     private:
+        static constexpr sf::Vector2f shootingTexturePosition = {20.f, 7.f};
+        static constexpr int shootFrame = 5;
+        static constexpr float knockbackSpeed = 150.f;
+        static constexpr sf::Time defaultCooldownTime = sf::seconds(1.f);
         Chromosome chromosome;
         float walkingSpeed;
         float bitingSpeed;
         float bitingDistance;
         float shootingDistance;
-        static constexpr sf::Vector2f shootingTexturePosition = {20.f, 7.f};
-        static constexpr int shootFrame = 5;
-        static constexpr float knockbackSpeed = 150.f;
         float autoRemoveDistance = 2500.f;
         Animation walkingAnimation;
         Animation deathAnimation;
@@ -33,21 +34,20 @@ class Jelly : public Entity
         HealthBar health;
         sf::Vector2f targetPosition;
         sf::Time currentCooldown;
-        sf::Time defaultCooldownTime;
         sf::Texture* defaultTexture;
         sf::Vector2f knockbackVelocity;
         enum class State
         {
-            WALKING, 
-            SHOOTING,
-            BITING,
-            COOLDOWN,
-            KNOCKBACK,
-            DYING, 
-            DEAD
+            Walking, 
+            Shooting,
+            Biting,
+            Cooldown,
+            Knockback,
+            Dying, 
+            Destroy
         };
-        State currentState;
-        bool hasShot;
+        State currentState = State::Walking;
+        bool hasShot = false;
         bool hasBiten;
         float level;
 

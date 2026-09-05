@@ -17,18 +17,18 @@ class Bottle : public Projectile
         static constexpr int baseDamage = 10;
         sf::Sprite sprite;
         sf::Vector2f velocity;
-        sf::Angle rotationVelocity;
+        sf::Angle rotationVelocity = sf::degrees(360);
         Animation breakingAnimation;
         sf::Time timeLeft;
         sf::Clock clock;
-        bool damageDealt;
+        bool damageDealt = false;
         enum class State
         {
-            FLYING, 
-            BREAKING,
-            DESTROY
+            Flying, 
+            Breaking,
+            Destroy
         };
-        State currentState;
+        State currentState = State::Flying;
         PerkManager* perks;
 
         float damageMultiplier;

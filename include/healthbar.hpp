@@ -10,14 +10,12 @@ class HealthBar : public Drawable
     private: 
         int maxHealth;
         int health;
-        sf::Color primaryColor;
-        sf::Color secondaryColor;
-        float width;
-        float height;
-        float gap;
-        sf::RectangleShape primaryBar;
-        sf::RectangleShape secodnaryBar;
-        sf::Font* font;
+        sf::Color primaryColor{230, 10, 10};
+        sf::Color secondaryColor{128, 0, 0};
+        float width = 100.f;
+        float height = 14.f;
+        sf::RectangleShape primaryBar{{width, height}};
+        sf::RectangleShape secodnaryBar{{width, height}};
         sf::Text text;
 
     public:

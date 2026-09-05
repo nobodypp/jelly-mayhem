@@ -2,13 +2,11 @@
 
 ## [1.1.0](https://github.com/nobodypp/project1/compare/v1.0.12...v1.1.0) (2026-09-04)
 
-
 ### Features
 
 * volume setting ([cc124a8](https://github.com/nobodypp/project1/commit/cc124a85b1181872857aeeb75bfcf9ad8604106a))
 
 ## [1.0.12](https://github.com/nobodypp/project1/compare/v1.0.11...v1.0.12) (2026-09-02)
-
 
 ### Bug Fixes
 
@@ -18,13 +16,11 @@
 
 ## [1.0.11](https://github.com/nobodypp/project1/compare/v1.0.10...v1.0.11) (2026-08-27)
 
-
 ### Bug Fixes
 
 * dll searching fixed ([4218210](https://github.com/nobodypp/project1/commit/4218210fcb886aa1c03b7c5b769480d0091f0029))
 
 ## [1.0.10](https://github.com/nobodypp/project1/compare/v1.0.9...v1.0.10) (2026-08-27)
-
 
 ### Bug Fixes
 
@@ -32,13 +28,11 @@
 
 ## [1.0.9](https://github.com/nobodypp/project1/compare/v1.0.8...v1.0.9) (2026-08-27)
 
-
 ### Bug Fixes
 
 * release workflow update 2 ([c1d0cbe](https://github.com/nobodypp/project1/commit/c1d0cbebc77c3727083c98a75e99f69b509e6fea))
 
 ## [1.0.8](https://github.com/nobodypp/project1/compare/v1.0.7...v1.0.8) (2026-08-27)
-
 
 ### Bug Fixes
 
@@ -46,13 +40,11 @@
 
 ## [1.0.7](https://github.com/nobodypp/project1/compare/v1.0.6...v1.0.7) (2026-08-27)
 
-
 ### Bug Fixes
 
 * release test ([64fccfe](https://github.com/nobodypp/project1/commit/64fccfea142f99c78cddeb59774160e5c7de2690))
 
 ## [1.0.6](https://github.com/nobodypp/project1/compare/v1.0.5...v1.0.6) (2026-08-27)
-
 
 ### Bug Fixes
 

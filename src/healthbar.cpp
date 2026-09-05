@@ -4,15 +4,7 @@
 HealthBar::HealthBar(int maxHealth, AssetManager& assets)
     : maxHealth(maxHealth), 
       health(maxHealth),
-      primaryColor({230, 10, 10}), 
-      secondaryColor({128, 0, 0}), 
-      width(100), 
-      height(14), 
-      gap(0), 
-      primaryBar({width, height}), 
-      secodnaryBar({width, height}), 
-      font(&assets.font), 
-      text(*font)
+      text(assets.font)
 {
     // Set bar traits
     primaryBar.setFillColor(primaryColor);
@@ -51,6 +43,6 @@ void HealthBar::changeHealth(int change) { health = std::clamp(health + change, 
 void HealthBar::attachToPosistion(sf::FloatRect spriteBounds)
 {
     primaryBar.setPosition({spriteBounds.getCenter().x, 
-        spriteBounds.position.y - gap - height});
+        spriteBounds.position.y - height});
     secodnaryBar.setPosition(primaryBar.getPosition());
 }

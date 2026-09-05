@@ -1,19 +1,6 @@
 #include "game.hpp"
 
 GameManager::GameManager()
-  : gameWindow(sf::VideoMode({winWidth, winHeight}), ""), 
-    perks(assets, audio),
-	projectiles(assets, perks, audio),
-    player(assets, projectiles, perks, audio),
-	ground(assets), 
-	playerView(gameWindow.getDefaultView()), 
-	uiView(playerView),
-	enemies(assets, player, projectiles, randomizer, perks, audio), 
-	texts(assets),
-	collisions(enemies, projectiles, texts, perks), 
-	ui(assets, perks, audio, currentState), 
-	currentState(GameState::Play), 
-	windowZoom(1.f)
 {}
 
 void GameManager::GameLoop()

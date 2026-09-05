@@ -23,13 +23,13 @@ class Star : public Projectile
 
         enum class State
         {
-            FLYING,
-            EXPLODING, 
-            DESTROY
+            Flying,
+            Exploding, 
+            Destroy
         };
-        State currentState;
+        State currentState = State::Flying;
 
-        bool wasCloseToPlayer;
+        bool wasCloseToPlayer = false;
 
         AudioManager* audio;
         AssetManager* assets;

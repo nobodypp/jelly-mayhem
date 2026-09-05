@@ -7,12 +7,7 @@ EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManag
       player(player), 
       perks(perks), 
       audio(audio), 
-      randomizer(randomizer), 
-      timeToNextSpawn(spawningCooldown),
-      currentLevel(1.0), 
-      mutationRate(baseMutationRate), 
-      bestFitness(0), 
-      spawnDistance(910.f)
+      randomizer(randomizer)
 {}
 
 void EnemyManager::update(sf::Time deltaTime)

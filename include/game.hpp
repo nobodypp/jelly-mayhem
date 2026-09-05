@@ -19,25 +19,24 @@ class GameManager
 {
     private:
         static constexpr int winWidth = 1500, winHeight = 1000;
+        sf::RenderWindow gameWindow{sf::VideoMode{{winWidth, winHeight}}, ""};
+        sf::View playerView{gameWindow.getDefaultView()};
+        GameState currentState = GameState::Play;
+        sf::View uiView{playerView};
         sf::Clock clock;
+        RandomGenerator randomizer;
         AssetManager assets;
         AudioManager audio;
-        sf::RenderWindow gameWindow;
-        sf::View playerView;
-        sf::View uiView;
-        PerkManager perks;
-        PlayerUI ui;
-        Player player;
-        ProjectileManager projectiles;
-        EnemyManager enemies;
-        DamageTextManager texts;
-        CollisionManager collisions;
-        Ground ground;
-        RandomGenerator randomizer;
+        PerkManager perks{assets, audio};
+        PlayerUI ui{assets, perks, audio, currentState};
+        ProjectileManager projectiles{assets, perks, audio};
+        Player player{assets, projectiles, perks, audio};
+        EnemyManager enemies{assets, player, projectiles, randomizer, perks, audio};
+        DamageTextManager texts{assets};
+        CollisionManager collisions{enemies, projectiles, texts, perks};
+        Ground ground{assets};
 
-        GameState currentState;
-
-        float windowZoom;
+        float windowZoom = 1.f;
 
         void handleEvents();
         void update(sf::Time deltaTime);

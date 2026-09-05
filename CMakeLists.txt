@@ -4,10 +4,10 @@ cmake_minimum_required(VERSION 3.28)
 # Project
 # ============================================================
 
-set(PROJECT1_VERSION "1.0.0" CACHE STRING "Project version")
+set(GAME_VERSION "1.0.0" CACHE STRING "Project version")
 
-project(Project1
-    VERSION ${PROJECT1_VERSION}
+project(Jelly-Mayhem
+    VERSION ${GAME_VERSION}
     LANGUAGES CXX
 )
 
@@ -35,7 +35,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
 include(FetchContent)
 
-# Project1 does not use SFML Network.
+# Project does not use SFML Network.
 # Disable it to avoid unnecessary dependencies such as MbedTLS.
 set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
 
@@ -69,17 +69,17 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
 # Executable
 # ============================================================
 
-add_executable(main
+add_executable(jelly-mayhem
     ${SOURCES}
     ${HEADERS}
 )
 
-target_include_directories(main
+target_include_directories(jelly-mayhem
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
-target_link_libraries(main
+target_link_libraries(jelly-mayhem
     PRIVATE
         SFML::Graphics
         SFML::Audio
@@ -95,10 +95,10 @@ target_link_libraries(main
 # This is intended for local development.
 # Release packages use install() instead.
 
-add_custom_command(TARGET main POST_BUILD
+add_custom_command(TARGET jelly-mayhem POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/assets"
-        "$<TARGET_FILE_DIR:main>/assets"
+        "$<TARGET_FILE_DIR:jelly-mayhem>/assets"
 )
 
 
@@ -120,30 +120,30 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "${CMAKE_CXX_COMPILER}"
             -print-search-dirs
         OUTPUT_VARIABLE
-            PROJECT1_GCC_SEARCH_DIRS
+            PROJECT_GCC_SEARCH_DIRS
         ERROR_VARIABLE
-            PROJECT1_GCC_SEARCH_ERROR
+            PROJECT_GCC_SEARCH_ERROR
         RESULT_VARIABLE
-            PROJECT1_GCC_SEARCH_RESULT
+            PROJECT_GCC_SEARCH_RESULT
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-    if(NOT PROJECT1_GCC_SEARCH_RESULT EQUAL 0)
+    if(NOT PROJECT_GCC_SEARCH_RESULT EQUAL 0)
         message(FATAL_ERROR
             "Could not determine MinGW runtime library paths.\n"
             "Compiler: ${CMAKE_CXX_COMPILER}\n\n"
-            "${PROJECT1_GCC_SEARCH_ERROR}"
+            "${PROJECT_GCC_SEARCH_ERROR}"
         )
     endif()
 
     string(
         REGEX MATCH
         "libraries:[^\n]*"
-        PROJECT1_GCC_LIBRARIES_LINE
-        "${PROJECT1_GCC_SEARCH_DIRS}"
+        PROJECT_GCC_LIBRARIES_LINE
+        "${PROJECT_GCC_SEARCH_DIRS}"
     )
 
-    if(NOT PROJECT1_GCC_LIBRARIES_LINE)
+    if(NOT PROJECT_GCC_LIBRARIES_LINE)
         message(FATAL_ERROR
             "Could not determine GCC library search paths."
         )
@@ -153,28 +153,28 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
         REGEX REPLACE
         "^libraries:[ \t]*=[ \t]*"
         ""
-        PROJECT1_GCC_LIBRARY_PATHS
-        "${PROJECT1_GCC_LIBRARIES_LINE}"
+        PROJECT_GCC_LIBRARY_PATHS
+        "${PROJECT_GCC_LIBRARIES_LINE}"
     )
 
     string(
         REPLACE
         ":"
         ";"
-        PROJECT1_GCC_LIBRARY_PATHS
-        "${PROJECT1_GCC_LIBRARY_PATHS}"
+        PROJECT_GCC_LIBRARY_PATHS
+        "${PROJECT_GCC_LIBRARY_PATHS}"
     )
 
-    set(PROJECT1_RUNTIME_DIRECTORIES)
+    set(PROJECT_RUNTIME_DIRECTORIES)
 
-    foreach(PROJECT1_PATH IN LISTS PROJECT1_GCC_LIBRARY_PATHS)
+    foreach(PROJECT_PATH IN LISTS PROJECT_GCC_LIBRARY_PATHS)
 
-        if(IS_DIRECTORY "${PROJECT1_PATH}")
+        if(IS_DIRECTORY "${PROJECT_PATH}")
 
             list(
                 APPEND
-                PROJECT1_RUNTIME_DIRECTORIES
-                "${PROJECT1_PATH}"
+                PROJECT_RUNTIME_DIRECTORIES
+                "${PROJECT_PATH}"
             )
 
         endif()
@@ -183,14 +183,14 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     list(
         REMOVE_DUPLICATES
-        PROJECT1_RUNTIME_DIRECTORIES
+        PROJECT_RUNTIME_DIRECTORIES
     )
 
     message(STATUS "MinGW runtime search directories:")
 
-    foreach(PROJECT1_PATH IN LISTS PROJECT1_RUNTIME_DIRECTORIES)
+    foreach(PROJECT_PATH IN LISTS PROJECT_RUNTIME_DIRECTORIES)
 
-        message(STATUS "  ${PROJECT1_PATH}")
+        message(STATUS "  ${PROJECT_PATH}")
 
     endforeach()
 
@@ -232,15 +232,15 @@ message(STATUS "CMAKE_OBJDUMP = ${CMAKE_OBJDUMP}")
 if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     install(
-        TARGETS main
-        RUNTIME_DEPENDENCY_SET Project1Runtime
+        TARGETS jelly-mayhem
+        RUNTIME_DEPENDENCY_SET ProjectRuntime
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 else()
 
     install(
-        TARGETS main
+        TARGETS jelly-mayhem
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
@@ -254,13 +254,13 @@ endif()
 if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     install(
-        RUNTIME_DEPENDENCY_SET Project1Runtime
+        RUNTIME_DEPENDENCY_SET ProjectRuntime
 
         DESTINATION
             ${CMAKE_INSTALL_BINDIR}
 
         DIRECTORIES
-            ${PROJECT1_RUNTIME_DIRECTORIES}
+            ${PROJECT_RUNTIME_DIRECTORIES}
 
         PRE_EXCLUDE_REGEXES
             "^(advapi32|gdi32|kernel32|opengl32|user32|winmm|msvcrt)\\.dll$"
@@ -275,22 +275,33 @@ endif()
 # Install assets
 # ------------------------------------------------------------
 
-install(
-    DIRECTORY
-        "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
-    DESTINATION
-        "${CMAKE_INSTALL_BINDIR}/assets"
-)
+if(WIN32)
+
+    install(
+        DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
+        DESTINATION
+            "${CMAKE_INSTALL_BINDIR}/assets"
+    )
+
+else()
+
+    install(
+        DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
+        DESTINATION
+            "${CMAKE_INSTALL_DATADIR}/jelly-mayhem/assets"
+    )
+
+endif()
 
 
 # ============================================================
 # Packaging
 # ============================================================
 
-include(CPack)
-
 set(CPACK_PACKAGE_NAME
-    "Project1"
+    "Jelly-Mayhem"
 )
 
 set(CPACK_PACKAGE_VERSION
@@ -304,3 +315,5 @@ set(CPACK_PACKAGE_VENDOR
 set(CPACK_GENERATOR
     "ZIP"
 )
+
+include (CPack)

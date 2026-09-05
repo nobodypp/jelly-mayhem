@@ -40,8 +40,8 @@ class Player : public Entity
         sf::Sprite handsSprite;
         sf::Sprite legsSprite;
 
-        sf::Vector2f velocity;
-        bool isRunning;
+        sf::Vector2f velocity{0.f, 0.f};
+        bool isRunning = false;
 
         HealthBar health;
 
@@ -49,14 +49,14 @@ class Player : public Entity
 
         enum class State
         {
-            IDLE,
-            AIMING, 
-            THROWING, 
-            HITTING, 
-            DYING, 
-            DEAD
+            Idle,
+            Aiming, 
+            Throwing, 
+            Hitting, 
+            Dying, 
+            Destroy
         };
-        State currentState;
+        State currentState = State::Idle;
 
         std::size_t chargingSoundId;
         std::size_t blockSoundId;

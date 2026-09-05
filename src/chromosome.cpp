@@ -2,8 +2,7 @@
 
 
 Chromosome::Chromosome(RandomGenerator& randomizer)
-    : damageInflicted(0), 
-      randomizer(&randomizer), 
+    : randomizer(&randomizer), 
       redColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 
       greenColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 
       blueColor(intToArray<colorArraySize>(randomizer.randomInt(0, 255))), 

@@ -17,7 +17,7 @@ class Chromosome
         static constexpr std::size_t statArraySize = 4;
 
         RandomGenerator* randomizer;
-        int damageInflicted;
+        int damageInflicted = 0;
         std::array<bool, bitingDistanceArraySize> bitingDistance;
         std::array<bool, shootingDistanceArraySize> shootingDistance;
         std::array<bool, colorArraySize> redColor;

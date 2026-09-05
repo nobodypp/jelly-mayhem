@@ -6,18 +6,13 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()), 
       bottlePrimaryBar(bottleBarSize), 
       bottleSecondaryBar(bottleBarSize), 
-      bottleTime(maxBottleTime),
-      bottleBarActive(false), 
       killText(assets.font), 
-      deathScreenBackground(sf::PrimitiveType::TriangleStrip, 4), 
       deathScreenText(assets.font), 
       perks(perks), 
       audio(audio), 
       bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
-      gameTime(sf::Time::Zero), 
       timeText(assets.font), 
       announcementText(assets.font), 
-      announcementTimeLeft(sf::Time::Zero), 
       loseButtons{
         Button(buttonSize, "Get good", 25.f, assets, audio), 
         Button(buttonSize, "Rage quit", 25.f, assets, audio)
@@ -35,8 +30,7 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       perkReward(assets.font), 
       perkBackground({1000.f, 300.f}, "", 30.f, assets, audio), 
       returnButton(buttonSize, "Back", 25.f, assets, audio), 
-      volumeText(assets.font), 
-      volumeButton(20.f)
+      volumeText(assets.font)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
