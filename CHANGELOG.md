@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.0...v1.1.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* initialisations moved from constructors to headers ([845d78d](https://github.com/nobodypp/jelly-mayhem/commit/845d78d4b073cc77f82f4d6d4be7f68b31b819d8))
+* ui should be visible now ([d0c80fa](https://github.com/nobodypp/jelly-mayhem/commit/d0c80fac53c16e4feebeb18b3d1c1d468691e369))
+
 ## [1.1.0](https://github.com/nobodypp/project1/compare/v1.0.12...v1.1.0) (2026-09-04)
 
 ### Features
