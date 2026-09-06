@@ -69,10 +69,21 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
 # Executable
 # ============================================================
 
-add_executable(jelly-mayhem
-    ${SOURCES}
-    ${HEADERS}
-)
+if(WIN32)
+
+    add_executable(jelly-mayhem WIN32
+        ${SOURCES}
+        ${HEADERS}
+    )
+
+else()
+
+    add_executable(jelly-mayhem
+        ${SOURCES}
+        ${HEADERS}
+    )
+
+endif()
 
 if(WIN32)
     target_sources(jelly-mayhem
@@ -337,7 +348,7 @@ set(CPACK_PACKAGE_VERSION
 )
 
 set(CPACK_NSIS_MENU_LINKS
-    "jelly-mayhem.exe"
+    "bin/jelly-mayhem.exe"
     "Jelly-Mayhem"
 )
 
@@ -367,6 +378,10 @@ set(CPACK_NSIS_PACKAGE_NAME
 
 set(CPACK_NSIS_INSTALL_ROOT
     "$PROGRAMFILES64"
+)
+
+set(CPACK_PACKAGE_INSTALL_DIRECTORY
+    "Jelly-Mayhem"
 )
 
 set(CPACK_NSIS_HELP_LINK
