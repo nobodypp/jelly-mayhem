@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.0...v1.2.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* windows installer changes ([d4ce863](https://github.com/nobodypp/jelly-mayhem/commit/d4ce86349fee8c45791ff17b14382e193acf3b3c))
+
 ## [1.2.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.4...v1.2.0) (2026-09-06)
 
 
