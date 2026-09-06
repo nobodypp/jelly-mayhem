@@ -74,6 +74,14 @@ add_executable(jelly-mayhem
     ${HEADERS}
 )
 
+if(WIN32)
+    target_sources(jelly-mayhem
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
+    )
+endif()
+
+
 target_include_directories(jelly-mayhem
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -295,6 +303,26 @@ else()
 
 endif()
 
+# start entries and icons
+
+if(UNIX AND NOT APPLE)
+    install(
+        FILES
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/jelly-mayhem.desktop"
+        DESTINATION
+            "${CMAKE_INSTALL_DATADIR}/applications"
+    )
+
+    install(
+        FILES
+            "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.png"
+        DESTINATION
+            "${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps"
+        RENAME
+            "jelly-mayhem.png"
+    )
+endif()
+
 
 # ============================================================
 # Packaging
@@ -306,6 +334,11 @@ set(CPACK_PACKAGE_NAME
 
 set(CPACK_PACKAGE_VERSION
     "${PROJECT_VERSION}"
+)
+
+set(CPACK_NSIS_MENU_LINKS
+    "jelly-mayhem.exe"
+    "Jelly-Mayhem"
 )
 
 set(CPACK_PACKAGE_VENDOR

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Jelly Mayhem
+Comment=A fast-paced 2D action game
+Exec=jelly-mayhem
+Icon=jelly-mayhem
+Terminal=false
+Categories=Game;
