@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.4...v1.2.0) (2026-09-06)
+
+
+### Features
+
+* added start menu ([8ce6917](https://github.com/nobodypp/jelly-mayhem/commit/8ce69179ba5307751e30d7dfe7331096a046011b))
+
 ## [1.1.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.1.3...v1.1.4) (2026-09-05)
 
 
