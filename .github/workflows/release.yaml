@@ -33,6 +33,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
+          skip-github-pull-reqest: true
 
 
   # ==========================================================
@@ -87,7 +88,7 @@ jobs:
 
       - name: Show version
         run: |
-          echo "Building Project1 version $GAME_VERSION"
+          echo "Building Jelly-Mayhem version $GAME_VERSION"
 
 
       # ------------------------------------------------------

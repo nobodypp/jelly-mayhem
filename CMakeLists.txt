@@ -253,7 +253,7 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
     install(
         TARGETS jelly-mayhem
         RUNTIME_DEPENDENCY_SET ProjectRuntime
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        RUNTIME DESTINATION "."
     )
 
 else()
@@ -276,7 +276,7 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
         RUNTIME_DEPENDENCY_SET ProjectRuntime
 
         DESTINATION
-            ${CMAKE_INSTALL_BINDIR}
+            "."
 
         DIRECTORIES
             ${PROJECT_RUNTIME_DIRECTORIES}
@@ -300,7 +300,7 @@ if(WIN32)
         DIRECTORY
             "${CMAKE_CURRENT_SOURCE_DIR}/assets/"
         DESTINATION
-            "${CMAKE_INSTALL_BINDIR}/assets"
+            "assets"
     )
 
 else()
@@ -348,7 +348,7 @@ set(CPACK_PACKAGE_VERSION
 )
 
 set(CPACK_NSIS_MENU_LINKS
-    "bin/jelly-mayhem.exe"
+    "jelly-mayhem.exe"
     "Jelly-Mayhem"
 )
 
