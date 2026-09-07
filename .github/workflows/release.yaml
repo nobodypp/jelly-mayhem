@@ -32,7 +32,7 @@ jobs:
         uses: release-please-oss/release-please-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          skip-github-pull-request: true
+          release-type: simple
 
 
   # ==========================================================
