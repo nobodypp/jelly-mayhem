@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.2...v1.2.3) (2026-09-07)
+
+
+### Bug Fixes
+
+* initialisation list in playerui ([cdcfe4e](https://github.com/nobodypp/jelly-mayhem/commit/cdcfe4e1e2888242f76dad8ba2e0a637c80d5c27))
+
 ## [1.2.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.1...v1.2.2) (2026-09-07)
 
 
