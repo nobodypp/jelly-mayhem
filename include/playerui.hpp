@@ -153,12 +153,13 @@ class PlayerUI : public Drawable
         bool bottleBarActive = false;
 
         sf::RectangleShape pauseBackground;
+        Button rectangleBackground;
         sf::VertexArray screenGradientBackground{sf::PrimitiveType::TriangleStrip, 4};
 
         int killCount = 0;
         sf::Text killText;
 
-        GameState currentState = GameState::Play;
+        GameState currentState;
 
         sf::Text deathScreenText;
 
@@ -171,6 +172,7 @@ class PlayerUI : public Drawable
         enum class LoseButtonId
         {
             Retry, 
+            Menu, 
             Quit, 
 
             Count
@@ -181,6 +183,7 @@ class PlayerUI : public Drawable
             Resume, 
             Perks, 
             Options, 
+            Menu, 
             Quit, 
 
             Count
@@ -202,7 +205,7 @@ class PlayerUI : public Drawable
             Options
         };
 
-        PauseScreenState pauseState;
+        PauseScreenState pauseState = PauseScreenState::Menu;
 
         template<typename T>
         static constexpr std::size_t index(T value)
@@ -213,7 +216,6 @@ class PlayerUI : public Drawable
         std::array<Button, static_cast<std::size_t>(LoseButtonId::Count)> loseButtons;
         std::array<Button, static_cast<std::size_t>(PauseButtonId::Count)> pauseButtons;
 
-        Button perkBackground;
         sf::Text perkName;
         sf::Text perkObjective;
         sf::Text perkReward;
@@ -229,11 +231,20 @@ class PlayerUI : public Drawable
         sf::CircleShape volumeButton{20.f};
         bool isVolumeBarClicked;
 
-        // sf::Text titleText;
-        // std::array<Button, static_cast<std::size_t>(MenuButtonId::Count)> menuButtons;
+        sf::Text titleText;
+        std::array<Button, static_cast<std::size_t>(MenuButtonId::Count)> menuButtons;
 
-        // Button scoreboardBackground;
-        // sf::Text scoreboard;
+        sf::Text scoreboardText;
+
+        template <typename T, std::size_t N>
+        void renderButtonLayout(std::array<T, N>& buttons, sf::RenderWindow& window, sf::Vector2f centerPos)
+        {
+            for (std::size_t i = 0; i < buttons.size(); ++i)
+            {
+                buttons.at(i).setPosition(centerPos + sf::Vector2f(0.f, (static_cast<float>(i) - buttons.size() * 0.5f) * 150.f));
+                buttons.at(i).render(window);
+            }
+        }
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);
@@ -250,4 +261,6 @@ class PlayerUI : public Drawable
         bool getRetry();
         bool getQuit();
         bool getResume();
+        bool getStartGame();
+        bool getMainMenu();
 };

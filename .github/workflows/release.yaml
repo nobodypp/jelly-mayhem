@@ -33,7 +33,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
-          skip-github-pull-reqest: true
+          skip-github-pull-request: true
 
 
   # ==========================================================

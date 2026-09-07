@@ -16,15 +16,17 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       announcementText(assets.font),
       loseButtons{
           Button(buttonSize, "Get good", 25.f, assets, audio),
+          Button(buttonSize, "Main menu", 25.f, assets, audio),
           Button(buttonSize, "Rage quit", 25.f, assets, audio)
       },
       pauseButtons{
           Button(buttonSize, "Resume", 20.f, assets, audio),
           Button(buttonSize, "Perks", 20.f, assets, audio),
           Button(buttonSize, "Options", 20.f, assets, audio),
+          Button(buttonSize, "Main menu", 20.f, assets, audio),
           Button(buttonSize, "Quit", 20.f, assets, audio)
       },
-      perkBackground({1000.f, 300.f}, "", 30.f, assets, audio),
+      rectangleBackground({1000.f, 300.f}, "", 30.f, assets, audio),
       perkName(assets.font),
       perkObjective(assets.font),
       perkReward(assets.font),
@@ -33,7 +35,14 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       perkId(0),
       returnButton(buttonSize, "Back", 25.f, assets, audio),
       volumeText(assets.font),
-      isVolumeBarClicked(false)
+      isVolumeBarClicked(false), 
+      titleText(assets.font), 
+      menuButtons{
+        Button(buttonSize, "Play", 20.f, assets, audio), 
+        Button(buttonSize, "Best scores", 20.f, assets, audio), 
+        Button(buttonSize, "Quit", 20.f, assets, audio)
+      }, 
+      scoreboardText(assets.font)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
@@ -52,12 +61,6 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     deathScreenText.setFillColor(sf::Color::White);
     deathScreenText.setOutlineColor(sf::Color::Black);
     deathScreenText.setOutlineThickness(1.f);
-
-    // Death screen background
-    screenGradientBackground[0].color = sf::Color::Black;
-    screenGradientBackground[1].color = sf::Color::Red;
-    screenGradientBackground[2].color = sf::Color::Black;
-    screenGradientBackground[3].color = sf::Color::Red;
 
     // Pause screen background
     pauseBackground.setFillColor(sf::Color{0, 0, 0, 150});
@@ -92,15 +95,23 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     volumeText.setString("Volume");
     volumeText.setCharacterSize(30);
     volumeText.setOrigin(volumeText.getLocalBounds().getCenter());
+
+    // Title screen
+    titleText.setString("Jelly Mayhem");
+    titleText.setCharacterSize(30);
+    titleText.setOutlineColor(sf::Color::Black);
+    titleText.setOutlineThickness(2.f);
+    titleText.setOrigin(titleText.getLocalBounds().getCenter());
+
+    // Scoreboard
+    scoreboardText.setCharacterSize(10);
+    scoreboardText.setFillColor(sf::Color::Black);
 }
 
 void PlayerUI::update(sf::Time deltaTime)
 {
     switch(currentState)
     {
-        case GameState::Menu:
-            break;
-
         case GameState::Play:
             // If player is aiming, update bottle charge bar
             if (bottleBarActive) bottleTime += deltaTime;
@@ -163,6 +174,27 @@ void PlayerUI::render(sf::RenderWindow& window)
 {
     switch(currentState)
     {
+        case GameState::Menu:
+            // Background
+            screenGradientBackground[0].position = sf::Vector2f{0.f, 0.f};
+            screenGradientBackground[1].position = sf::Vector2f{0.f, static_cast<float> (window.getSize().y)};
+            screenGradientBackground[2].position = sf::Vector2f{static_cast<float> (window.getSize().x), 0.f};
+            screenGradientBackground[3].position = sf::Vector2f{static_cast<float> (window.getSize().x), static_cast<float> (window.getSize().y)};
+
+            screenGradientBackground[0].color = sf::Color::Black;
+            screenGradientBackground[1].color = sf::Color::Green;
+            screenGradientBackground[2].color = sf::Color::Black;
+            screenGradientBackground[3].color = sf::Color::Green;
+            window.draw(screenGradientBackground);
+
+            // Game title
+            titleText.setPosition({window.getView().getCenter().x, window.getView().getSize().y * 0.2f});
+            window.draw(titleText);
+
+            // Buttons
+            renderButtonLayout(menuButtons, window, {window.getView().getCenter().x, window.getView().getSize().y * 0.6f});
+            break;
+
         case GameState::Play:
         {
             // Bottle charge bar position and size
@@ -237,20 +269,16 @@ void PlayerUI::render(sf::RenderWindow& window)
             {
                 case PauseScreenState::Menu:
                 {
-                        // Render menu buttons
-                    for (std::size_t i = 0; i < pauseButtons.size(); i++)
-                    {
-                        pauseButtons.at(i).setPosition(window.getView().getCenter() + sf::Vector2f(0.f, (i - pauseButtons.size() * 0.5f) * 150.f));
-                        pauseButtons.at(i).render(window);
-                    }
+                    // Render menu buttons
+                    renderButtonLayout(pauseButtons, window, window.getView().getCenter());
                     break;
                 }
                 
                 case PauseScreenState::Perks:
                 {
-                    perkBackground.setSize(window.getView().getSize() * 0.7f);
-                    perkBackground.setPosition(window.getView().getCenter());
-                    perkBackground.render(window);
+                    rectangleBackground.setSize(window.getView().getSize() * 0.7f);
+                    rectangleBackground.setPosition(window.getView().getCenter());
+                    rectangleBackground.render(window);
 
                     auto[name, objective, reward] = perks.getPerkInfo(perkId);
                     perkName.setString(name);
@@ -259,19 +287,19 @@ void PlayerUI::render(sf::RenderWindow& window)
                     perkName.setOrigin({perkName.getLocalBounds().getCenter().x, 0.f});
                     perkObjective.setOrigin(perkObjective.getLocalBounds().getCenter());
                     perkReward.setOrigin({perkReward.getLocalBounds().getCenter().x, perkReward.getGlobalBounds().size.y});
-                    perkName.setPosition({perkBackground.getPosition().x, perkBackground.getPosition().y - perkBackground.getSize().y * 0.4f});
-                    perkObjective.setPosition(perkBackground.getPosition());
-                    perkReward.setPosition({perkBackground.getPosition().x, perkBackground.getPosition().y + perkBackground.getSize().y * 0.4f});
+                    perkName.setPosition({rectangleBackground.getPosition().x, rectangleBackground.getPosition().y - rectangleBackground.getSize().y * 0.4f});
+                    perkObjective.setPosition(rectangleBackground.getPosition());
+                    perkReward.setPosition({rectangleBackground.getPosition().x, rectangleBackground.getPosition().y + rectangleBackground.getSize().y * 0.4f});
                     window.draw(perkName);
                     window.draw(perkObjective);
                     window.draw(perkReward);
 
-                    previousButton.setPosition({perkBackground.getPosition().x - perkBackground.getSize().x * 0.5f - 100.f, perkBackground.getPosition().y});
-                    nextButton.setPosition({perkBackground.getPosition().x + perkBackground.getSize().x * 0.5f + 100.f, perkBackground.getPosition().y});
+                    previousButton.setPosition({rectangleBackground.getPosition().x - rectangleBackground.getSize().x * 0.5f - 100.f, rectangleBackground.getPosition().y});
+                    nextButton.setPosition({rectangleBackground.getPosition().x + rectangleBackground.getSize().x * 0.5f + 100.f, rectangleBackground.getPosition().y});
                     previousButton.render(window);
                     nextButton.render(window);
 
-                    returnButton.setPosition({perkBackground.getPosition().x, perkBackground.getPosition().y + perkBackground.getSize().y * 0.5f + 100.f});
+                    returnButton.setPosition({rectangleBackground.getPosition().x, rectangleBackground.getPosition().y + rectangleBackground.getSize().y * 0.5f + 100.f});
                     returnButton.render(window);
                     break;
                 }
@@ -308,29 +336,28 @@ void PlayerUI::render(sf::RenderWindow& window)
             screenGradientBackground[2].position = sf::Vector2f{static_cast<float> (window.getSize().x), 0.f};
             screenGradientBackground[3].position = sf::Vector2f{static_cast<float> (window.getSize().x), static_cast<float> (window.getSize().y)};
 
+            screenGradientBackground[0].color = sf::Color::Black;
+            screenGradientBackground[1].color = sf::Color::Red;
+            screenGradientBackground[2].color = sf::Color::Black;
+            screenGradientBackground[3].color = sf::Color::Red;
+            window.draw(screenGradientBackground);
+
             // Game over text
             deathScreenText.setPosition(sf::Vector2f{window.getView().getSize().x / 2.f, window.getView().getSize().y * 0.3f});
+            window.draw(deathScreenText);
 
             // Kill count
             killText.setOrigin(killText.getLocalBounds().getCenter());
             killText.setPosition(deathScreenText.getPosition() + sf::Vector2f{0.f, 100.f});
+            window.draw(killText);
 
             // Time
             timeText.setOrigin(timeText.getLocalBounds().getCenter());
             timeText.setPosition(killText.getPosition() + sf::Vector2f{0.f, 70.f});
+            window.draw(timeText);
 
             // Retry button
-            loseButtons.at(index(LoseButtonId::Retry)).setPosition(timeText.getPosition() + sf::Vector2f{0.f, 150.f});
-
-            // Quit button
-            loseButtons.at(index(LoseButtonId::Quit)).setPosition(loseButtons.at(index(LoseButtonId::Retry)).getPosition() + sf::Vector2f{0.f, 150.f});
-
-            window.draw(screenGradientBackground);
-            window.draw(deathScreenText);
-            window.draw(killText);
-            window.draw(timeText);
-            loseButtons.at(index(LoseButtonId::Retry)).render(window);
-            loseButtons.at(index(LoseButtonId::Quit)).render(window);
+            renderButtonLayout(loseButtons, window, {window.getView().getCenter().x, window.getView().getSize().y * 0.8f});
             break;
         }
     }
@@ -348,19 +375,21 @@ void PlayerUI::updateKillCount(int kills) { killCount = kills; }
 void PlayerUI::changeGameState(GameState state)
 {
     // State transitions
-    if (currentState == GameState::Play && state == GameState::LoseScreen)
+    if (currentState == GameState::LoseScreen)
     {
         for (auto& button: loseButtons) button.resetWasClicked();
-    }
-    else if (currentState == GameState::LoseScreen && state == GameState::Play)
-    {
+
         gameTime = sf::Time::Zero;
         bottleBarActive = false;
     }
-    else if (state == GameState::Pause)
+    else if (currentState == GameState::Pause)
     {
         for (auto& button : pauseButtons) button.resetWasClicked();
         pauseState = PauseScreenState::Menu;
+    }
+    else if (currentState == GameState::Menu)
+    {
+        for (auto& button : menuButtons) button.resetWasClicked();
     }
 
     currentState = state;
@@ -370,6 +399,9 @@ void PlayerUI::mouseClicked(sf::Vector2f mousePos)
 {
     switch (currentState)
     {
+        case GameState::Menu:
+            for (auto& button: menuButtons) button.mouseClicked(mousePos);
+        
         case GameState::LoseScreen:
             for (auto& button: loseButtons) button.mouseClicked(mousePos);
             break;
@@ -401,6 +433,9 @@ void PlayerUI::mouseReleased(sf::Vector2f mousePos)
 {
     switch (currentState)
     {
+        case GameState::Menu:
+            for (auto& button: menuButtons) button.mouseReleased(mousePos);
+
         case GameState::LoseScreen:
             for (auto& button: loseButtons) button.mouseReleased(mousePos);
             break;
@@ -440,6 +475,10 @@ void PlayerUI::mouseMoved(sf::Vector2f mousePos)
 
 bool PlayerUI::getRetry() { return loseButtons.at(index(LoseButtonId::Retry)).getWasClicked(); }
 
-bool PlayerUI::getQuit() { return loseButtons.at(index(LoseButtonId::Quit)).getWasClicked() || pauseButtons.at(index(PauseButtonId::Quit)).getWasClicked(); }
+bool PlayerUI::getQuit() { return loseButtons.at(index(LoseButtonId::Quit)).getWasClicked() || pauseButtons.at(index(PauseButtonId::Quit)).getWasClicked() || menuButtons.at(index(MenuButtonId::Quit)).getWasClicked(); }
 
 bool PlayerUI::getResume() { return pauseButtons.at(index(PauseButtonId::Resume)).getWasClicked(); }
+
+bool PlayerUI::getStartGame() { return menuButtons.at(index(MenuButtonId::Play)).getWasClicked(); }
+
+bool PlayerUI::getMainMenu() { return pauseButtons.at(index(PauseButtonId::Menu)).getWasClicked() || loseButtons.at(index(LoseButtonId::Menu)).getWasClicked(); }

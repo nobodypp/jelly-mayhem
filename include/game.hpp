@@ -21,7 +21,7 @@ class GameManager
         static constexpr int winWidth = 1500, winHeight = 1000;
         sf::RenderWindow gameWindow{sf::VideoMode{{winWidth, winHeight}}, ""};
         sf::View playerView{gameWindow.getDefaultView()};
-        GameState currentState = GameState::Play;
+        GameState currentState = GameState::Menu;
         sf::View uiView{playerView};
         sf::Clock clock;
         RandomGenerator randomizer;

@@ -2,8 +2,8 @@
 
 
 Animation::Animation(std::vector<sf::Texture>* frames, float fps)
-    : fps(fps), 
-      frames(frames)
+    : frames(frames), 
+      fps(fps)
 {}
 
 void Animation::restart() { timeFromRestart = sf::Time::Zero; }

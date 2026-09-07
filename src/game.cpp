@@ -25,6 +25,10 @@ void GameManager::update(sf::Time deltaTime)
 {
 	switch (currentState)
 	{
+		case GameState::Menu:
+			if (ui.getStartGame()) changeState(GameState::Play);
+			break;
+
 		case GameState::Play:
 			gameWindow.setView(playerView);
 
@@ -50,11 +54,13 @@ void GameManager::update(sf::Time deltaTime)
 		case GameState::LoseScreen:
 			// State transition
 			if (ui.getRetry()) changeState(GameState::Play);
+			else if (ui.getMainMenu()) changeState(GameState::Menu);
 			break;
 		
 		case GameState::Pause:
 			// State transition
 			if (ui.getResume()) changeState(GameState::Play);
+			else if (ui.getMainMenu()) changeState(GameState::Menu);
 			ui.update(deltaTime);
 			break;
 	}
@@ -64,6 +70,11 @@ void GameManager::render()
 {
 	switch (currentState)
 	{
+		case GameState::Menu:
+			gameWindow.setView(uiView);
+			ui.render(gameWindow);
+			break;
+
 		case GameState::Play:
 			// Render level
 			gameWindow.setView(playerView);
@@ -113,6 +124,18 @@ void GameManager::handleEvents()
 
 		switch (currentState)
 		{
+			case GameState::Menu:
+				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
+				{
+					if (mouseButtonPressed->button == sf::Mouse::Button::Left) ui.mouseClicked(sf::Vector2f(mouseButtonPressed->position));
+				}
+				else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>())
+				{
+					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
+				}
+
+				break;
+
 			case GameState::Play:
 				gameWindow.setView(playerView);
 
@@ -206,7 +229,7 @@ void GameManager::changeState(GameState state)
 	{
 		audio.resumeAllSounds();
 	}
-	else if (currentState == GameState::LoseScreen && state == GameState::Play)
+	else if ((currentState == GameState::LoseScreen || currentState == GameState::Menu) && state == GameState::Play)
 	{
 		player.reset();
 		enemies.reset();
