@@ -104,6 +104,13 @@ target_link_libraries(jelly-mayhem
         SFML::Audio
 )
 
+target_compile_options(jelly-mayhem PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wreorder
+)
+
 
 # ============================================================
 # Development

@@ -186,6 +186,15 @@ class PlayerUI : public Drawable
             Count
         };
 
+        enum class MenuButtonId
+        {
+            Play, 
+            Scoreboard, 
+            Quit, 
+
+            Count
+        };
+
         enum class PauseScreenState
         {
             Menu, 
@@ -220,8 +229,11 @@ class PlayerUI : public Drawable
         sf::CircleShape volumeButton{20.f};
         bool isVolumeBarClicked;
 
-        sf::Text titleText;
-        
+        // sf::Text titleText;
+        // std::array<Button, static_cast<std::size_t>(MenuButtonId::Count)> menuButtons;
+
+        // Button scoreboardBackground;
+        // sf::Text scoreboard;
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);

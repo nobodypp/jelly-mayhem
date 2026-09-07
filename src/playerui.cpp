@@ -2,35 +2,38 @@
 
 
 PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state)
-    : bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f), 
-      bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()), 
-      bottlePrimaryBar(bottleBarSize), 
-      bottleSecondaryBar(bottleBarSize), 
-      killText(assets.font), 
-      deathScreenText(assets.font), 
-      perks(perks), 
-      audio(audio), 
-      bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()), 
-      timeText(assets.font), 
-      announcementText(assets.font), 
+    : perks(perks),
+      audio(audio),
+      bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f),
+      bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()),
+      bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()),
+      bottlePrimaryBar(bottleBarSize),
+      bottleSecondaryBar(bottleBarSize),
+      killText(assets.font),
+      currentState(state),
+      deathScreenText(assets.font),
+      timeText(assets.font),
+      announcementText(assets.font),
       loseButtons{
-        Button(buttonSize, "Get good", 25.f, assets, audio), 
-        Button(buttonSize, "Rage quit", 25.f, assets, audio)
+          Button(buttonSize, "Get good", 25.f, assets, audio),
+          Button(buttonSize, "Rage quit", 25.f, assets, audio)
       },
       pauseButtons{
-        Button(buttonSize, "Resume", 20.f, assets, audio), 
-        Button(buttonSize, "Perks", 20.f, assets, audio), 
-        Button(buttonSize, "Options", 20.f, assets, audio), 
-        Button(buttonSize, "Quit", 20.f, assets, audio)
-      }, 
-      previousButton({50.f, 50.f}, "<", 5.f, assets, audio), 
-      nextButton({50.f, 50.f}, ">", 5.f, assets, audio), 
-      perkName(assets.font), 
-      perkObjective(assets.font), 
-      perkReward(assets.font), 
-      perkBackground({1000.f, 300.f}, "", 30.f, assets, audio), 
-      returnButton(buttonSize, "Back", 25.f, assets, audio), 
-      volumeText(assets.font)
+          Button(buttonSize, "Resume", 20.f, assets, audio),
+          Button(buttonSize, "Perks", 20.f, assets, audio),
+          Button(buttonSize, "Options", 20.f, assets, audio),
+          Button(buttonSize, "Quit", 20.f, assets, audio)
+      },
+      perkBackground({1000.f, 300.f}, "", 30.f, assets, audio),
+      perkName(assets.font),
+      perkObjective(assets.font),
+      perkReward(assets.font),
+      previousButton({50.f, 50.f}, "<", 5.f, assets, audio),
+      nextButton({50.f, 50.f}, ">", 5.f, assets, audio),
+      perkId(0),
+      returnButton(buttonSize, "Back", 25.f, assets, audio),
+      volumeText(assets.font),
+      isVolumeBarClicked(false)
 {
     // Bottle charge bar init
     bottlePrimaryBar.setFillColor(bottleBarPrimaryColor);
