@@ -153,13 +153,13 @@ class PlayerUI : public Drawable
         bool bottleBarActive = false;
 
         sf::RectangleShape pauseBackground;
+        sf::VertexArray screenGradientBackground{sf::PrimitiveType::TriangleStrip, 4};
 
         int killCount = 0;
         sf::Text killText;
 
         GameState currentState = GameState::Play;
 
-        sf::VertexArray deathScreenBackground{sf::PrimitiveType::TriangleStrip, 4};
         sf::Text deathScreenText;
 
         sf::Time gameTime = sf::Time::Zero;
@@ -219,6 +219,9 @@ class PlayerUI : public Drawable
         sf::Text volumeText;
         sf::CircleShape volumeButton{20.f};
         bool isVolumeBarClicked;
+
+        sf::Text titleText;
+        
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);

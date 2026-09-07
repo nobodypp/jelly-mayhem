@@ -51,10 +51,10 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     deathScreenText.setOutlineThickness(1.f);
 
     // Death screen background
-    deathScreenBackground[0].color = sf::Color::Black;
-    deathScreenBackground[1].color = sf::Color::Red;
-    deathScreenBackground[2].color = sf::Color::Black;
-    deathScreenBackground[3].color = sf::Color::Red;
+    screenGradientBackground[0].color = sf::Color::Black;
+    screenGradientBackground[1].color = sf::Color::Red;
+    screenGradientBackground[2].color = sf::Color::Black;
+    screenGradientBackground[3].color = sf::Color::Red;
 
     // Pause screen background
     pauseBackground.setFillColor(sf::Color{0, 0, 0, 150});
@@ -95,6 +95,9 @@ void PlayerUI::update(sf::Time deltaTime)
 {
     switch(currentState)
     {
+        case GameState::Menu:
+            break;
+
         case GameState::Play:
             // If player is aiming, update bottle charge bar
             if (bottleBarActive) bottleTime += deltaTime;
@@ -297,10 +300,10 @@ void PlayerUI::render(sf::RenderWindow& window)
         case GameState::LoseScreen:
         {
             // Update screen size
-            deathScreenBackground[0].position = sf::Vector2f{0.f, 0.f};
-            deathScreenBackground[1].position = sf::Vector2f{0.f, static_cast<float> (window.getSize().y)};
-            deathScreenBackground[2].position = sf::Vector2f{static_cast<float> (window.getSize().x), 0.f};
-            deathScreenBackground[3].position = sf::Vector2f{static_cast<float> (window.getSize().x), static_cast<float> (window.getSize().y)};
+            screenGradientBackground[0].position = sf::Vector2f{0.f, 0.f};
+            screenGradientBackground[1].position = sf::Vector2f{0.f, static_cast<float> (window.getSize().y)};
+            screenGradientBackground[2].position = sf::Vector2f{static_cast<float> (window.getSize().x), 0.f};
+            screenGradientBackground[3].position = sf::Vector2f{static_cast<float> (window.getSize().x), static_cast<float> (window.getSize().y)};
 
             // Game over text
             deathScreenText.setPosition(sf::Vector2f{window.getView().getSize().x / 2.f, window.getView().getSize().y * 0.3f});
@@ -319,7 +322,7 @@ void PlayerUI::render(sf::RenderWindow& window)
             // Quit button
             loseButtons.at(index(LoseButtonId::Quit)).setPosition(loseButtons.at(index(LoseButtonId::Retry)).getPosition() + sf::Vector2f{0.f, 150.f});
 
-            window.draw(deathScreenBackground);
+            window.draw(screenGradientBackground);
             window.draw(deathScreenText);
             window.draw(killText);
             window.draw(timeText);
