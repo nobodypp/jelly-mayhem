@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.1...v1.2.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* removed bin directory from windows release ([1db3788](https://github.com/nobodypp/jelly-mayhem/commit/1db3788166c058c383bd645392e525ae3b80a8af))
+
 ## [1.2.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.0...v1.2.1) (2026-09-06)
 
 
