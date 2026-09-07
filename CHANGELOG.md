@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.3...v1.3.0) (2026-09-07)
+
+
+### Features
+
+* added game menu ([969569f](https://github.com/nobodypp/jelly-mayhem/commit/969569f8a795dc8731ab0915051d284a2b23c0c7))
+* test automatic release ([6122a81](https://github.com/nobodypp/jelly-mayhem/commit/6122a81fe1f2494266906f18a38bc97fa27dc859))
+
+
+### Bug Fixes
+
+* reverting release please changes ([7b41880](https://github.com/nobodypp/jelly-mayhem/commit/7b41880c10638c82a8a156ef9696ddbb020611de))
+* test auto release ([be9f619](https://github.com/nobodypp/jelly-mayhem/commit/be9f6197da56d3927e28eaceb68407d9d1368555))
+
 ## [1.2.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.2...v1.2.3) (2026-09-07)
 
 
