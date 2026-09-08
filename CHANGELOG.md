@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.5](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.4...v1.4.5) (2026-09-08)
+
+
+### Bug Fixes
+
+* added gpg key passphrase ([556acc9](https://github.com/nobodypp/jelly-mayhem/commit/556acc9d8e9519e7422ad6c0bb6130f73c5eb242))
+
 ## [1.4.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.3...v1.4.4) (2026-09-08)
 
 
