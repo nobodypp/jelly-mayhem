@@ -278,18 +278,6 @@ jobs:
 
 
       # ------------------------------------------------------
-      # Install repository tools
-      # ------------------------------------------------------
-
-      - name: Install APT repository tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            dpkg-dev \
-            apt-utils
-
-
-      # ------------------------------------------------------
       # Import GPG signing key
       # ------------------------------------------------------
 
@@ -388,6 +376,8 @@ jobs:
 
       - name: Sign APT repository
         shell: bash
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           set -e
 
@@ -396,16 +386,21 @@ jobs:
           gpg \
             --batch \
             --yes \
-            --clearsign \
-            -o InRelease \
+            --pinentry-mode loopback \
+            --passphrase "$GPG_PASSPHRASE" \
+            --armor \
+            --detach-sign \
+            -o Release.gpg \
             Release
 
           gpg \
             --batch \
             --yes \
+            --pinentry-mode loopback \
+            --passphrase "$GPG_PASSPHRASE" \
             --armor \
-            --detach-sign \
-            -o Release.gpg \
+            --clearsign \
+            -o InRelease \
             Release
 
           echo "Signed repository:"
