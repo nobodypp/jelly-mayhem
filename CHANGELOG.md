@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.6...v1.5.0) (2026-09-08)
+
+
+### Features
+
+* added zip package for windows ([3ef1095](https://github.com/nobodypp/jelly-mayhem/commit/3ef1095cd373c6ffc4018a2555fbd010de15da9e))
+
 ## [1.4.6](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.5...v1.4.6) (2026-09-08)
 
 
