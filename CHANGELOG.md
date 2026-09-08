@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.1...v1.4.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* added packages to installation tools ([de69bde](https://github.com/nobodypp/jelly-mayhem/commit/de69bde4810da98d9be82170a9fd7da59a74f83d))
+
 ## [1.4.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.0...v1.4.1) (2026-09-08)
 
 
