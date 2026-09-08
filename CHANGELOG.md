@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.3.0...v1.4.0) (2026-09-08)
+
+
+### Features
+
+* apt repository publish test ([829c029](https://github.com/nobodypp/jelly-mayhem/commit/829c0290dc077f6271fc48c25b8b44e62942a9a9))
+* ubuntu updater ([6d623d9](https://github.com/nobodypp/jelly-mayhem/commit/6d623d9f626c29b84c4d916a10e37b0c33be21ee))
+
+
+### Bug Fixes
+
+* workflow update ([baf51e2](https://github.com/nobodypp/jelly-mayhem/commit/baf51e240962df67049b92a78fb8e26d416a58c6))
+
 ## [1.3.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.2.3...v1.3.0) (2026-09-07)
 
 
