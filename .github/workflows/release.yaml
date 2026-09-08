@@ -201,3 +201,255 @@ jobs:
           files: |
             release/**/*.deb
             release/**/*.exe
+  
+  # ==========================================================
+  # Publish Linux package to APT repository
+  # ==========================================================
+
+  publish-apt:
+
+    name: Publish APT repository
+
+    needs:
+      - release-please
+      - build
+
+    if: needs.release-please.outputs.release_created == 'true'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+
+      # ------------------------------------------------------
+      # Checkout game repository
+      # ------------------------------------------------------
+
+      - name: Checkout game repository
+        uses: actions/checkout@v5
+
+
+      # ------------------------------------------------------
+      # Checkout APT repository
+      # ------------------------------------------------------
+
+      - name: Checkout APT repository
+        uses: actions/checkout@v5
+        with:
+          repository: nobodypp/jelly-mayhem-apt
+          token: ${{ secrets.APT_REPO_TOKEN }}
+          path: apt-repo
+
+
+      # ------------------------------------------------------
+      # Download Linux package
+      # ------------------------------------------------------
+
+      - name: Download Linux package
+        uses: actions/download-artifact@v5
+        with:
+          name: Project1-Linux Release
+          path: linux-package
+
+
+      # ------------------------------------------------------
+      # Show downloaded package
+      # ------------------------------------------------------
+
+      - name: List Linux package
+        run: |
+          find linux-package -type f -print
+
+
+      # ------------------------------------------------------
+      # Set version
+      # ------------------------------------------------------
+
+      - name: Set version
+        shell: bash
+        run: |
+          TAG="${{ needs.release-please.outputs.tag_name }}"
+          VERSION="${TAG#v}"
+
+          echo "GAME_VERSION=$VERSION" >> "$GITHUB_ENV"
+
+          echo "Publishing Jelly-Mayhem version $VERSION"
+
+
+      # ------------------------------------------------------
+      # Install repository tools
+      # ------------------------------------------------------
+
+      - name: Install APT repository tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            dpkg-dev \
+            apt-utils
+
+
+      # ------------------------------------------------------
+      # Import GPG signing key
+      # ------------------------------------------------------
+
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+
+
+      # ------------------------------------------------------
+      # Copy package into repository
+      # ------------------------------------------------------
+
+      - name: Add package to APT repository
+        shell: bash
+        run: |
+          set -e
+
+          PACKAGE=$(find linux-package -name '*.deb' -type f | head -n 1)
+
+          if [ -z "$PACKAGE" ]; then
+            echo "ERROR: Linux .deb package not found"
+            exit 1
+          fi
+
+          DEST="apt-repo/pool/main/j/jelly-mayhem"
+
+          mkdir -p "$DEST"
+
+          cp "$PACKAGE" "$DEST/Jelly-Mayhem-${GAME_VERSION}-Linux.deb"
+
+          echo "Added:"
+          ls -lh "$DEST"
+
+
+      # ------------------------------------------------------
+      # Generate Packages
+      # ------------------------------------------------------
+
+      - name: Generate Packages
+        shell: bash
+        run: |
+          set -e
+
+          cd apt-repo
+
+          mkdir -p dists/stable/main/binary-amd64
+
+          dpkg-scanpackages \
+            pool \
+            /dev/null \
+            > dists/stable/main/binary-amd64/Packages
+
+          gzip -9 -kf \
+            dists/stable/main/binary-amd64/Packages
+
+          echo "Packages generated:"
+          ls -lh dists/stable/main/binary-amd64/
+
+
+      # ------------------------------------------------------
+      # Generate Release metadata
+      # ------------------------------------------------------
+
+      - name: Generate Release metadata
+        shell: bash
+        run: |
+          set -e
+
+          cd apt-repo/dists/stable
+
+          cat > release.conf <<'EOF'
+          APT::FTPArchive::Release::Origin "Jelly-Mayhem";
+          APT::FTPArchive::Release::Label "Jelly-Mayhem";
+          APT::FTPArchive::Release::Suite "stable";
+          APT::FTPArchive::Release::Codename "stable";
+          APT::FTPArchive::Release::Architectures "amd64";
+          APT::FTPArchive::Release::Components "main";
+          EOF
+
+          apt-ftparchive \
+            -c release.conf \
+            release . \
+            > Release
+
+          rm -f InRelease Release.gpg
+
+          echo "Release metadata:"
+          cat Release
+
+
+      # ------------------------------------------------------
+      # Sign repository metadata
+      # ------------------------------------------------------
+
+      - name: Sign APT repository
+        shell: bash
+        run: |
+          set -e
+
+          cd apt-repo/dists/stable
+
+          gpg \
+            --batch \
+            --yes \
+            --clearsign \
+            -o InRelease \
+            Release
+
+          gpg \
+            --batch \
+            --yes \
+            --armor \
+            --detach-sign \
+            -o Release.gpg \
+            Release
+
+          echo "Signed repository:"
+          ls -lh InRelease Release Release.gpg
+
+
+      # ------------------------------------------------------
+      # Show repository status
+      # ------------------------------------------------------
+
+      - name: Show repository changes
+        run: |
+          cd apt-repo
+          git status --short
+
+
+      # ------------------------------------------------------
+      # Commit
+      # ------------------------------------------------------
+
+      - name: Commit APT repository
+        shell: bash
+        run: |
+          set -e
+
+          cd apt-repo
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            pool \
+            dists/stable
+
+          git commit \
+            -m "Publish Jelly-Mayhem ${GAME_VERSION}"
+
+
+      # ------------------------------------------------------
+      # Push
+      # ------------------------------------------------------
+
+      - name: Push APT repository
+        run: |
+          cd apt-repo
+          git push origin main
