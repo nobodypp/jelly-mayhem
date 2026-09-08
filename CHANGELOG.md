@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.3...v1.4.4) (2026-09-08)
+
+
+### Bug Fixes
+
+* exclude system dll ([c920c3e](https://github.com/nobodypp/jelly-mayhem/commit/c920c3e186d593ee32db7e85bb0d340333d1b4de))
+
 ## [1.4.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.2...v1.4.3) (2026-09-08)
 
 
