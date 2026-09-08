@@ -23,7 +23,9 @@ sudo apt install -y \
     libvorbis-dev \
     libflac-dev \
     libmbedtls-dev \
-    curl
+    curl \
+    libcurl4-openssl-dev \
+    nlohmann-json3-dev
 
 echo
 echo "Project1 Ubuntu environment is ready."
