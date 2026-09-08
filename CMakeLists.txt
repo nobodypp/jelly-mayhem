@@ -325,7 +325,7 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
             ${PROJECT_RUNTIME_DIRECTORIES}
 
         PRE_EXCLUDE_REGEXES
-            "^(advapi32|gdi32|kernel32|opengl32|user32|winmm|msvcrt)\\.dll$"
+            "^(advapi32|bcrypt|crypt32|gdi32|iphlpapi|kernel32|msvcrt|opengl32|secur32|user32|wldap32|winmm|ws2_32)\\.dll$"
             "^api-ms-win-.*"
             "^ext-ms-win-.*"
     )
