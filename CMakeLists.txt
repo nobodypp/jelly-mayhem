@@ -132,6 +132,19 @@ if(WIN32)
         PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
     )
+
+    target_include_directories(jelly-mayhem-updater
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/updater"
+            "${CMAKE_CURRENT_BINARY_DIR}/generated"
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+
+    target_link_libraries(jelly-mayhem-updater
+        PRIVATE
+            CURL::libcurl
+            nlohmann_json::nlohmann_json
+    )
 endif()
 
 
@@ -152,19 +165,6 @@ target_compile_options(jelly-mayhem PRIVATE
     -Wextra
     -Wpedantic
     -Wreorder
-)
-
-target_include_directories(jelly-mayhem-updater
-    PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/updater"
-        "${CMAKE_CURRENT_BINARY_DIR}/generated"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include"
-)
-
-target_link_libraries(jelly-mayhem-updater
-    PRIVATE
-        CURL::libcurl
-        nlohmann_json::nlohmann_json
 )
 
 
