@@ -14,6 +14,7 @@
 #include "gamestate.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
+#include "updatemanager.hpp"
 
 class GameManager
 {
@@ -24,6 +25,7 @@ class GameManager
         GameState currentState = GameState::Menu;
         sf::View uiView{playerView};
         sf::Clock clock;
+        UpdateManager updates;
         RandomGenerator randomizer;
         AssetManager assets;
         AudioManager audio;

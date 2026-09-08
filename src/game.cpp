@@ -1,7 +1,14 @@
 #include "game.hpp"
 
 GameManager::GameManager()
-{}
+{
+	updates.checkForUpdate();
+	if (updates.getUpdateAvailable())
+	{
+		updates.downloadUpdate();
+		updates.installUpdate();
+	}
+}
 
 void GameManager::GameLoop()
 {

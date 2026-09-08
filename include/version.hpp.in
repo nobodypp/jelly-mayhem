@@ -1,0 +1,3 @@
+#pragma once
+
+#define JELLY_MAYHEM_VERSION "@GAME_VERSION@"

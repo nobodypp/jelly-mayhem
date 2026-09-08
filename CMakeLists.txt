@@ -4,11 +4,14 @@ cmake_minimum_required(VERSION 3.28)
 # Project
 # ============================================================
 
-set(GAME_VERSION "1.0.0" CACHE STRING "Project version")
+set(GAME_VERSION "0.0.0" CACHE STRING "Project version")
 
-project(Jelly-Mayhem
-    VERSION ${GAME_VERSION}
-    LANGUAGES CXX
+project(Jelly-Mayhem VERSION ${GAME_VERSION} LANGUAGES CXX)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/version.hpp.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/version.hpp"
+    @ONLY
 )
 
 
@@ -33,6 +36,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 # Dependencies
 # ============================================================
 
+find_package(CURL REQUIRED)
+
 include(FetchContent)
 
 # Project does not use SFML Network.
@@ -49,6 +54,13 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(SFML)
+
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+)
+
+FetchContent_MakeAvailable(json)
 
 
 # ============================================================
@@ -96,12 +108,15 @@ endif()
 target_include_directories(jelly-mayhem
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_BINARY_DIR}/generated"
 )
 
 target_link_libraries(jelly-mayhem
     PRIVATE
         SFML::Graphics
         SFML::Audio
+        CURL::libcurl
+        nlohmann_json::nlohmann_json
 )
 
 target_compile_options(jelly-mayhem PRIVATE
