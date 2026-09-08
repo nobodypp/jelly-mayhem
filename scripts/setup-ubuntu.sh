@@ -22,7 +22,8 @@ sudo apt install -y \
     libharfbuzz-dev \
     libvorbis-dev \
     libflac-dev \
-    libmbedtls-dev
+    libmbedtls-dev \
+    curl
 
 echo
 echo "Project1 Ubuntu environment is ready."
