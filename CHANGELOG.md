@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.5.1...v1.5.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* windows update test [#1](https://github.com/nobodypp/jelly-mayhem/issues/1) ([4da1c9e](https://github.com/nobodypp/jelly-mayhem/commit/4da1c9eb4f9e88f808ece85687be34df9033e740))
+
 ## [1.5.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.5.0...v1.5.1) (2026-09-08)
 
 
