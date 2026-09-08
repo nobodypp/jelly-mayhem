@@ -49,23 +49,12 @@ void UpdateManager::checkForUpdate()
     {
         const std::string name = asset.at("name").get<std::string>();
 
-    #ifdef _WIN32
-
         if (name.ends_with("-win64.exe"))
         {
             downloadUrl = asset.at("browser_download_url").get<std::string>();
             break;
         }
 
-    #elif defined(__linux__)
-
-        if (name.ends_with("-Linux.deb"))
-        {
-            downloadUrl = asset.at("browser_download_url").get<std::string>();
-            break;
-        }
-
-    #endif
     }
     std::cout << downloadUrl << "\n";
 }
@@ -82,15 +71,7 @@ void UpdateManager::downloadUpdate()
 
     if (!curl) throw std::runtime_error("Failed to initialize CURL");
 
-#ifdef _WIN32
-
     downloadedFile = std::filesystem::temp_directory_path() / "jelly-mayhem-update.exe";
-
-#elif defined(__linux__)
-
-    downloadedFile = std::filesystem::temp_directory_path() / "jelly-mayhem-update.deb";
-
-#endif
 
     FILE* file = std::fopen(downloadedFile.string().c_str(), "wb");
     

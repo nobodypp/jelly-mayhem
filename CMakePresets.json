@@ -82,7 +82,8 @@
             "displayName": "Windows Release Package",
             "configurePreset": "windows-release",
             "generators": [
-                "NSIS"
+                "NSIS", 
+                "ZIP"
             ]
         }
     ]

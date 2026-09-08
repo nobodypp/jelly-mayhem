@@ -97,6 +97,10 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
 )
 
 
+file(GLOB_RECURSE UPDATER_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/updater/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/updater/*.hpp"
+)
 
 
 # ============================================================
@@ -108,6 +112,10 @@ if(WIN32)
     add_executable(jelly-mayhem WIN32
         ${SOURCES}
         ${HEADERS}
+    )
+
+    add_executable(jelly-mayhem-updater #TODO: add WIN32 after debugging
+        ${UPDATER_SOURCES}
     )
 
 else()
@@ -137,8 +145,6 @@ target_link_libraries(jelly-mayhem
     PRIVATE
         SFML::Graphics
         SFML::Audio
-        CURL::libcurl
-        nlohmann_json::nlohmann_json
 )
 
 target_compile_options(jelly-mayhem PRIVATE
@@ -146,6 +152,19 @@ target_compile_options(jelly-mayhem PRIVATE
     -Wextra
     -Wpedantic
     -Wreorder
+)
+
+target_include_directories(jelly-mayhem-updater
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/updater"
+        "${CMAKE_CURRENT_BINARY_DIR}/generated"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+
+target_link_libraries(jelly-mayhem-updater
+    PRIVATE
+        CURL::libcurl
+        nlohmann_json::nlohmann_json
 )
 
 
@@ -295,7 +314,7 @@ message(STATUS "CMAKE_OBJDUMP = ${CMAKE_OBJDUMP}")
 if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     install(
-        TARGETS jelly-mayhem
+        TARGETS jelly-mayhem jelly-mayhem-updater
         RUNTIME_DEPENDENCY_SET ProjectRuntime
         RUNTIME DESTINATION "."
     )
