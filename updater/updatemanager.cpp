@@ -49,7 +49,7 @@ void UpdateManager::checkForUpdate()
     {
         const std::string name = asset.at("name").get<std::string>();
 
-        if (name.ends_with("-win64.exe"))
+        if (name.ends_with("-win64.zip"))
         {
             downloadUrl = asset.at("browser_download_url").get<std::string>();
             break;
@@ -71,7 +71,7 @@ void UpdateManager::downloadUpdate()
 
     if (!curl) throw std::runtime_error("Failed to initialize CURL");
 
-    downloadedFile = std::filesystem::temp_directory_path() / "jelly-mayhem-update.exe";
+    downloadedFile = std::filesystem::temp_directory_path() / "jelly-mayhem-update.zip";
 
     FILE* file = std::fopen(downloadedFile.string().c_str(), "wb");
     

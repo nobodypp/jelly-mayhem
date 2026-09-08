@@ -6,6 +6,10 @@ int main()
 {
     UpdateManager updates;
     updates.checkForUpdate();
-    std::cout << updates.getUpdateAvailable() << "\n";
+    if (updates.getUpdateAvailable())
+    {
+        updates.downloadUpdate();
+        updates.installUpdate();
+    }
     return 0;
 }

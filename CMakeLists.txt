@@ -456,7 +456,7 @@ set(CPACK_NSIS_URL_INFO_ABOUT
 )
 
 set(CPACK_NSIS_CONTACT
-    "fsliwa"
+    "Best programmer in the world"
 )
 
 include(CPack)
