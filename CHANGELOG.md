@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.2...v1.4.3) (2026-09-08)
+
+
+### Bug Fixes
+
+* curl installation ([5fe1fb6](https://github.com/nobodypp/jelly-mayhem/commit/5fe1fb6e3794ce0b82ad17863f9859d16487dc38))
+
 ## [1.4.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.4.1...v1.4.2) (2026-09-08)
 
 
