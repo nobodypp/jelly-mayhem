@@ -102,11 +102,7 @@ jobs:
             gcc-mingw-w64-x86-64 \
             g++-mingw-w64-x86-64 \
             ntldd \
-            nsis \
-            curl \
-            libcurl4-openssl-dev \
-            nlohmann-json3-dev
-
+            nsis
 
       # ------------------------------------------------------
       # Linux build dependencies

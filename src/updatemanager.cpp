@@ -92,8 +92,8 @@ void UpdateManager::downloadUpdate()
 
 #endif
 
-    FILE* file = std::fopen(downloadedFile.c_str(), "wb");
-
+    FILE* file = std::fopen(downloadedFile.string().c_str(), "wb");
+    
     if (!file)
     {
         curl_easy_cleanup(curl);

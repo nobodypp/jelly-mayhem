@@ -36,8 +36,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 # Dependencies
 # ============================================================
 
-find_package(CURL REQUIRED)
-
 include(FetchContent)
 
 # Project does not use SFML Network.
@@ -53,15 +51,36 @@ FetchContent_Declare(
     SYSTEM
 )
 
-FetchContent_MakeAvailable(SFML)
-
 FetchContent_Declare(
     json
     URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
 )
 
-FetchContent_MakeAvailable(json)
+FetchContent_Declare(
+    CURL
+    GIT_REPOSITORY https://github.com/curl/curl.git
+    GIT_TAG curl-8_16_0
+)
 
+set(BUILD_CURL_EXE OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+set(CURL_BUILD_EVERYTHING OFF CACHE BOOL "" FORCE)
+
+set(USE_NGHTTP2 OFF CACHE BOOL "" FORCE)
+set(USE_LIBIDN2 OFF CACHE BOOL "" FORCE)
+set(CURL_USE_LIBPSL OFF CACHE BOOL "" FORCE)
+
+if(WIN32)
+    set(CURL_USE_SCHANNEL ON CACHE BOOL "" FORCE)
+    set(CURL_USE_OPENSSL OFF CACHE BOOL "" FORCE)
+else()
+    set(CURL_USE_OPENSSL ON CACHE BOOL "" FORCE)
+endif()
+
+FetchContent_MakeAvailable(SFML json CURL)
 
 # ============================================================
 # Source files
@@ -75,6 +94,8 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
 )
+
+
 
 
 # ============================================================
