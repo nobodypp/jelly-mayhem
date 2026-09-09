@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.2...v1.6.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* fixed rc files ([f75bf86](https://github.com/nobodypp/jelly-mayhem/commit/f75bf86c5b4bdcf2225ed48c7cf058ff30c48c65))
+
 ## [1.6.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.1...v1.6.2) (2026-09-09)
 
 
