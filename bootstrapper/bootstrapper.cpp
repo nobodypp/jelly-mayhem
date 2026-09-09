@@ -62,6 +62,16 @@ void Bootstrapper::installUpdate(const std::filesystem::path &updateRoot)
     }
 }
 
+void Bootstrapper::cleanupUpdate(const std::filesystem::path &updateRoot)
+{
+    const auto stagingDirectory = updateRoot.parent_path();
+
+    std::error_code ec;
+    std::filesystem::remove_all(stagingDirectory, ec);
+
+    if (ec) std::cerr << "Warning: failed to remove update staging directory: " << stagingDirectory << " (" << ec.message() << ")\n";
+}
+
 void Bootstrapper::launchGame()
 {
     const auto gamePath = executableDirectory / "jelly-mayhem.exe";
@@ -174,6 +184,7 @@ int Bootstrapper::run()
 
     const auto updateRoot = readUpdateManifest();
     installUpdate(updateRoot);
+    cleanupUpdate(updateRoot);
     launchGame();
     return 0;
 }

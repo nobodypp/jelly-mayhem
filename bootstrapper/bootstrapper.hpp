@@ -14,6 +14,7 @@ class Bootstrapper
 
         std::filesystem::path readUpdateManifest();
         void installUpdate(const std::filesystem::path& updateRoot);
+        void cleanupUpdate(const std::filesystem::path& udpateRoot);
         void launchGame();
 
     public:
