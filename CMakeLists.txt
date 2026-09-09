@@ -119,7 +119,7 @@ if(WIN32)
         "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.hpp"
     )
 
-    add_executable(jelly-mayhem-bootstrapper #TODO: add WIN32 after debugging
+    add_executable(jelly-mayhem-bootstrapper WIN32
         "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.hpp"
