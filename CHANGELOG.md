@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.1...v1.6.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* bootstrapper has admin privileges ([0edae0c](https://github.com/nobodypp/jelly-mayhem/commit/0edae0ce2e85791c3d9f16bcd8cf880a5b368b3c))
+
 ## [1.6.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.0...v1.6.1) (2026-09-09)
 
 
