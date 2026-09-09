@@ -145,6 +145,14 @@ if(WIN32)
         PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
     )
+    target_sources(jelly-mayhem-bootstrapper
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
+    )
+    target_sources(jelly-mayhem-updater
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
+    )
 
     target_include_directories(jelly-mayhem-updater
         PRIVATE
