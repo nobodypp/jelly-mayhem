@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.0...v1.6.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* new executable has the icon ([5fed176](https://github.com/nobodypp/jelly-mayhem/commit/5fed176ffac38812a755f2c58826998b4b3005d2))
+
 ## [1.6.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.5.2...v1.6.0) (2026-09-09)
 
 
