@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.28)
 
 set(GAME_VERSION "0.0.0" CACHE STRING "Project version")
 
-project(Jelly-Mayhem VERSION ${GAME_VERSION} LANGUAGES CXX)
+project(Jelly-Mayhem VERSION ${GAME_VERSION} LANGUAGES C CXX)
 
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/include/version.hpp.in"
@@ -62,26 +62,31 @@ FetchContent_Declare(
     GIT_TAG curl-8_16_0
 )
 
+FetchContent_Declare(
+    miniz
+    GIT_REPOSITORY https://github.com/richgel999/miniz.git
+    GIT_TAG 3.0.2
+    GIT_SHALLOW ON
+)
+
 set(BUILD_CURL_EXE OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
-
 set(CURL_BUILD_EVERYTHING OFF CACHE BOOL "" FORCE)
-
 set(USE_NGHTTP2 OFF CACHE BOOL "" FORCE)
 set(USE_LIBIDN2 OFF CACHE BOOL "" FORCE)
 set(CURL_USE_LIBPSL OFF CACHE BOOL "" FORCE)
 set(CURL_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
+set(CURL_USE_SCHANNEL ON CACHE BOOL "" FORCE)
+set(CURL_USE_OPENSSL OFF CACHE BOOL "" FORCE)
 
+
+FetchContent_MakeAvailable(SFML)
 if(WIN32)
-    set(CURL_USE_SCHANNEL ON CACHE BOOL "" FORCE)
-    set(CURL_USE_OPENSSL OFF CACHE BOOL "" FORCE)
-else()
-    set(CURL_USE_OPENSSL ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(json CURL miniz)
 endif()
 
-FetchContent_MakeAvailable(SFML json CURL)
 
 # ============================================================
 # Source files
@@ -97,12 +102,6 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS
 )
 
 
-file(GLOB_RECURSE UPDATER_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/updater/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/updater/*.hpp"
-)
-
-
 # ============================================================
 # Executable
 # ============================================================
@@ -115,7 +114,21 @@ if(WIN32)
     )
 
     add_executable(jelly-mayhem-updater #TODO: add WIN32 after debugging
-        ${UPDATER_SOURCES}
+        "${CMAKE_CURRENT_SOURCE_DIR}/updater/main.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.hpp"
+    )
+
+    add_executable(jelly-mayhem-bootstrapper #TODO: add WIN32 after debugging
+        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/main.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.hpp"
+    )
+
+    target_link_options(jelly-mayhem-bootstrapper
+        PRIVATE
+            -static-libgcc
+            -static-libstdc++
     )
 
 else()
@@ -138,12 +151,14 @@ if(WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/updater"
             "${CMAKE_CURRENT_BINARY_DIR}/generated"
             "${CMAKE_CURRENT_SOURCE_DIR}/include"
+            "${miniz_SOURCE_DIR}"
     )
 
     target_link_libraries(jelly-mayhem-updater
         PRIVATE
             CURL::libcurl
             nlohmann_json::nlohmann_json
+            miniz
     )
 endif()
 
@@ -160,12 +175,12 @@ target_link_libraries(jelly-mayhem
         SFML::Audio
 )
 
-target_compile_options(jelly-mayhem PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Wreorder
-)
+# target_compile_options(jelly-mayhem PRIVATE
+#     -Wall
+#     -Wextra
+#     -Wpedantic
+#     -Wreorder
+# )
 
 
 # ============================================================
@@ -296,25 +311,12 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
         "${CMAKE_OBJDUMP}"
     )
 
-endif()
-
-
-# ------------------------------------------------------------
-# Install executable and collect runtime dependencies
-# ------------------------------------------------------------
-
-message(STATUS "CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES:")
-foreach(DIR IN LISTS CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES)
-    message(STATUS "  ${DIR}")
-endforeach()
-
-message(STATUS "CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
-message(STATUS "CMAKE_OBJDUMP = ${CMAKE_OBJDUMP}")
-
-if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # ------------------------------------------------------------
+    # Install executable and collect runtime dependencies
+    # ------------------------------------------------------------
 
     install(
-        TARGETS jelly-mayhem jelly-mayhem-updater
+        TARGETS jelly-mayhem jelly-mayhem-updater jelly-mayhem-bootstrapper
         RUNTIME_DEPENDENCY_SET ProjectRuntime
         RUNTIME DESTINATION "."
     )
@@ -345,7 +347,7 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
             ${PROJECT_RUNTIME_DIRECTORIES}
 
         PRE_EXCLUDE_REGEXES
-            "^(advapi32|bcrypt|crypt32|gdi32|iphlpapi|kernel32|msvcrt|opengl32|secur32|user32|wldap32|winmm|ws2_32)\\.dll$"
+            "^(advapi32|bcrypt|crypt32|gdi32|iphlpapi|kernel32|msvcrt|opengl32|secur32|user32|wldap32|winmm|ws2_32|shell32)\\.dll$"
             "^api-ms-win-.*"
             "^ext-ms-win-.*"
     )
@@ -411,7 +413,7 @@ set(CPACK_PACKAGE_VERSION
 )
 
 set(CPACK_NSIS_MENU_LINKS
-    "jelly-mayhem.exe"
+    "jelly-mayhem-bootstrapper.exe"
     "Jelly-Mayhem"
 )
 

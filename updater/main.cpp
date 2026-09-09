@@ -4,12 +4,12 @@
 
 int main()
 {
-    UpdateManager updates;
-    updates.checkForUpdate();
-    if (updates.getUpdateAvailable())
+    UpdateManager updater;
+    if (updater.checkForUpdate())
     {
-        updates.downloadUpdate();
-        updates.installUpdate();
+        updater.downloadUpdate();
+        updater.extractUpdate();
+        updater.writeUpdateManifest();
     }
     return 0;
 }
