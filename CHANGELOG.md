@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.5](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.4...v1.6.5) (2026-09-09)
+
+
+### Bug Fixes
+
+* bootstraper wont update himself ([5af7cbd](https://github.com/nobodypp/jelly-mayhem/commit/5af7cbdbd6bbcfeb4ff801c6f38371929a8421c6))
+
 ## [1.6.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.3...v1.6.4) (2026-09-09)
 
 
