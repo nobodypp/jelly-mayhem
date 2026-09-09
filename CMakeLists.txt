@@ -148,6 +148,7 @@ if(WIN32)
     target_sources(jelly-mayhem-bootstrapper
         PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-bootstrapper.rc"
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-bootstrapper.manifest"
     )
     target_sources(jelly-mayhem-updater
         PRIVATE
