@@ -1,3 +1,5 @@
+#include "winuser.h"
+
 IDI_ICON1 ICON DISCARDABLE "jelly-mayhem.ico"
 
-1 RT_MANIFEST "jelly-mayhem-bootstrapper.manifest"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "jelly-mayhem-bootstrapper.manifest"
