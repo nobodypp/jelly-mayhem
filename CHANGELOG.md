@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.3...v1.6.4) (2026-09-09)
+
+
+### Bug Fixes
+
+* bootstrapper rc ([6759dbc](https://github.com/nobodypp/jelly-mayhem/commit/6759dbc21192ac302fa9e7b3aa10c98ef05389be))
+
 ## [1.6.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.2...v1.6.3) (2026-09-09)
 
 
