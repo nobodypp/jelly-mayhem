@@ -29,6 +29,13 @@ void Bootstrapper::installUpdate(const std::filesystem::path &updateRoot)
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(updateRoot))
     {
+        const auto filename = entry.path().filename();
+
+        if (filename == "jelly-mayhem-bootstrapper.exe")
+        {
+            continue;
+        }
+
         const auto relativePath = std::filesystem::relative(entry.path(), updateRoot);
 
         const auto destination = executableDirectory / relativePath;
