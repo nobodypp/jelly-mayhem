@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.5.2...v1.6.0) (2026-09-09)
+
+
+### Features
+
+* added launcher and updater to windows ([b259268](https://github.com/nobodypp/jelly-mayhem/commit/b259268780436db7d0a60152a97b321d79c751a2))
+
 ## [1.5.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.5.1...v1.5.2) (2026-09-08)
 
 
