@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.7...v1.7.0) (2026-09-09)
+
+
+### Features
+
+* bootstraper without cui ([2e1e2a1](https://github.com/nobodypp/jelly-mayhem/commit/2e1e2a16b249a86d969ab56bc2562e00532e69f9))
+
 ## [1.6.7](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.6...v1.6.7) (2026-09-09)
 
 
