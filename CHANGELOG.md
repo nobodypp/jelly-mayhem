@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.5...v1.6.6) (2026-09-09)
+
+
+### Bug Fixes
+
+* bootstraper uac test ([98c97c3](https://github.com/nobodypp/jelly-mayhem/commit/98c97c3e61aa5a026d2a8d3d5b8732141f1d8498))
+
 ## [1.6.5](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.4...v1.6.5) (2026-09-09)
 
 
