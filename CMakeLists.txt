@@ -113,7 +113,7 @@ if(WIN32)
         ${HEADERS}
     )
 
-    add_executable(jelly-mayhem-updater #TODO: add WIN32 after debugging
+    add_executable(jelly-mayhem-updater WIN32
         "${CMAKE_CURRENT_SOURCE_DIR}/updater/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.hpp"
