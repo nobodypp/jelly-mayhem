@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.7](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.6...v1.6.7) (2026-09-09)
+
+
+### Bug Fixes
+
+* cleanup boostrapper added ([51dc5be](https://github.com/nobodypp/jelly-mayhem/commit/51dc5bea682969306ba3b64e5951a8d1252c43b1))
+
 ## [1.6.6](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.5...v1.6.6) (2026-09-09)
 
 
