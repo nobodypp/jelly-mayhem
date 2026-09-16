@@ -67,7 +67,7 @@ float Chromosome::getProportionalStat(std::string statName)
     return static_cast<float>(arrayToInt(stats.at(statName)) + 1) / static_cast<float>(statSum);
 }
 
-float Chromosome::mapRange(float a1, float a2, float b1, float b2, float s) { return b1 + (s-a1)*(b2-b1)/(a2-a1); }
+float Chromosome::mapRange(float a1, float a2, float b1, float b2, float s) { return b1 + (s - a1) * (b2 - b1) / (a2 - a1); }
 
 int Chromosome::getHealth() { return static_cast<int>(getProportionalStat("health") * 300.f); }
 
