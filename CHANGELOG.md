@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.8.0...v1.9.0) (2026-09-16)
+
+
+### Features
+
+* color and jelly ai changed ([ed50cd7](https://github.com/nobodypp/jelly-mayhem/commit/ed50cd75a8458abb9ade258b3735442467979e0a))
+
 ## [1.8.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.7.1...v1.8.0) (2026-09-16)
 
 
