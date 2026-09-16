@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.7.0...v1.7.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* release test ([b21c9be](https://github.com/nobodypp/jelly-mayhem/commit/b21c9be32fb31c15aff9e6caa778bca491069948))
+* updater wont use cui ([4ea8194](https://github.com/nobodypp/jelly-mayhem/commit/4ea819445155b74970771dbb4155790f6ab7585a))
+* updtaer wont use cui [#2](https://github.com/nobodypp/jelly-mayhem/issues/2) ([ff635bf](https://github.com/nobodypp/jelly-mayhem/commit/ff635bfea0d33f147af71ecd704d6c13de86000c))
+
 ## [1.7.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.6.7...v1.7.0) (2026-09-09)
 
 
