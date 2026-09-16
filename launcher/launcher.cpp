@@ -1,8 +1,43 @@
-#include "updatemanager.hpp"
+#include "launcher.hpp"
 
-UpdateManager::UpdateManager()
+size_t Launcher::writeCallBack(char *data, size_t size, size_t numberOfElements, void *userData)
 {
-    // Find executable directory
+    const size_t totalSize = size * numberOfElements;
+    auto* response = static_cast<std::string*>(userData);
+    response->append(data, totalSize);
+    return totalSize;
+}
+
+int Launcher::progresCallBack(void *userData, curl_off_t totalDownload, curl_off_t downloaded)
+{
+    if (totalDownload <= 0) return 0;
+    const double progress = static_cast<double>(downloaded) / static_cast<double>(totalDownload);
+    auto* callback = static_cast<std::function<void(double)>*>(userData);
+    if (*callback) (*callback)(progress);
+    return 0;
+}
+
+bool Launcher::isNewerVersion(const std::string &current, const std::string &latest)
+{
+    std::stringstream currentStream(current);
+    std::stringstream latestStream(latest);
+
+    int currentMajor, currentMinor, currentPatch, latestMajor, latestMinor, latestPatch;
+    char separator;
+
+    currentStream >> currentMajor >> separator  >> currentMinor >> separator >> currentPatch;
+
+    latestStream >> latestMajor  >> separator >> latestMinor >> separator >> latestPatch;
+
+    if (latestMajor != currentMajor) return latestMajor > currentMajor;
+
+    if (latestMinor != currentMinor) return latestMinor > currentMinor;
+
+    return latestPatch > currentPatch;
+}
+
+Launcher::Launcher()
+{
     wchar_t buffer[MAX_PATH];
 
     const DWORD length = GetModuleFileNameW(
@@ -11,13 +46,48 @@ UpdateManager::UpdateManager()
         MAX_PATH
     );
 
-    if (length == 0)
-        throw std::runtime_error("Failed to get executable path");
+    if (length == 0) throw std::runtime_error("Failed to get bootstrapper executable path");
 
     executableDirectory = std::filesystem::path(buffer).parent_path();
 }
 
-bool UpdateManager::checkForUpdate()
+void Launcher::launchGame()
+{
+    std::cout << "Launching game...\n";
+
+    const auto gamePath = executableDirectory / "jelly-mayhem.exe";
+
+    const HINSTANCE result = ShellExecuteW(
+        nullptr,
+        L"open",
+        gamePath.c_str(),
+        nullptr,
+        executableDirectory.c_str(),
+        SW_SHOWNORMAL
+    );
+
+    if (reinterpret_cast<std::intptr_t>(result) <= 32) throw std::runtime_error("Failed to start jelly-mayhem.exe");
+}
+
+void Launcher::runInstaller()
+{
+    std::cout << "Launching installer...\n";
+
+    const auto gamePath = executableDirectory / "jelly-mayhem-installer.exe";
+
+    const HINSTANCE result = ShellExecuteW(
+        nullptr,
+        L"open",
+        gamePath.c_str(),
+        nullptr,
+        executableDirectory.c_str(),
+        SW_SHOWNORMAL
+    );
+
+    if (reinterpret_cast<std::intptr_t>(result) <= 32) throw std::runtime_error("Failed to start installer");
+}
+
+bool Launcher::checkForUpdate()
 {
     CURL* curl = curl_easy_init();
 
@@ -36,14 +106,14 @@ bool UpdateManager::checkForUpdate()
 
     const CURLcode result = curl_easy_perform(curl);
 
-    const auto json = nlohmann::json::parse(response);
-
     if (result != CURLE_OK)
     {
         std::cerr << "CURL error: " << curl_easy_strerror(result) << '\n';
         curl_easy_cleanup(curl);
         throw std::runtime_error(curl_easy_strerror(result));
     }
+
+    const auto json = nlohmann::json::parse(response);
 
     latestVersion = json.at("tag_name").get<std::string>();
     if (!latestVersion.empty() && latestVersion[0] == 'v') latestVersion.erase(0, 1);
@@ -77,7 +147,7 @@ bool UpdateManager::checkForUpdate()
     return updateAvailable;
 }
 
-void UpdateManager::downloadUpdate()
+void Launcher::downloadUpdate()
 {
     if (!updateAvailable)
     {
@@ -113,7 +183,7 @@ void UpdateManager::downloadUpdate()
 
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
 
-    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, UpdateManager::progresCallBack);
+    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, Launcher::progresCallBack);
 
     curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &progressCallback);
 
@@ -125,8 +195,7 @@ void UpdateManager::downloadUpdate()
     if (result != CURLE_OK) throw std::runtime_error(curl_easy_strerror(result));
 }
 
-
-void UpdateManager::extractUpdate()
+void Launcher::extractUpdate()
 {
     if (downloadedFile.empty()) throw std::runtime_error("No update file downloaded");
 
@@ -198,9 +267,7 @@ void UpdateManager::extractUpdate()
     std::cout << extractedRoot << '\n';
 }
 
-bool UpdateManager::getUpdateAvailable() { return updateAvailable; }
-
-void UpdateManager::writeUpdateManifest()
+void Launcher::writeUpdateManifest()
 {
     if (extractedRoot.empty()) throw std::runtime_error("Cannot write update manifest: extracted root is empty");
     
@@ -217,40 +284,4 @@ void UpdateManager::writeUpdateManifest()
     if (!file) throw std::runtime_error("Failed to write update manifest: " + manifestPath.string());
     
     std::cout << "Update manifest written to:\n" << manifestPath << '\n';
-}
-
-size_t UpdateManager::writeCallBack(char *data, size_t size, size_t numberOfElements, void *userData)
-{
-    const size_t totalSize = size * numberOfElements;
-    auto* response = static_cast<std::string*>(userData);
-    response->append(data, totalSize);
-    return totalSize;
-}
-
-int UpdateManager::progresCallBack(void *userData, curl_off_t totalDownload, curl_off_t downloaded)
-{
-    if (totalDownload <= 0) return 0;
-    const double progress = static_cast<double>(downloaded) / static_cast<double>(totalDownload);
-    auto* callback = static_cast<std::function<void(double)>*>(userData);
-    if (*callback) (*callback)(progress);
-    return 0;
-}
-
-bool UpdateManager::isNewerVersion(const std::string &current, const std::string &latest)
-{
-    std::stringstream currentStream(current);
-    std::stringstream latestStream(latest);
-
-    int currentMajor, currentMinor, currentPatch, latestMajor, latestMinor, latestPatch;
-    char separator;
-
-    currentStream >> currentMajor >> separator  >> currentMinor >> separator >> currentPatch;
-
-    latestStream >> latestMajor  >> separator >> latestMinor >> separator >> latestPatch;
-
-    if (latestMajor != currentMajor) return latestMajor > currentMajor;
-
-    if (latestMinor != currentMinor) return latestMinor > currentMinor;
-
-    return latestPatch > currentPatch;
 }

@@ -113,19 +113,19 @@ if(WIN32)
         ${HEADERS}
     )
 
-    add_executable(jelly-mayhem-updater WIN32
-        "${CMAKE_CURRENT_SOURCE_DIR}/updater/main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/updater/updatemanager.hpp"
+    add_executable(jelly-mayhem-launcher WIN32
+        "${CMAKE_CURRENT_SOURCE_DIR}/launcher/main.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/launcher/launcher.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/launcher/launcher.hpp"
     )
 
-    add_executable(jelly-mayhem-bootstrapper WIN32
-        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/main.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/bootstrapper/bootstrapper.hpp"
+    add_executable(jelly-mayhem-installer WIN32
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/main.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/installer.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/installer/installer.hpp"
     )
 
-    target_link_options(jelly-mayhem-bootstrapper
+    target_link_options(jelly-mayhem-installer
         PRIVATE
             -static-libgcc
             -static-libstdc++
@@ -145,25 +145,24 @@ if(WIN32)
         PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
     )
-    target_sources(jelly-mayhem-bootstrapper
-        PRIVATE
-            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-bootstrapper.rc"
-            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-bootstrapper.manifest"
-    )
-    target_sources(jelly-mayhem-updater
+    target_sources(jelly-mayhem-launcher
         PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem.rc"
     )
-
-    target_include_directories(jelly-mayhem-updater
+    target_sources(jelly-mayhem-installer
         PRIVATE
-            "${CMAKE_CURRENT_SOURCE_DIR}/updater"
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-installer.rc"
+            "${CMAKE_CURRENT_SOURCE_DIR}/packaging/windows/jelly-mayhem-installer.manifest"
+    )
+
+    target_include_directories(jelly-mayhem-launcher
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/launcher"
             "${CMAKE_CURRENT_BINARY_DIR}/generated"
-            "${CMAKE_CURRENT_SOURCE_DIR}/include"
             "${miniz_SOURCE_DIR}"
     )
 
-    target_link_libraries(jelly-mayhem-updater
+    target_link_libraries(jelly-mayhem-launcher
         PRIVATE
             CURL::libcurl
             nlohmann_json::nlohmann_json
@@ -175,7 +174,6 @@ endif()
 target_include_directories(jelly-mayhem
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
-        "${CMAKE_CURRENT_BINARY_DIR}/generated"
 )
 
 target_link_libraries(jelly-mayhem
@@ -183,13 +181,6 @@ target_link_libraries(jelly-mayhem
         SFML::Graphics
         SFML::Audio
 )
-
-# target_compile_options(jelly-mayhem PRIVATE
-#     -Wall
-#     -Wextra
-#     -Wpedantic
-#     -Wreorder
-# )
 
 
 # ============================================================
@@ -219,7 +210,7 @@ include(GNUInstallDirs)
 # Runtime dependency search paths
 # ------------------------------------------------------------
 
-if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(WIN32)
 
     execute_process(
         COMMAND
@@ -325,7 +316,7 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # ------------------------------------------------------------
 
     install(
-        TARGETS jelly-mayhem jelly-mayhem-updater jelly-mayhem-bootstrapper
+        TARGETS jelly-mayhem jelly-mayhem-installer jelly-mayhem-launcher
         RUNTIME_DEPENDENCY_SET ProjectRuntime
         RUNTIME DESTINATION "."
     )
@@ -341,10 +332,10 @@ endif()
 
 
 # ------------------------------------------------------------
-# Install Windows runtime dependencies
+# Install Windows runtime dependencies and assets
 # ------------------------------------------------------------
 
-if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(WIN32)
 
     install(
         RUNTIME_DEPENDENCY_SET ProjectRuntime
@@ -360,15 +351,6 @@ if(MINGW AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "^api-ms-win-.*"
             "^ext-ms-win-.*"
     )
-
-endif()
-
-
-# ------------------------------------------------------------
-# Install assets
-# ------------------------------------------------------------
-
-if(WIN32)
 
     install(
         DIRECTORY
@@ -413,61 +395,32 @@ endif()
 # Packaging
 # ============================================================
 
-set(CPACK_PACKAGE_NAME
-    "Jelly-Mayhem"
-)
+set(CPACK_PACKAGE_NAME "Jelly-Mayhem")
 
-set(CPACK_PACKAGE_VERSION
-    "${PROJECT_VERSION}"
-)
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 
-set(CPACK_NSIS_MENU_LINKS
-    "jelly-mayhem-bootstrapper.exe"
-    "Jelly-Mayhem"
-)
+set(CPACK_NSIS_MENU_LINKS "jelly-mayhem-launcher.exe" "Jelly-Mayhem")
 
-set(CPACK_PACKAGE_VENDOR
-    "fsliwa"
-)
+set(CPACK_PACKAGE_VENDOR "fsliwa")
 
-set(CPACK_PACKAGE_CONTACT
-    "fsliwa"
-)
+set(CPACK_PACKAGE_CONTACT "fsliwa")
 
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER
-    "fsliwa"
-)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "fsliwa")
 
-set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
-    "Jelly-Mayhem - a fast-paced 2D action game"
-)
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Jelly-Mayhem - a fast-paced 2D action game")
 
-set(CPACK_NSIS_DISPLAY_NAME
-    "Jelly-Mayhem"
-)
+set(CPACK_NSIS_DISPLAY_NAME "Jelly-Mayhem")
 
-set(CPACK_NSIS_PACKAGE_NAME
-    "Jelly-Mayhem"
-)
+set(CPACK_NSIS_PACKAGE_NAME "Jelly-Mayhem")
 
-set(CPACK_NSIS_INSTALL_ROOT
-    "$PROGRAMFILES64"
-)
+set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
 
-set(CPACK_PACKAGE_INSTALL_DIRECTORY
-    "Jelly-Mayhem"
-)
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Jelly-Mayhem")
 
-set(CPACK_NSIS_HELP_LINK
-    "https://github.com/fsliwa/jelly-mayhem"
-)
+set(CPACK_NSIS_HELP_LINK "https://github.com/fsliwa/jelly-mayhem")
 
-set(CPACK_NSIS_URL_INFO_ABOUT
-    "https://github.com/fsliwa/jelly-mayhem"
-)
+set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fsliwa/jelly-mayhem")
 
-set(CPACK_NSIS_CONTACT
-    "Best programmer in the world"
-)
+set(CPACK_NSIS_CONTACT "Best programmer in the world")
 
 include(CPack)

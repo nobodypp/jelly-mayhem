@@ -14,8 +14,7 @@
 #include <windows.h>
 #include <fstream>
 
-
-class UpdateManager
+class Launcher
 {
     private:
         static size_t writeCallBack(char *data, size_t size, size_t numberOfElements, void *userData);
@@ -31,10 +30,11 @@ class UpdateManager
         std::filesystem::path extractedRoot = "";
 
     public:
-        UpdateManager();
+        Launcher();
+        void runInstaller();
+        void launchGame();
         bool checkForUpdate();
         void downloadUpdate();
         void extractUpdate();
-        bool getUpdateAvailable();
         void writeUpdateManifest();
 };
