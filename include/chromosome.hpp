@@ -11,18 +11,17 @@
 class Chromosome
 {
     private:
-        static constexpr std::size_t colorArraySize = 8;
-        static constexpr std::size_t bitingDistanceArraySize = 9;
-        static constexpr std::size_t shootingDistanceArraySize = 7;
+        static constexpr std::size_t paramArraySize = 9;
         static constexpr std::size_t statArraySize = 4;
+        static constexpr float minShootingDistance = 100.f;
+        static constexpr float maxShootingDistance = 200.f;
+        static constexpr float minBitingDistance = 100.f;
+        static constexpr float maxBitingDistance = 450.f;
 
         RandomGenerator* randomizer;
         int damageInflicted = 0;
-        std::array<bool, bitingDistanceArraySize> bitingDistance;
-        std::array<bool, shootingDistanceArraySize> shootingDistance;
-        std::array<bool, colorArraySize> redColor;
-        std::array<bool, colorArraySize> greenColor;
-        std::array<bool, colorArraySize> blueColor;
+        std::array<bool, paramArraySize> bitingDistance;
+        std::array<bool, paramArraySize> shootingDistance;
         std::map<std::string, std::array<bool, statArraySize>> stats;
         
 
@@ -87,6 +86,7 @@ class Chromosome
         }
 
         float getProportionalStat(std::string statName);
+        float mapRange(float a1, float a2, float b1, float b2, float s);
     
     public:
         Chromosome(RandomGenerator& randomizer);
