@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.7.1...v1.8.0) (2026-09-16)
+
+
+### Features
+
+* new updater structure ([ea6bc56](https://github.com/nobodypp/jelly-mayhem/commit/ea6bc5658611cc24c47e4f6409fb1a75245cec3e))
+
 ## [1.7.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.7.0...v1.7.1) (2026-09-16)
 
 
