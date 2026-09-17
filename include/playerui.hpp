@@ -1,12 +1,16 @@
 #pragma once
 
+#include <stdexcept>
+#include <array>
+#include <nlohmann/json.hpp>
+#include <fstream>
 #include "drawable.hpp"
 #include "assetmanager.hpp"
 #include "gamestate.hpp"
 #include "perkmanager.hpp"
 #include "animation.hpp"
 #include "audiomanager.hpp"
-#include <array>
+#include "paths.hpp"
 
 
 class PlayerUI : public Drawable
@@ -34,15 +38,14 @@ class PlayerUI : public Drawable
                 bool isClicked = false;
                 bool wasClicked = false;
 
+                AssetManager* assets;
+                AudioManager* audio;
+
                 bool isInsideButton(sf::Vector2f pos)
                 {
                     sf::Vector2f position = text.getPosition();
-                    return std::abs(pos.x - position.x) < size.x / 2 &&
-                        std::abs(pos.y - position.y) < size.y / 2;
+                    return std::abs(pos.x - position.x) < size.x / 2 && std::abs(pos.y - position.y) < size.y / 2;
                 }
-
-                AssetManager* assets;
-                AudioManager* audio;
             
             public:
                 Button(sf::Vector2f size, std::string text, float circleRadius, AssetManager& assets, AudioManager& audio)
@@ -61,7 +64,7 @@ class PlayerUI : public Drawable
                     this->text.setOrigin(this->text.getLocalBounds().getCenter());
                     this->text.setFillColor(textColor);
 
-                    if (circleRadius > std::min(size.x, size.y) / 2) std::cout << "Incorrect button circle radius!\n";
+                    if (circleRadius > std::min(size.x, size.y) / 2) throw std::runtime_error("Incorrect button circle radius!");
                 }
 
                 void render(sf::RenderWindow& window) override
@@ -143,6 +146,7 @@ class PlayerUI : public Drawable
 
         PerkManager& perks;
         AudioManager& audio;
+        AssetManager& assets;
 
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
@@ -207,12 +211,6 @@ class PlayerUI : public Drawable
 
         PauseScreenState pauseState = PauseScreenState::Menu;
 
-        template<typename T>
-        static constexpr std::size_t index(T value)
-        {
-            return static_cast<std::size_t>(value);
-        }
-
         std::array<Button, static_cast<std::size_t>(LoseButtonId::Count)> loseButtons;
         std::array<Button, static_cast<std::size_t>(PauseButtonId::Count)> pauseButtons;
 
@@ -245,6 +243,11 @@ class PlayerUI : public Drawable
                 buttons.at(i).render(window);
             }
         }
+        template<typename T>
+        static constexpr std::size_t index(T value) { return static_cast<std::size_t>(value); }
+        void loadSettings();
+        void saveSettings();
+
 
     public:
         PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);

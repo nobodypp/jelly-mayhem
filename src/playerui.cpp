@@ -1,9 +1,37 @@
 #include "playerui.hpp"
 
+void PlayerUI::loadSettings()
+{
+    const auto path = Paths::configDirectory() / "settings.json";
+    if (!std::filesystem::exists(path))
+    {
+        saveSettings();
+        return;
+    }
+    std::ifstream file(path);
+    if (!file) throw std::runtime_error("Failed to open settings file");
+    nlohmann::json data;
+    file >> data;
 
-PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state)
+    audio.setVolume(data.at("volume"));
+}
+
+void PlayerUI::saveSettings()
+{
+    const auto path = Paths::configDirectory() / "settings.json";
+    nlohmann::json data;
+
+    data["volume"] = audio.getVolume();
+
+    std::ofstream file(path);
+    if (!file) throw std::runtime_error("Failed to create settings file");
+    file << data.dump(4);
+}
+
+PlayerUI::PlayerUI(AssetManager &assets, PerkManager &perks, AudioManager &audio, GameState state)
     : perks(perks),
       audio(audio),
+      assets(assets),
       bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f),
       bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()),
       bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()),
@@ -17,15 +45,13 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       loseButtons{
           Button(buttonSize, "Get good", 25.f, assets, audio),
           Button(buttonSize, "Main menu", 25.f, assets, audio),
-          Button(buttonSize, "Rage quit", 25.f, assets, audio)
-      },
+          Button(buttonSize, "Rage quit", 25.f, assets, audio)},
       pauseButtons{
           Button(buttonSize, "Resume", 20.f, assets, audio),
           Button(buttonSize, "Perks", 20.f, assets, audio),
           Button(buttonSize, "Options", 20.f, assets, audio),
           Button(buttonSize, "Main menu", 20.f, assets, audio),
-          Button(buttonSize, "Quit", 20.f, assets, audio)
-      },
+          Button(buttonSize, "Quit", 20.f, assets, audio)},
       rectangleBackground({1000.f, 300.f}, "", 30.f, assets, audio),
       perkName(assets.font),
       perkObjective(assets.font),
@@ -35,13 +61,12 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
       perkId(0),
       returnButton(buttonSize, "Back", 25.f, assets, audio),
       volumeText(assets.font),
-      isVolumeBarClicked(false), 
-      titleText(assets.font), 
+      isVolumeBarClicked(false),
+      titleText(assets.font),
       menuButtons{
-        Button(buttonSize, "Play", 20.f, assets, audio), 
-        Button(buttonSize, "Best scores", 20.f, assets, audio), 
-        Button(buttonSize, "Quit", 20.f, assets, audio)
-      }, 
+          Button(buttonSize, "Play", 20.f, assets, audio),
+          Button(buttonSize, "Best scores", 20.f, assets, audio),
+          Button(buttonSize, "Quit", 20.f, assets, audio)},
       scoreboardText(assets.font)
 {
     // Bottle charge bar init
@@ -106,6 +131,9 @@ PlayerUI::PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio
     // Scoreboard
     scoreboardText.setCharacterSize(10);
     scoreboardText.setFillColor(sf::Color::Black);
+
+    // Settings
+    loadSettings();
 }
 
 void PlayerUI::update(sf::Time deltaTime)
@@ -129,6 +157,7 @@ void PlayerUI::update(sf::Time deltaTime)
             {
                 announcementText.setString(text);
                 announcementTimeLeft = announcementDefaultTime;
+                audio.addSound(assets.perkSound);
             }
             break;
         
@@ -470,6 +499,7 @@ void PlayerUI::mouseMoved(sf::Vector2f mousePos)
         volumeButton.setPosition(pos);
         int volume = static_cast<int>((volumeButton.getPosition().x - volumeSecondaryBar.getGlobalBounds().position.x) * 100.f / volumeSecondaryBar.getGlobalBounds().size.x);
         audio.setVolume(volume);
+        saveSettings();
     }
 }
 

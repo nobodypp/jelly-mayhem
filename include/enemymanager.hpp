@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 #include "drawable.hpp"
 #include "jelly.hpp"
 #include "player.hpp"
@@ -10,7 +11,6 @@
 #include "chromosome.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
-#include <cmath>
 
 class EnemyManager : Manager
 {

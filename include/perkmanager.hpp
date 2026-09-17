@@ -5,7 +5,6 @@
 #include <array>
 #include <tuple>
 #include "assetmanager.hpp"
-#include "audiomanager.hpp"
 
 
 class PerkManager
@@ -96,14 +95,13 @@ class PerkManager
         }
 
         AssetManager& assets;
-        AudioManager& audio;
         bool singleKillReward = false;
         std::queue<std::string> announcements;
 
         void increasePerk(PerkId id);
 
     public:
-        PerkManager(AssetManager& assets, AudioManager& audio);
+        PerkManager(AssetManager& assets);
         void registerGroupBottleHit(unsigned int enemiesNumber);
         float getBottleBoundsScale();
         void registerKnockbackHit();

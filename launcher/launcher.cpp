@@ -91,8 +91,7 @@ bool Launcher::checkForUpdate()
 {
     CURL* curl = curl_easy_init();
 
-    if (!curl)
-        throw std::runtime_error("Failed to initialize CURL");
+    if (!curl) throw std::runtime_error("Failed to initialize CURL");
 
     std::string response;
 

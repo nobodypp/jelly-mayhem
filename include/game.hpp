@@ -28,7 +28,7 @@ class GameManager
         RandomGenerator randomizer;
         AssetManager assets;
         AudioManager audio;
-        PerkManager perks{assets, audio};
+        PerkManager perks{assets};
         PlayerUI ui{assets, perks, audio, currentState};
         ProjectileManager projectiles{assets, perks, audio};
         Player player{assets, projectiles, perks, audio};

@@ -82,9 +82,9 @@ set(CURL_USE_SCHANNEL ON CACHE BOOL "" FORCE)
 set(CURL_USE_OPENSSL OFF CACHE BOOL "" FORCE)
 
 
-FetchContent_MakeAvailable(SFML)
+FetchContent_MakeAvailable(SFML json)
 if(WIN32)
-    FetchContent_MakeAvailable(json CURL miniz)
+    FetchContent_MakeAvailable(CURL miniz)
 endif()
 
 
@@ -180,6 +180,7 @@ target_link_libraries(jelly-mayhem
     PRIVATE
         SFML::Graphics
         SFML::Audio
+        nlohmann_json::nlohmann_json
 )
 
 

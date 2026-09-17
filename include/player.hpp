@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <vector>
+#include <set>
 #include "animation.hpp"
 #include "healthbar.hpp"
 #include "bottle.hpp"
@@ -11,7 +12,6 @@
 #include "entity.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
-#include <set>
 
 
 class Player : public Entity

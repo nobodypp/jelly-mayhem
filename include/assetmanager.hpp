@@ -5,7 +5,7 @@
 #include "animation.hpp"
 #include <vector>
 #include <filesystem>
-#include <iostream>
+#include <stdexcept>
 #include <array>
 #ifdef _WIN32
     #include <windows.h>

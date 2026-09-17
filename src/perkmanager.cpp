@@ -1,9 +1,8 @@
 #include "perkmanager.hpp"
 
 
-PerkManager::PerkManager(AssetManager& assets, AudioManager& audio)
-    : assets(assets),
-      audio(audio)
+PerkManager::PerkManager(AssetManager& assets)
+    : assets(assets)
 {
     getPerk(PerkId::Group).updateObjective("Hit a group of " + std::to_string(4 + getPerk(PerkId::Group).getLevel() * 2) + " enemies with one bottle");
 }
@@ -91,8 +90,6 @@ void PerkManager::increasePerk(PerkId id)
     if (getPerk(id).increaseObjective())
     {
         if (id == PerkId::Group) getPerk(id).updateObjective("Hit a group of " + std::to_string(4 + getPerk(PerkId::Group).getLevel() * 2) + " enemies with one bottle");
-
-        audio.addSound(assets.perkSound);
         announcements.push(getPerk(id).getName() + " unlocked!");
     }
 }
