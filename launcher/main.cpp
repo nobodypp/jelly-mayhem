@@ -11,13 +11,12 @@
 int main()
 {
 #ifdef _WIN32
-    if (!AttachConsole(ATTACH_PARENT_PROCESS))
-        return;
-
-    FILE* stream;
-
-    freopen_s(&stream, "CONOUT$", "w", stdout);
-    freopen_s(&stream, "CONOUT$", "w", stderr);
+    if (AttachConsole(ATTACH_PARENT_PROCESS))
+    {
+        FILE* stream;
+        freopen_s(&stream, "CONOUT$", "w", stdout);
+        freopen_s(&stream, "CONOUT$", "w", stderr);
+    }
 #endif
     try
     {
