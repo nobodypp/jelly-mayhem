@@ -348,7 +348,7 @@ if(WIN32)
             ${PROJECT_RUNTIME_DIRECTORIES}
 
         PRE_EXCLUDE_REGEXES
-            "^(advapi32|bcrypt|crypt32|gdi32|iphlpapi|kernel32|msvcrt|opengl32|secur32|user32|wldap32|winmm|ws2_32|shell32)\\.dll$"
+            "^(advapi32|bcrypt|crypt32|gdi32|iphlpapi|kernel32|msvcrt|opengl32|secur32|user32|wldap32|winmm|ws2_32|shell32|ole32)\\.dll$"
             "^api-ms-win-.*"
             "^ext-ms-win-.*"
     )
