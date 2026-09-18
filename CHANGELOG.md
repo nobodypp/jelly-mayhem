@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.10.1...v1.11.0) (2026-09-18)
+
+
+### Features
+
+* launcher can use console ([062f2fc](https://github.com/nobodypp/jelly-mayhem/commit/062f2fcaa839dc1ff6452b325363f3fb3d66d239))
+
 ## [1.10.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.10.0...v1.10.1) (2026-09-18)
 
 
