@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.0...v1.11.1) (2026-09-18)
+
+
+### Bug Fixes
+
+* syntax fixed ([1430393](https://github.com/nobodypp/jelly-mayhem/commit/1430393528ad7333a85bade87905c29f8994e0eb))
+
 ## [1.11.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.10.1...v1.11.0) (2026-09-18)
 
 
