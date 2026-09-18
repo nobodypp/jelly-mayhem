@@ -2,9 +2,23 @@
 
 #include <iostream>
 #include <exception>
+#ifdef _WIN32
+    #include <windows.h>
+    #include <cstdio>
+#endif
+
 
 int main()
 {
+#ifdef _WIN32
+    if (!AttachConsole(ATTACH_PARENT_PROCESS))
+        return;
+
+    FILE* stream;
+
+    freopen_s(&stream, "CONOUT$", "w", stdout);
+    freopen_s(&stream, "CONOUT$", "w", stderr);
+#endif
     try
     {
         Launcher launcher;

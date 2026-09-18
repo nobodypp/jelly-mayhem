@@ -73,12 +73,12 @@ void Launcher::runInstaller()
 {
     std::cout << "Launching installer...\n";
 
-    const auto gamePath = executableDirectory / "jelly-mayhem-installer.exe";
+    const auto installerPath = executableDirectory / "jelly-mayhem-installer.exe";
 
     const HINSTANCE result = ShellExecuteW(
         nullptr,
         L"open",
-        gamePath.c_str(),
+        installerPath.c_str(),
         nullptr,
         executableDirectory.c_str(),
         SW_SHOWNORMAL

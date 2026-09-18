@@ -11,8 +11,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <miniz.h>
-#include <windows.h>
 #include <fstream>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 
 class Launcher
 {
