@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.9.0...v1.10.0) (2026-09-18)
+
+
+### Features
+
+* added saved options ([5b73f7c](https://github.com/nobodypp/jelly-mayhem/commit/5b73f7c6352538ba37b51c34128f98320c93e86b))
+* added scoreboard ([d70cd3f](https://github.com/nobodypp/jelly-mayhem/commit/d70cd3f54026e333977c2ada398e08cfc6941f53))
+
 ## [1.9.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.8.0...v1.9.0) (2026-09-16)
 
 
