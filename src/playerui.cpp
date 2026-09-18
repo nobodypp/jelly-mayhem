@@ -2,13 +2,12 @@
 
 void PlayerUI::loadSettings()
 {
-    const auto path = Paths::configDirectory() / "settings.json";
-    if (!std::filesystem::exists(path))
+    if (!std::filesystem::exists(settingsPath))
     {
         saveSettings();
         return;
     }
-    std::ifstream file(path);
+    std::ifstream file(settingsPath);
     if (!file) throw std::runtime_error("Failed to open settings file");
     nlohmann::json data;
     file >> data;
@@ -18,20 +17,20 @@ void PlayerUI::loadSettings()
 
 void PlayerUI::saveSettings()
 {
-    const auto path = Paths::configDirectory() / "settings.json";
     nlohmann::json data;
 
     data["volume"] = audio.getVolume();
 
-    std::ofstream file(path);
+    std::ofstream file(settingsPath);
     if (!file) throw std::runtime_error("Failed to create settings file");
     file << data.dump(4);
 }
 
-PlayerUI::PlayerUI(AssetManager &assets, PerkManager &perks, AudioManager &audio, GameState state)
+PlayerUI::PlayerUI(AssetManager &assets, PerkManager &perks, AudioManager &audio, GameState state, ScoreManager& scores)
     : perks(perks),
       audio(audio),
       assets(assets),
+      scores(scores),
       bottleChargingAnimation(&assets.bottleBarChargedFrames, 10.f),
       bottleBarSize(bottleChargingAnimation.getCurrentFrame().getSize()),
       bottleChargedBarSprite(bottleChargingAnimation.getCurrentFrame()),
@@ -129,8 +128,11 @@ PlayerUI::PlayerUI(AssetManager &assets, PerkManager &perks, AudioManager &audio
     titleText.setOrigin(titleText.getLocalBounds().getCenter());
 
     // Scoreboard
-    scoreboardText.setCharacterSize(10);
-    scoreboardText.setFillColor(sf::Color::Black);
+    scoreboardText.setCharacterSize(30);
+    scoreboardText.setOutlineColor(sf::Color::Black);
+    scoreboardText.setOutlineThickness(1.f);
+    scoreboardText.setLineAlignment(sf::Text::LineAlignment::Center);
+    scoreboardText.setLineSpacing(1.5f);
 
     // Settings
     loadSettings();
@@ -148,8 +150,8 @@ void PlayerUI::update(sf::Time deltaTime)
 
             bottleChargingAnimation.update(deltaTime);
 
-            // Update time counter
-            gameTime += deltaTime;
+            // Update kill counter
+            killCount = scores.getCurrentScore(ScoreKey::kills);
 
             // If a new announcement is pending, show it
             if (announcementTimeLeft > sf::Time::Zero) announcementTimeLeft = std::max(sf::Time::Zero, announcementTimeLeft - deltaTime);
@@ -224,6 +226,29 @@ void PlayerUI::render(sf::RenderWindow& window)
             renderButtonLayout(menuButtons, window, {window.getView().getCenter().x, window.getView().getSize().y * 0.6f});
             break;
 
+        case GameState::Scoreboard:
+            // Background
+            screenGradientBackground[0].position = sf::Vector2f{0.f, 0.f};
+            screenGradientBackground[1].position = sf::Vector2f{0.f, static_cast<float> (window.getSize().y)};
+            screenGradientBackground[2].position = sf::Vector2f{static_cast<float> (window.getSize().x), 0.f};
+            screenGradientBackground[3].position = sf::Vector2f{static_cast<float> (window.getSize().x), static_cast<float> (window.getSize().y)};
+
+            screenGradientBackground[0].color = sf::Color::Black;
+            screenGradientBackground[1].color = sf::Color::Green;
+            screenGradientBackground[2].color = sf::Color::Black;
+            screenGradientBackground[3].color = sf::Color::Green;
+            window.draw(screenGradientBackground);
+
+            // Scoreboard text
+            scoreboardText.setOrigin(scoreboardText.getLocalBounds().getCenter());
+            scoreboardText.setPosition(window.getView().getCenter());
+            window.draw(scoreboardText);
+
+            // Return button
+            returnButton.setPosition(returnButton.getSize() / 2.f + sf::Vector2f{100.f, 100.f});
+            returnButton.render(window);
+            break;
+
         case GameState::Play:
         {
             // Bottle charge bar position and size
@@ -254,19 +279,14 @@ void PlayerUI::render(sf::RenderWindow& window)
 
             // Time text
             sf::Vector2f rightTopCorner = {static_cast<float> (window.getView().getSize().x), 0.f};
-            std::string seconds = std::to_string(static_cast<int>(gameTime.asSeconds()) % 60);
-            if (seconds.length() == 1) seconds = "0" + seconds;
-            std::string minutes = std::to_string(static_cast<int>(gameTime.asSeconds()) / 60);
-            if (minutes.length() == 1) minutes = "0" + minutes;
             timeText.setOrigin({0.f, 0.f});
-            timeText.setString(minutes + ":" + seconds);
+            timeText.setString(scores.getGameTime());
             timeText.setPosition(rightTopCorner + sf::Vector2f{-windowMargin.x - timeText.getGlobalBounds().size.x, windowMargin.y});
             window.draw(timeText);
 
             // Perk announcement
             if (announcementTimeLeft > sf::Time::Zero)
             {
-                announcementText.setOrigin(announcementText.getLocalBounds().getCenter());
                 announcementText.setPosition({window.getView().getSize().x / 2.f , windowMargin.y});
 
                 // Transparency
@@ -399,16 +419,12 @@ void PlayerUI::activateBottleBar() { bottleBarActive = true; }
 
 void PlayerUI::resetBottleTime() { bottleBarActive = false; }
 
-void PlayerUI::updateKillCount(int kills) { killCount = kills; }
-
 void PlayerUI::changeGameState(GameState state)
 {
     // State transitions
     if (currentState == GameState::LoseScreen)
     {
         for (auto& button: loseButtons) button.resetWasClicked();
-
-        gameTime = sf::Time::Zero;
         bottleBarActive = false;
     }
     else if (currentState == GameState::Pause)
@@ -419,6 +435,19 @@ void PlayerUI::changeGameState(GameState state)
     else if (currentState == GameState::Menu)
     {
         for (auto& button : menuButtons) button.resetWasClicked();
+        if (state == GameState::Scoreboard)
+        {
+            scoreboardText.setString("Best scores:\n\n" + scores.getScoresList());
+            scoreboardText.setOrigin(announcementText.getLocalBounds().getCenter());
+        }
+    }
+    else if (currentState == GameState::Scoreboard)
+    {
+        returnButton.resetWasClicked();
+    }
+    else if (currentState == GameState::Pause)
+    {
+        returnButton.resetWasClicked();
     }
 
     currentState = state;
@@ -430,6 +459,10 @@ void PlayerUI::mouseClicked(sf::Vector2f mousePos)
     {
         case GameState::Menu:
             for (auto& button: menuButtons) button.mouseClicked(mousePos);
+        
+        case GameState::Scoreboard:
+            returnButton.mouseClicked(mousePos);
+            break;
         
         case GameState::LoseScreen:
             for (auto& button: loseButtons) button.mouseClicked(mousePos);
@@ -464,6 +497,11 @@ void PlayerUI::mouseReleased(sf::Vector2f mousePos)
     {
         case GameState::Menu:
             for (auto& button: menuButtons) button.mouseReleased(mousePos);
+            break;
+        
+        case GameState::Scoreboard:
+            returnButton.mouseReleased(mousePos);
+            break;
 
         case GameState::LoseScreen:
             for (auto& button: loseButtons) button.mouseReleased(mousePos);
@@ -511,4 +549,6 @@ bool PlayerUI::getResume() { return pauseButtons.at(index(PauseButtonId::Resume)
 
 bool PlayerUI::getStartGame() { return menuButtons.at(index(MenuButtonId::Play)).getWasClicked(); }
 
-bool PlayerUI::getMainMenu() { return pauseButtons.at(index(PauseButtonId::Menu)).getWasClicked() || loseButtons.at(index(LoseButtonId::Menu)).getWasClicked(); }
+bool PlayerUI::getMainMenu() { return pauseButtons.at(index(PauseButtonId::Menu)).getWasClicked() || loseButtons.at(index(LoseButtonId::Menu)).getWasClicked() || (currentState == GameState::Scoreboard && returnButton.getWasClicked()); }
+
+bool PlayerUI::getScoreBoard() { return menuButtons.at(index(MenuButtonId::Scoreboard)).getWasClicked(); }

@@ -11,6 +11,7 @@
 #include "animation.hpp"
 #include "audiomanager.hpp"
 #include "paths.hpp"
+#include "scoremanager.hpp"
 
 
 class PlayerUI : public Drawable
@@ -144,9 +145,12 @@ class PlayerUI : public Drawable
         static constexpr sf::Time maxBottleTime = sf::seconds(1.5f);
         static constexpr sf::Vector2f buttonSize = {280.f, 80.f};
 
+        const std::filesystem::path settingsPath = Paths::configDirectory() / "settings.json";
+
         PerkManager& perks;
         AudioManager& audio;
         AssetManager& assets;
+        ScoreManager& scores;
 
         Animation bottleChargingAnimation;
         sf::Vector2f bottleBarSize;
@@ -162,13 +166,12 @@ class PlayerUI : public Drawable
 
         int killCount = 0;
         sf::Text killText;
+        sf::Text timeText;
 
         GameState currentState;
 
         sf::Text deathScreenText;
 
-        sf::Time gameTime = sf::Time::Zero;
-        sf::Text timeText;
 
         sf::Text announcementText;
         sf::Time announcementTimeLeft = sf::Time::Zero;
@@ -250,13 +253,12 @@ class PlayerUI : public Drawable
 
 
     public:
-        PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state);
+        PlayerUI(AssetManager& assets, PerkManager& perks, AudioManager& audio, GameState state, ScoreManager& scores);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         sf::Time getBottleTime();
         void resetBottleTime();
         void activateBottleBar();
-        void updateKillCount(int kills);
         void changeGameState(GameState state);
         void mouseClicked(sf::Vector2f mousePos);
         void mouseReleased(sf::Vector2f mousePos);
@@ -266,4 +268,5 @@ class PlayerUI : public Drawable
         bool getResume();
         bool getStartGame();
         bool getMainMenu();
+        bool getScoreBoard();
 };

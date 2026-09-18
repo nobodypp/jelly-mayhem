@@ -5,6 +5,7 @@
 #include <array>
 #include <tuple>
 #include "assetmanager.hpp"
+#include "scoremanager.hpp"
 
 
 class PerkManager
@@ -19,13 +20,15 @@ class PerkManager
                 std::string name;
                 std::string objective;
                 std::string reward;
+                std::string_view scoreKey;
             
             public:
-                Perk(std::string name, std::string objective, std::string reward, std::function<unsigned int(unsigned int)> requiredObjective = [](unsigned int level){return (level + 1) * 5;})
+                Perk(std::string name, std::string objective, std::string reward, std::string_view scoreKey, std::function<unsigned int(unsigned int)> requiredObjective = [](unsigned int level){return (level + 1) * 5;})
                   : requiredObjective(requiredObjective), 
                     objective(objective), 
                     reward(reward),
-                    name(name)
+                    name(name), 
+                    scoreKey(scoreKey)
                 {}
 
                 unsigned int getLevel() { return level; }
@@ -56,6 +59,8 @@ class PerkManager
                 std::string getReward() const { return reward; }
 
                 void updateObjective(std::string text) { objective = text; }
+
+                std::string_view getScoreKey() {return scoreKey; }
         };
 
         static constexpr float longDistance = 500.f;
@@ -80,13 +85,13 @@ class PerkManager
         }
 
         std::array<Perk, static_cast<std::size_t>(PerkId::Count)> perks{
-            Perk{"Crowd control", "", "Increased bottle area", [](unsigned int level) { return 10; }},
-            Perk{"Knockout crits", "Hit a knocked out enemy", "Increased damage against knocked out enemies", [](unsigned int level) { return (level + 1) * 5; }},
-            Perk{"Dodger", "Dodge stars", "Faster movement speed", [](unsigned int level) { return 20 + level * 10; }},
-            Perk{"Healing upgrade", "Do a block kill", "Increased healing"},
-            Perk{"Single kill boost", "Kill with a bottle that only hit one enemy", "After a single kill the next bottle has increased damage"},
-            Perk{"Increasing damage", "Kill from a distance", "Damage increases with distance"},
-            Perk{"Faster reload", "Hit at close range", "Faster reload speed", [](unsigned int level) { return 15 + level * 10; }}
+            Perk{"Crowd control", "", "Increased bottle area", ScoreKey::group_perk, [](unsigned int level) { return 10; }},
+            Perk{"Knockout crits", "Hit a knocked out enemy", "Increased damage against knocked out enemies", ScoreKey::knockout_perk, [](unsigned int level) { return (level + 1) * 5; }},
+            Perk{"Dodger", "Dodge stars", "Faster movement speed", ScoreKey::dodger_perk, [](unsigned int level) { return 20 + level * 10; }},
+            Perk{"Healing upgrade", "Do a block kill", "Increased healing", ScoreKey::healing_perk},
+            Perk{"Single kill boost", "Kill with a bottle that only hit one enemy", "After a single kill the next bottle has increased damage", ScoreKey::single_perk},
+            Perk{"Increasing damage", "Kill from a distance", "Damage increases with distance", ScoreKey::increasing_perk},
+            Perk{"Faster reload", "Hit at close range", "Faster reload speed", ScoreKey::reload_perk, [](unsigned int level) { return 15 + level * 10; }}
         } ;
 
         Perk& getPerk(PerkId id)
@@ -95,13 +100,15 @@ class PerkManager
         }
 
         AssetManager& assets;
+        ScoreManager& scores;
+
         bool singleKillReward = false;
         std::queue<std::string> announcements;
 
         void increasePerk(PerkId id);
 
     public:
-        PerkManager(AssetManager& assets);
+        PerkManager(AssetManager& assets, ScoreManager& scores);
         void registerGroupBottleHit(unsigned int enemiesNumber);
         float getBottleBoundsScale();
         void registerKnockbackHit();
@@ -119,5 +126,5 @@ class PerkManager
         float getReloadSpeedMultiplier();
         std::string getNextAnnouncement();
         void reset();
-        std::tuple<std::string, std::string, std::string> getPerkInfo(std::size_t id);      
+        std::tuple<std::string, std::string, std::string> getPerkInfo(std::size_t id);
 };

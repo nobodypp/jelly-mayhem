@@ -11,6 +11,7 @@
 #include "chromosome.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
+#include "scoremanager.hpp"
 
 class EnemyManager : Manager
 {
@@ -33,6 +34,9 @@ class EnemyManager : Manager
         AssetManager& assets;
         Player& player;
         RandomGenerator& randomizer;
+        ScoreManager& scores;
+        PerkManager& perks;
+        AudioManager& audio;
 
         float currentLevel = 1.f;
 
@@ -43,18 +47,11 @@ class EnemyManager : Manager
         int getTotalFitness();
         Chromosome rouletteWheelParent();
 
-        int killCount = 0;
-
-        PerkManager& perks;
-
-        AudioManager& audio;
-    
     public:
-        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks, AudioManager& audio);
+        EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks, AudioManager& audio, ScoreManager& scores);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
         std::size_t jelliesCount();
         Jelly& jellyAt(std::size_t i);
-        int getKillCount();
         void reset();
 };

@@ -1,10 +1,11 @@
 #include "projectilemanager.hpp"
 
 
-ProjectileManager::ProjectileManager(AssetManager& assets, PerkManager& perks, AudioManager& audio)
+ProjectileManager::ProjectileManager(AssetManager& assets, PerkManager& perks, AudioManager& audio, ScoreManager& scores)
     : assets(assets), 
       perks(perks), 
-      audio(audio)
+      audio(audio), 
+      scores(scores)
 {}
 
 void ProjectileManager::update(sf::Time deltaTime)

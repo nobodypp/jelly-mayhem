@@ -1,13 +1,14 @@
 #include "enemymanager.hpp"
 
 
-EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks, AudioManager& audio)
+EnemyManager::EnemyManager(AssetManager& assets, Player& player, ProjectileManager& projectiles, RandomGenerator& randomizer, PerkManager& perks, AudioManager& audio, ScoreManager& scores)
     : assets(assets), 
       projectiles(projectiles),
       player(player), 
       perks(perks), 
       audio(audio), 
-      randomizer(randomizer)
+      randomizer(randomizer), 
+      scores(scores)
 {}
 
 void EnemyManager::update(sf::Time deltaTime)
@@ -19,7 +20,7 @@ void EnemyManager::update(sf::Time deltaTime)
     for (auto& jelly : jellies)
     {
         jelly->setTargetPosition(player.getBounds().getCenter());
-        if (!jelly->isAlive()) killCount++;
+        if (!jelly->isAlive()) scores.registerKill();
     }
 
     // Spawn a new jelly if missing and cooldown time has passed
@@ -134,13 +135,10 @@ int EnemyManager::getTotalFitness()
     return totalFitness;
 }
 
-int EnemyManager::getKillCount() { return killCount; }
-
 void EnemyManager::reset()
 {
     jellies.clear();
     currentLevel = 1.0f;
-    killCount = 0;
     bestFitness = 0;
     mutationRate = baseMutationRate;
     timeToNextSpawn = spawningCooldown;

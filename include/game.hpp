@@ -14,6 +14,7 @@
 #include "gamestate.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
+#include "scoremanager.hpp"
 
 
 class GameManager
@@ -26,15 +27,16 @@ class GameManager
         sf::View uiView{playerView};
         sf::Clock clock;
         RandomGenerator randomizer;
+        ScoreManager scores;
         AssetManager assets;
         AudioManager audio;
-        PerkManager perks{assets};
-        PlayerUI ui{assets, perks, audio, currentState};
-        ProjectileManager projectiles{assets, perks, audio};
+        PerkManager perks{assets, scores};
+        PlayerUI ui{assets, perks, audio, currentState, scores};
+        ProjectileManager projectiles{assets, perks, audio, scores};
         Player player{assets, projectiles, perks, audio};
-        EnemyManager enemies{assets, player, projectiles, randomizer, perks, audio};
+        EnemyManager enemies{assets, player, projectiles, randomizer, perks, audio, scores};
         DamageTextManager texts{assets};
-        CollisionManager collisions{enemies, projectiles, texts, perks};
+        CollisionManager collisions{enemies, projectiles, texts, perks, scores};
         Ground ground{assets};
 
         float windowZoom = 1.f;

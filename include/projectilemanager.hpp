@@ -6,6 +6,7 @@
 #include "manager.hpp"
 #include "perkmanager.hpp"
 #include "audiomanager.hpp"
+#include "scoremanager.hpp"
 
 
 class ProjectileManager : public Manager
@@ -14,16 +15,21 @@ class ProjectileManager : public Manager
         AssetManager& assets;
         PerkManager& perks;
         AudioManager& audio;
+        ScoreManager& scores;
         std::vector<std::unique_ptr<Bottle>> bottles;
         std::vector< std::unique_ptr<Star>> stars;
 
     public:
-        ProjectileManager(AssetManager& assets, PerkManager& perks, AudioManager& audio);
+        ProjectileManager(AssetManager& assets, PerkManager& perks, AudioManager& audio, ScoreManager& scores);
         void update(sf::Time deltaTime) override;
         void render(sf::RenderWindow& window) override;
 
         template<typename... Args>
-        void addBottle(Args&&... args) { bottles.push_back(std::make_unique<Bottle>(std::forward<Args>(args)..., assets, perks, audio)); }
+        void addBottle(Args&&... args)
+        {
+            bottles.push_back(std::make_unique<Bottle>(std::forward<Args>(args)..., assets, perks, audio));
+            scores.registerBottleThrown();
+        }
         std::size_t bottleCount();
         Bottle& bottleAt(std::size_t i);
 

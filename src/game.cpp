@@ -27,6 +27,11 @@ void GameManager::update(sf::Time deltaTime)
 	{
 		case GameState::Menu:
 			if (ui.getStartGame()) changeState(GameState::Play);
+			if (ui.getScoreBoard()) changeState(GameState::Scoreboard);
+			break;
+		
+		case GameState::Scoreboard:
+			if (ui.getMainMenu()) changeState(GameState::Menu);
 			break;
 
 		case GameState::Play:
@@ -42,9 +47,9 @@ void GameManager::update(sf::Time deltaTime)
 				collisions.handleCollisions(player);
 			}
 
-			// Update UI
+			// Update UI and scoreboard
 			ui.update(deltaTime);
-			ui.updateKillCount(enemies.getKillCount());
+			scores.update(deltaTime);
 
 			// State transition
 			if (!player.isAlive()) changeState(GameState::LoseScreen);
@@ -71,6 +76,11 @@ void GameManager::render()
 	switch (currentState)
 	{
 		case GameState::Menu:
+			gameWindow.setView(uiView);
+			ui.render(gameWindow);
+			break;
+		
+		case GameState::Scoreboard:
 			gameWindow.setView(uiView);
 			ui.render(gameWindow);
 			break;
@@ -133,7 +143,17 @@ void GameManager::handleEvents()
 				{
 					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
 				}
-
+				break;
+			
+			case GameState::Scoreboard:
+				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
+				{
+					if (mouseButtonPressed->button == sf::Mouse::Button::Left) ui.mouseClicked(sf::Vector2f(mouseButtonPressed->position));
+				}
+				else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>())
+				{
+					if (mouseButtonReleased->button == sf::Mouse::Button::Left) ui.mouseReleased(sf::Vector2f(mouseButtonReleased->position));
+				}
 				break;
 
 			case GameState::Play:
@@ -237,6 +257,7 @@ void GameManager::changeState(GameState state)
 		audio.stopAllSounds();
 		perks.reset();
 		texts.reset();
+		scores.reset();
 	}
 	ui.changeGameState(state);
 	currentState = state;

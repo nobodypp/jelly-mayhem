@@ -5,6 +5,7 @@
 #include "player.hpp"
 #include "damagetextmanager.hpp"
 #include "perkmanager.hpp"
+#include "scoremanager.hpp"
 
 
 class CollisionManager
@@ -16,6 +17,7 @@ class CollisionManager
         ProjectileManager& projectiles;
         DamageTextManager& texts;
         PerkManager& perks;
+        ScoreManager& scores;
 
         void BottleCollisions(Player& player);
         void StarCollisions(Player& player);
@@ -24,6 +26,6 @@ class CollisionManager
         float distanceBetweenTwoRects(const sf::FloatRect a, const sf::FloatRect b);
 
     public:
-        CollisionManager(EnemyManager& enemies, ProjectileManager& projectiles, DamageTextManager& texts, PerkManager& perks);
+        CollisionManager(EnemyManager& enemies, ProjectileManager& projectiles, DamageTextManager& texts, PerkManager& perks, ScoreManager& scores);
         void handleCollisions(Player& player);
 };

@@ -1,11 +1,12 @@
 #include "collisionmanager.hpp"
 
 
-CollisionManager::CollisionManager(EnemyManager &enemies, ProjectileManager &projectiles, DamageTextManager &texts, PerkManager &perks)
+CollisionManager::CollisionManager(EnemyManager &enemies, ProjectileManager &projectiles, DamageTextManager &texts, PerkManager &perks, ScoreManager& scores)
     : enemies(enemies), 
       projectiles(projectiles), 
       texts(texts), 
-      perks(perks)
+      perks(perks), 
+      scores(scores)
 {}
 
 void CollisionManager::handleCollisions(Player &player)
@@ -55,6 +56,9 @@ void CollisionManager::BottleCollisions(Player& player)
                     if (jelly.isDuringKnockback()) perks.registerKnockbackHit();
                     perks.registerHit(distance);
 
+                    // Register score
+                    scores.registerDamage(damage);
+
                     // Add floating damage text
                     texts.addText(damage, true, jelly.getBounds(), knockbackBonus > 1.f ? "Knocked out! " : "");
                     
@@ -63,6 +67,7 @@ void CollisionManager::BottleCollisions(Player& player)
             }
 
             perks.registerGroupBottleHit(enemiesHit);
+            scores.registerGroupHit(enemiesHit);
             if (enemiesHit == 1 && enemiesKilled == 1) perks.registerSingleKill();
         }
     }
@@ -108,8 +113,11 @@ void CollisionManager::meleeCollisions(Player& player)
                         int healed = player.succesfullParry();
                         texts.addText(-healed, true, player.getBounds(), "Block kill! ");
 
+                        // Register score and perk
                         perks.registerBlockKill();
+                        scores.registerHeal(healed);
                     }
+
                 }
                 else
                 {
