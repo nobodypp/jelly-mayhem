@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.10.0...v1.10.1) (2026-09-18)
+
+
+### Bug Fixes
+
+* ole32.dll excluded ([4b436f9](https://github.com/nobodypp/jelly-mayhem/commit/4b436f9691da6aeb421e4687372d977a5ab3edef))
+
 ## [1.10.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.9.0...v1.10.0) (2026-09-18)
 
 
