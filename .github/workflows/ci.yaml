@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
 
-          - name: Linux Buil
+          - name: Linux Build
             preset: linux-release
 
           - name: Windows Build
