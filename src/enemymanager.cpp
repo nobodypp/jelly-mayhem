@@ -20,7 +20,6 @@ void EnemyManager::update(sf::Time deltaTime)
     for (auto& jelly : jellies)
     {
         jelly->setTargetPosition(player.getBounds().getCenter());
-        if (!jelly->isAlive()) scores.registerKill();
     }
 
     // Spawn a new jelly if missing and cooldown time has passed

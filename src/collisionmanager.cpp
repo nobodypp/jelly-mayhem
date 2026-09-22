@@ -48,8 +48,9 @@ void CollisionManager::BottleCollisions(Player& player)
                         // If jelly was killed
                         enemiesKilled++;
 
-                        // Register perk objective
+                        // Register perk objective and kill count
                         perks.registerKill(distance);
+                        scores.registerKill();
                     }
                     
                     // Register perk objective
@@ -116,6 +117,7 @@ void CollisionManager::meleeCollisions(Player& player)
                         // Register score and perk
                         perks.registerBlockKill();
                         scores.registerHeal(healed);
+                        scores.registerKill();
                     }
 
                 }
