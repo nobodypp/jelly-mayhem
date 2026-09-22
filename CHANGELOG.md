@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.1...v1.11.2) (2026-09-22)
+
+
+### Bug Fixes
+
+* jelly auto destruct doesnt count as a kill ([ed1a52a](https://github.com/nobodypp/jelly-mayhem/commit/ed1a52a2f5c7ccc63647e8145baecf52bb64c764))
+
 ## [1.11.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.0...v1.11.1) (2026-09-18)
 
 
