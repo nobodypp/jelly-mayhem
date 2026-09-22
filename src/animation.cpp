@@ -17,3 +17,9 @@ unsigned int Animation::getCurrentFrameNumber() { return int (fps * timeFromRest
 void Animation::update(sf::Time deltaTime) { timeFromRestart += deltaTime; }
 
 void Animation::setFps(float fps) { this->fps = fps; }
+
+float Animation::getFps() { return fps; }
+
+std::size_t Animation::getFramesNumber() { return frames->size(); }
+
+sf::Time Animation::getDuration() { return sf::seconds(frames->size() / fps); }

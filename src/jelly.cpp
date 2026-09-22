@@ -3,18 +3,18 @@
 
 Jelly::Jelly(sf::Vector2f position, AssetManager& assets, ProjectileManager& projectiles, Chromosome chromosome, float level, PerkManager& perks, AudioManager& audio)
     : chromosome(chromosome),
-      walkingAnimation(&assets.jellyWalkingFrames, 10), 
-      deathAnimation(&assets.jellyDyingFrames, 20),
-      shootingAnimatin(&assets.jellyShootingFrames, 10),
-      bitingAnimation(&assets.jellyBitingFrames, 10),
-      knockbackAnimation(&assets.jellyKnockbackFrames, 8),
+      walkingAnimation(&assets.jellyWalkingFrames, 10.f), 
+      deathAnimation(&assets.jellyDyingFrames, 20.f),
+      shootingAnimatin(&assets.jellyShootingFrames, 10.f),
+      bitingAnimation(&assets.jellyBitingFrames, 10.f),
+      knockbackAnimation(&assets.jellyKnockbackFrames, 8.f),
       defaultTexture(&assets.jellyDefault),
       sprite(walkingAnimation.getCurrentFrame()), 
       health(chromosome.getHealth() * level, assets), 
       walkingSpeed(chromosome.getWalkingSpeed() * level),
       bitingSpeed(chromosome.getBitingSpeed() * level), 
-      bitingDistance(chromosome.getBitingDistance()), 
-      shootingDistance(chromosome.getShootingDistance()),
+      bitingDistance(chromosome.getBitingSpeed() * bitingAnimation.getDuration().asSeconds()), 
+      shootingDistance(chromosome.getStarSpeed() * 0.75f + bitingDistance),
       projectiles(&projectiles), 
       level(level), 
       perks(&perks), 
@@ -31,7 +31,7 @@ void Jelly::setTargetPosition(sf::Vector2f targetPos)
     targetPosition = targetPos;
 
     // If too far from the target, destroy
-    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) {currentState = State::Destroy;}
+    if ((targetPosition - sprite.getPosition()).length() > autoRemoveDistance) currentState = State::Destroy;
 
 }
 

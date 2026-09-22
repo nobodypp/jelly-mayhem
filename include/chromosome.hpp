@@ -11,20 +11,29 @@
 class Chromosome
 {
     private:
-        static constexpr std::size_t paramArraySize = 9;
-        static constexpr std::size_t statArraySize = 4;
-        static constexpr float minShootingDistance = 100.f;
-        static constexpr float maxShootingDistance = 200.f;
-        static constexpr float minBitingDistance = 100.f;
-        static constexpr float maxBitingDistance = 450.f;
-
         RandomGenerator* randomizer;
-        int damageInflicted = 0;
-        std::array<bool, paramArraySize> bitingDistance;
-        std::array<bool, paramArraySize> shootingDistance;
-        std::map<std::string, std::array<bool, statArraySize>> stats;
-        
 
+        enum class Stat
+        {
+            Health, 
+            StarDamage, 
+            BiteDamage, 
+            WalkingSpeed, 
+            BitingSpeed, 
+            StarSpeed
+        };
+        static constexpr std::size_t statArraySize = 4;
+        std::map<Stat, std::array<bool, statArraySize>> stats{
+            {Stat::Health, std::array<bool, statArraySize>{}}, 
+            {Stat::StarDamage, std::array<bool, statArraySize>{}}, 
+            {Stat::BiteDamage, std::array<bool, statArraySize>{}}, 
+            {Stat::WalkingSpeed, std::array<bool, statArraySize>{}}, 
+            {Stat::BitingSpeed, std::array<bool, statArraySize>{}}, 
+            {Stat::StarSpeed, std::array<bool, statArraySize>{}}
+        };
+
+        int damageInflicted = 0;
+        
         template <std::size_t N>
         int arrayToInt(const std::array<bool, N>& array)
         {
@@ -85,7 +94,7 @@ class Chromosome
             return array;
         }
 
-        float getProportionalStat(std::string statName);
+        float getProportionalStat(Stat statName);
         float mapRange(float a1, float a2, float b1, float b2, float s);
     
     public:
@@ -101,6 +110,4 @@ class Chromosome
         float getBitingSpeed();
         float getStarSpeed();
         sf::Color getColor();
-        float getBitingDistance();
-        float getShootingDistance();
 };

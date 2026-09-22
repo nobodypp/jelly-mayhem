@@ -19,4 +19,7 @@ class Animation
         unsigned int getCurrentFrameNumber();
         void update(sf::Time deltaTime);
         void setFps(float fps);
+        float getFps();
+        std::size_t getFramesNumber();
+        sf::Time getDuration();
 };

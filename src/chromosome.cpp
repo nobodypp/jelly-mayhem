@@ -4,14 +4,6 @@
 Chromosome::Chromosome(RandomGenerator& randomizer)
     : randomizer(&randomizer)
 {
-    stats.insert({"health", std::array<bool, statArraySize>{}});
-    stats.insert({"starDamage", std::array<bool, statArraySize>{}});
-    stats.insert({"biteDamage", std::array<bool, statArraySize>{}});
-    stats.insert({"walkingSpeed", std::array<bool, statArraySize>{}});
-    stats.insert({"bitingSpeed", std::array<bool, statArraySize>{}});
-    stats.insert({"starSpeed", std::array<bool, statArraySize>{}});
-
-
     for(auto& stat : stats)
     {
         for (std::size_t i = 0; i < stat.second.size(); i++)
@@ -19,25 +11,12 @@ Chromosome::Chromosome(RandomGenerator& randomizer)
             stat.second.at(i) = randomizer.randomInt(0, 1);
         }
     }
-
-    for (std::size_t i = 0; i < paramArraySize; i++)
-    {
-        bitingDistance.at(i) = randomizer.randomInt(0, 1);
-        shootingDistance.at(i) = randomizer.randomInt(0, 1);
-    }
 }
 
 Chromosome Chromosome::crossover(Chromosome secondParent)
 {
     Chromosome child(*randomizer);
-
-    for(auto& stat : stats)
-    {
-        child.stats.at(stat.first) = crossoverArrays(stat.second, secondParent.stats.at(stat.first));
-    }
-
-    child.bitingDistance = crossoverArrays(bitingDistance, secondParent.bitingDistance);
-    child.shootingDistance = crossoverArrays(shootingDistance, secondParent.shootingDistance);
+    for(auto& stat : stats) child.stats.at(stat.first) = crossoverArrays(stat.second, secondParent.stats.at(stat.first));
 
     return child;
 }
@@ -45,16 +24,13 @@ Chromosome Chromosome::crossover(Chromosome secondParent)
 void Chromosome::applyMutation()
 {
     for(auto& stat: stats) stat.second = mutateArray(stat.second);
-    
-    bitingDistance = mutateArray(bitingDistance);
-    shootingDistance = mutateArray(shootingDistance);
 }
 
 int Chromosome::getDamageInflicted() { return damageInflicted; }
 
 void Chromosome::changeDamageInflicted(int damage) { damageInflicted += damage; }
 
-float Chromosome::getProportionalStat(std::string statName)
+float Chromosome::getProportionalStat(Stat statName)
 {
     int statSum = 0;
 
@@ -69,41 +45,29 @@ float Chromosome::getProportionalStat(std::string statName)
 
 float Chromosome::mapRange(float a1, float a2, float b1, float b2, float s) { return b1 + (s - a1) * (b2 - b1) / (a2 - a1); }
 
-int Chromosome::getHealth() { return static_cast<int>(getProportionalStat("health") * 300.f); }
+int Chromosome::getHealth() { return static_cast<int>(getProportionalStat(Stat::Health) * 300.f); }
 
-int Chromosome::getStarDamage() { return static_cast<int>(getProportionalStat("starDamage") * 60.f); }
+int Chromosome::getStarDamage() { return static_cast<int>(getProportionalStat(Stat::StarDamage) * 60.f); }
 
-int Chromosome::getBiteDamage() { return static_cast<int>(getProportionalStat("biteDamage") * 120.f); }
+int Chromosome::getBiteDamage() { return static_cast<int>(getProportionalStat(Stat::BiteDamage) * 120.f); }
 
-float Chromosome::getWalkingSpeed() { return getProportionalStat("walkingSpeed") * 600.f; }
+float Chromosome::getWalkingSpeed() { return getProportionalStat(Stat::WalkingSpeed) * 600.f; }
 
-float Chromosome::getBitingSpeed() { return getProportionalStat("bitingSpeed") * 1500.f + getWalkingSpeed(); }
+float Chromosome::getBitingSpeed() { return getProportionalStat(Stat::BitingSpeed) * 1500.f + getWalkingSpeed(); }
 
-float Chromosome::getStarSpeed() { return getProportionalStat("starSpeed") * 1200.f; }
+float Chromosome::getStarSpeed() { return getProportionalStat(Stat::StarSpeed) * 1200.f; }
 
 sf::Color Chromosome::getColor()
 {
-    uint8_t a = arrayToInt(stats.at("health"));
-    uint8_t b = arrayToInt(stats.at("starSpeed"));
-    uint8_t c = arrayToInt(stats.at("bitingSpeed"));
-    uint8_t d = arrayToInt(stats.at("biteDamage"));
-    uint8_t e = arrayToInt(stats.at("walkingSpeed"));
-    uint8_t f = arrayToInt(stats.at("starDamage"));
+    uint8_t a = arrayToInt(stats.at(Stat::Health));
+    uint8_t b = arrayToInt(stats.at(Stat::StarSpeed));
+    uint8_t c = arrayToInt(stats.at(Stat::BitingSpeed));
+    uint8_t d = arrayToInt(stats.at(Stat::BiteDamage));
+    uint8_t e = arrayToInt(stats.at(Stat::WalkingSpeed));
+    uint8_t f = arrayToInt(stats.at(Stat::StarDamage));
     return sf::Color{
         static_cast<std::uint8_t>((a << 4) | b),
         static_cast<std::uint8_t>((c << 4) | d),
         static_cast<std::uint8_t>((e << 4) | f)
     };
-}
-
-float Chromosome::getBitingDistance()
-{
-    float arraySum = static_cast<float>(arrayToInt(bitingDistance));
-    return mapRange(0.f, std::pow(2, paramArraySize) - 1, minBitingDistance, maxBitingDistance, arraySum);
-}
-
-float Chromosome::getShootingDistance()
-{
-    float arraySum = static_cast<float>(arrayToInt(shootingDistance));
-    return mapRange(0.f, std::pow(2, paramArraySize) - 1, minShootingDistance, maxShootingDistance, arraySum) + getBitingDistance();
 }
