@@ -2,10 +2,10 @@
 
 #include <iterator>
 #include <array>
-#include "random.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <cassert>
 #include <map>
+#include "random.hpp"
 
 
 class Chromosome
