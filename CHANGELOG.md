@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.2...v1.12.0) (2026-09-22)
+
+
+### Features
+
+* biting and shooting distance depends on stats ([c305a55](https://github.com/nobodypp/jelly-mayhem/commit/c305a551ed8c5f3af8595f3989014feb69963de9))
+
 ## [1.11.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.1...v1.11.2) (2026-09-22)
 
 
