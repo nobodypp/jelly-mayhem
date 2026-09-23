@@ -43,7 +43,7 @@ float PerkManager::getKnockbackEnemyDamage() { return 1.f + getPerk(PerkId::Knoc
 
 float PerkManager::getPlayerSpeedMultiplier() { return 1.f + getPerk(PerkId::Dodger).getLevel() * 0.3f; }
 
-float PerkManager::getHealingMultiplier() { return 1.f + getPerk(PerkId::Parry).getLevel() * 0.25f; }
+float PerkManager::getHealingMultiplier() { return 1.f + getPerk(PerkId::Parry).getLevel() * 0.5f; }
 
 bool PerkManager::isNextBottleBoosted() { return singleKillReward; }
 
