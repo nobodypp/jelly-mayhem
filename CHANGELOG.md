@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.0...v1.12.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* healing rebalance ([19bd50c](https://github.com/nobodypp/jelly-mayhem/commit/19bd50c1fb5762e1abddd2f592b0bc292280dcd1))
+
 ## [1.12.0](https://github.com/nobodypp/jelly-mayhem/compare/v1.11.2...v1.12.0) (2026-09-22)
 
 
