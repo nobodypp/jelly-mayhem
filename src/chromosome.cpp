@@ -61,10 +61,10 @@ sf::Color Chromosome::getColor()
 {
     uint8_t a = arrayToInt(stats.at(Stat::Health));
     uint8_t b = arrayToInt(stats.at(Stat::StarSpeed));
-    uint8_t c = arrayToInt(stats.at(Stat::BitingSpeed));
+    uint8_t c = arrayToInt(stats.at(Stat::StarDamage));
     uint8_t d = arrayToInt(stats.at(Stat::BiteDamage));
     uint8_t e = arrayToInt(stats.at(Stat::WalkingSpeed));
-    uint8_t f = arrayToInt(stats.at(Stat::StarDamage));
+    uint8_t f = arrayToInt(stats.at(Stat::BitingSpeed));
     return sf::Color{
         static_cast<std::uint8_t>((a << 4) | b),
         static_cast<std::uint8_t>((c << 4) | d),
