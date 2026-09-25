@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.1...v1.12.2) (2026-09-25)
+
+
+### Bug Fixes
+
+* color rebalance ([9481dc5](https://github.com/nobodypp/jelly-mayhem/commit/9481dc5c0be79731f64716dc28f51edbbcac7caa))
+
 ## [1.12.1](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.0...v1.12.1) (2026-09-23)
 
 
