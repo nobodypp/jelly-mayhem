@@ -410,6 +410,8 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "fsliwa")
 
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Jelly-Mayhem - a fast-paced 2D action game")
 
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
 set(CPACK_NSIS_DISPLAY_NAME "Jelly-Mayhem")
 
 set(CPACK_NSIS_PACKAGE_NAME "Jelly-Mayhem")

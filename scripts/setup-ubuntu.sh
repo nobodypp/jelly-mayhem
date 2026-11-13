@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-echo "Installing Project1 Ubuntu dependencies..."
+echo "Installing Jelly-Mayhem Ubuntu dependencies..."
 
 sudo apt update
 
@@ -12,6 +12,7 @@ sudo apt install -y \
     ninja-build \
     git \
     gdb \
+    dpkg-dev \
     libx11-dev \
     libxrandr-dev \
     libxcursor-dev \
@@ -26,4 +27,4 @@ sudo apt install -y \
     libssl-dev
 
 echo
-echo "Project1 Ubuntu environment is ready."
+echo "Jelly-Mayhem Ubuntu environment is ready."
