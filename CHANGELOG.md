@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.2...v1.12.3) (2026-11-13)
+
+
+### Bug Fixes
+
+* added dependencies management in deb package ([c27ade0](https://github.com/nobodypp/jelly-mayhem/commit/c27ade046bc8add6ac35dab999a05c483b0031b1))
+
 ## [1.12.2](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.1...v1.12.2) (2026-09-25)
 
 
