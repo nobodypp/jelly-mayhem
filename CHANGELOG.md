@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.4](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.3...v1.12.4) (2026-11-13)
+
+
+### Bug Fixes
+
+* updated miniz version ([be6f90d](https://github.com/nobodypp/jelly-mayhem/commit/be6f90d42a8d5382cb48082af0baf230639e4667))
+
 ## [1.12.3](https://github.com/nobodypp/jelly-mayhem/compare/v1.12.2...v1.12.3) (2026-11-13)
 
 
